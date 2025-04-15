@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarvestLink Architecture Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .diagram-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        pre {
+            white-space: pre-wrap;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>HarvestLink Architecture Diagrams</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="openTab(event, 'system')">System Architecture</div>
+        <div class="tab" onclick="openTab(event, 'technical')">Technical Architecture</div>
+        <div class="tab" onclick="openTab(event, 'database')">Database Schema</div>
+        <div class="tab" onclick="openTab(event, 'dataflow')">Data Flow</div>
+    </div>
+    
+    <div id="system" class="tab-content active">
+        <h2>System Architecture Diagram</h2>
+        <p>This diagram shows the high-level system architecture of HarvestLink, including client applications, API layer, backend services, and external integrations.</p>
+        <div class="diagram-container">
+            <pre class="mermaid">
+graph TB
+    %% Client Applications
+    subgraph "Client Applications"
+        MobileApp["Mobile App\n(React Native + Expo)"]
+        WebApp["Web App\n(React)"]
+    end
+
+    %% API Layer
+    subgraph "API Layer"
+        SupabaseAPI["Supabase API\n(REST + Realtime)"]
+        SupabaseAuth["Supabase Auth"]
+    end
+
+    %% Backend Services
+    subgraph "Backend Services"
+        PostgreSQL["PostgreSQL Database"]
+        Storage["Object Storage\n(Images)"]
+        Functions["Edge Functions\n(Custom Logic)"]
+    end
+
+    %% External Services
+    subgraph "External Services"
+        PaymentGateway["Payment Gateway\n(Stripe)"]
+        PushNotifications["Push Notifications\n(Expo)"]
+        MapsAPI["Maps API\n(Google Maps)"]
+        SocialAuth["Social Auth\n(Google, Apple)"]
+    end
+
+    %% Client to API Connections
+    MobileApp -->|"REST API\nRealtime Subscriptions"| SupabaseAPI
+    WebApp -->|"REST API\nRealtime Subscriptions"| SupabaseAPI
+    
+    %% Authentication Flows
+    MobileApp -->|"Auth Requests"| SupabaseAuth
+    WebApp -->|"Auth Requests"| SupabaseAuth
+    SupabaseAuth -->|"Verify Credentials"| PostgreSQL
+    SupabaseAuth <-->|"OAuth Flow"| SocialAuth
+    
+    %% API to Backend Connections
+    SupabaseAPI -->|"CRUD Operations"| PostgreSQL
+    SupabaseAPI -->|"File Operations"| Storage
+    SupabaseAPI -->|"Custom Logic"| Functions
+    
+    %% Payment Processing
+    MobileApp -->|"Payment Requests"| PaymentGateway
+    WebApp -->|"Payment Requests"| PaymentGateway
+    PaymentGateway -->|"Payment Confirmations"| Functions
+    Functions -->|"Update Order Status"| PostgreSQL
+    
+    %% Notifications
+    Functions -->|"Trigger Notifications"| PushNotifications
+    PushNotifications -->|"Deliver Notifications"| MobileApp
+    
+    %% Location Services
+    MobileApp -->|"Location Requests"| MapsAPI
+    WebApp -->|"Location Requests"| MapsAPI
+    
+    %% Image Handling
+    MobileApp -->|"Upload Images"| Storage
+    WebApp -->|"Upload Images"| Storage
+    Storage -->|"Image URLs"| PostgreSQL
+    
+    %% Database Security
+    PostgreSQL -->|"Row-Level Security"| SupabaseAPI
+    
+    %% Realtime Updates
+    PostgreSQL -->|"Change Events"| SupabaseAPI
+    SupabaseAPI -->|"Realtime Updates"| MobileApp
+    SupabaseAPI -->|"Realtime Updates"| WebApp
+
+    %% Styling
+    classDef clientApps fill:#d0e0ff,stroke:#3080ff,stroke-width:2px
+    classDef apiLayer fill:#ffe0d0,stroke:#ff8030,stroke-width:2px
+    classDef backendServices fill:#d0ffe0,stroke:#30ff80,stroke-width:2px
+    classDef externalServices fill:#f0d0ff,stroke:#a030ff,stroke-width:2px
+    
+    class MobileApp,WebApp clientApps
+    class SupabaseAPI,SupabaseAuth apiLayer
+    class PostgreSQL,Storage,Functions backendServices
+    class PaymentGateway,PushNotifications,MapsAPI,SocialAuth externalServices
+            </pre>
+        </div>
+    </div>
+    
+    <div id="technical" class="tab-content">
+        <h2>Technical Architecture Diagram</h2>
+        <p>This diagram provides a more detailed view of the technical components and their interactions within the HarvestLink system.</p>
+        <div class="diagram-container">
+            <pre class="mermaid">
+graph TB
+    %% Client Layer
+    subgraph "Client Layer"
+        subgraph "Mobile Application (React Native + Expo)"
+            MobileUI["UI Components"]
+            MobileScreens["Screens"]
+            MobileNavigation["Navigation"]
+            MobileHooks["Custom Hooks"]
+            MobileContexts["Context Providers"]
+            MobileStores["State Stores\n(Zustand)"]
+            MobileOffline["Offline Storage\n(SQLite)"]
+        end
+        
+        subgraph "Web Application (React)"
+            WebUI["UI Components"]
+            WebScreens["Screens"]
+            WebRouting["Routing"]
+            WebHooks["Custom Hooks"]
+            WebContexts["Context Providers"]
+            WebStores["State Stores\n(Zustand)"]
+            WebStorage["Local Storage"]
+        end
+    end
+    
+    %% Service Layer
+    subgraph "Service Layer"
+        AuthService["Authentication Service"]
+        APIService["API Service"]
+        StorageService["Storage Service"]
+        RealtimeService["Realtime Service"]
+        PaymentService["Payment Service"]
+        LocationService["Location Service"]
+        NotificationService["Notification Service"]
+        OfflineSyncService["Offline Sync Service"]
+    end
+    
+    %% Backend Layer
+    subgraph "Supabase Backend"
+        subgraph "API & Auth"
+            SupabaseREST["REST API"]
+            SupabaseRealtime["Realtime API"]
+            SupabaseAuth["Auth API"]
+        end
+        
+        subgraph "Database"
+            UsersTables["Users & Profiles"]
+            FarmsTables["Farms & Products"]
+            OrdersTables["Orders & Items"]
+            MessagesTables["Messages"]
+            ReviewsTables["Reviews"]
+            RLS["Row-Level Security"]
+        end
+        
+        subgraph "Storage"
+            UserImages["User Avatars"]
+            FarmImages["Farm Images"]
+            ProductImages["Product Images"]
+        end
+        
+        subgraph "Edge Functions"
+            PaymentHooks["Payment Webhooks"]
+            NotificationTriggers["Notification Triggers"]
+            CustomLogic["Custom Business Logic"]
+        end
+    end
+    
+    %% External Services
+    subgraph "External Services"
+        Stripe["Stripe Payment"]
+        ExpoNotifications["Expo Notifications"]
+        GoogleMaps["Google Maps API"]
+        SocialProviders["Social Auth Providers"]
+    end
+    
+    %% Mobile App Internal Connections
+    MobileScreens --> MobileUI
+    MobileNavigation --> MobileScreens
+    MobileHooks --> MobileContexts
+    MobileHooks --> MobileStores
+    MobileContexts --> MobileStores
+    MobileStores --> MobileOffline
+    
+    %% Web App Internal Connections
+    WebScreens --> WebUI
+    WebRouting --> WebScreens
+    WebHooks --> WebContexts
+    WebHooks --> WebStores
+    WebContexts --> WebStores
+    WebStores --> WebStorage
+    
+    %% Mobile to Service Connections
+    MobileScreens --> AuthService
+    MobileScreens --> APIService
+    MobileScreens --> StorageService
+    MobileScreens --> RealtimeService
+    MobileScreens --> PaymentService
+    MobileScreens --> LocationService
+    MobileScreens --> NotificationService
+    MobileOffline --> OfflineSyncService
+    
+    %% Web to Service Connections
+    WebScreens --> AuthService
+    WebScreens --> APIService
+    WebScreens --> StorageService
+    WebScreens --> RealtimeService
+    WebScreens --> PaymentService
+    WebScreens --> LocationService
+    WebStorage --> OfflineSyncService
+    
+    %% Service to Supabase Connections
+    AuthService --> SupabaseAuth
+    APIService --> SupabaseREST
+    StorageService --> UserImages
+    StorageService --> FarmImages
+    StorageService --> ProductImages
+    RealtimeService --> SupabaseRealtime
+    OfflineSyncService --> SupabaseREST
+    
+    %% Supabase Internal Connections
+    SupabaseAuth --> UsersTables
+    SupabaseREST --> UsersTables
+    SupabaseREST --> FarmsTables
+    SupabaseREST --> OrdersTables
+    SupabaseREST --> MessagesTables
+    SupabaseREST --> ReviewsTables
+    SupabaseRealtime --> UsersTables
+    SupabaseRealtime --> FarmsTables
+    SupabaseRealtime --> OrdersTables
+    SupabaseRealtime --> MessagesTables
+    RLS --> UsersTables
+    RLS --> FarmsTables
+    RLS --> OrdersTables
+    RLS --> MessagesTables
+    RLS --> ReviewsTables
+    
+    %% External Service Connections
+    PaymentService --> Stripe
+    NotificationService --> ExpoNotifications
+    LocationService --> GoogleMaps
+    AuthService --> SocialProviders
+    Stripe --> PaymentHooks
+    PaymentHooks --> OrdersTables
+    PaymentHooks --> NotificationTriggers
+    NotificationTriggers --> ExpoNotifications
+    
+    %% Styling
+    classDef mobileApp fill:#d0e0ff,stroke:#3080ff,stroke-width:1px
+    classDef webApp fill:#c0d0ff,stroke:#2070ff,stroke-width:1px
+    classDef services fill:#ffe0d0,stroke:#ff8030,stroke-width:1px
+    classDef supabaseAPI fill:#d0ffe0,stroke:#30ff80,stroke-width:1px
+    classDef supabaseDB fill:#c0ffd0,stroke:#20ff70,stroke-width:1px
+    classDef supabaseStorage fill:#b0ffc0,stroke:#10ff60,stroke-width:1px
+    classDef supabaseFunctions fill:#a0ffb0,stroke:#00ff50,stroke-width:1px
+    classDef external fill:#f0d0ff,stroke:#a030ff,stroke-width:1px
+    
+    class MobileUI,MobileScreens,MobileNavigation,MobileHooks,MobileContexts,MobileStores,MobileOffline mobileApp
+    class WebUI,WebScreens,WebRouting,WebHooks,WebContexts,WebStores,WebStorage webApp
+    class AuthService,APIService,StorageService,RealtimeService,PaymentService,LocationService,NotificationService,OfflineSyncService services
+    class SupabaseREST,SupabaseRealtime,SupabaseAuth supabaseAPI
+    class UsersTables,FarmsTables,OrdersTables,MessagesTables,ReviewsTables,RLS supabaseDB
+    class UserImages,FarmImages,ProductImages supabaseStorage
+    class PaymentHooks,NotificationTriggers,CustomLogic supabaseFunctions
+    class Stripe,ExpoNotifications,GoogleMaps,SocialProviders external
+            </pre>
+        </div>
+    </div>
+    
+    <div id="database" class="tab-content">
+        <h2>Database Schema Diagram</h2>
+        <p>This entity-relationship diagram shows the database structure, including tables, relationships, and key fields.</p>
+        <div class="diagram-container">
+            <pre class="mermaid">
+erDiagram
+    PROFILES {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        string username UK
+        string full_name
+        string avatar_url
+        string phone
+        string email
+        string user_type
+        boolean is_verified
+    }
+    
+    FARMS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid owner_id FK
+        string name
+        string description
+        string logo_url
+        string banner_url
+        string address
+        string city
+        string state
+        string zip_code
+        string country
+        decimal latitude
+        decimal longitude
+        string website
+        string phone
+        string email
+        boolean is_verified
+        boolean is_active
+        string[] growing_practices
+        decimal average_rating
+    }
+    
+    FARM_IMAGES {
+        uuid id PK
+        timestamp created_at
+        uuid farm_id FK
+        string image_url
+        string caption
+        boolean is_primary
+    }
+    
+    PRODUCTS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid farm_id FK
+        string name
+        string description
+        string category
+        string subcategory
+        decimal price
+        string unit
+        integer quantity_available
+        boolean is_organic
+        boolean is_featured
+        boolean is_active
+        date harvest_date
+        date available_until
+    }
+    
+    PRODUCT_IMAGES {
+        uuid id PK
+        timestamp created_at
+        uuid product_id FK
+        string image_url
+        boolean is_primary
+    }
+    
+    PICKUP_LOCATIONS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid farm_id FK
+        string name
+        string address
+        string city
+        string state
+        string zip_code
+        decimal latitude
+        decimal longitude
+        boolean is_active
+        string[] available_days
+        jsonb available_hours
+    }
+    
+    ORDERS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid consumer_id FK
+        uuid farm_id FK
+        string status
+        decimal total_amount
+        timestamp pickup_date
+        uuid pickup_location_id FK
+        string notes
+    }
+    
+    ORDER_ITEMS {
+        uuid id PK
+        timestamp created_at
+        uuid order_id FK
+        uuid product_id FK
+        integer quantity
+        decimal unit_price
+        decimal total_price
+    }
+    
+    REVIEWS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid consumer_id FK
+        uuid farm_id FK
+        uuid order_id FK
+        integer rating
+        string comment
+        boolean is_verified
+    }
+    
+    MESSAGES {
+        uuid id PK
+        timestamp created_at
+        uuid sender_id FK
+        uuid recipient_id FK
+        string content
+        boolean is_read
+        uuid related_order_id FK
+        uuid related_product_id FK
+    }
+    
+    FAVORITES {
+        uuid id PK
+        timestamp created_at
+        uuid consumer_id FK
+        uuid farm_id FK
+    }
+    
+    PROFILES ||--o{ FARMS : "owns"
+    PROFILES ||--o{ ORDERS : "places"
+    PROFILES ||--o{ REVIEWS : "writes"
+    PROFILES ||--o{ MESSAGES : "sends"
+    PROFILES ||--o{ MESSAGES : "receives"
+    PROFILES ||--o{ FAVORITES : "has"
+    
+    FARMS ||--o{ FARM_IMAGES : "has"
+    FARMS ||--o{ PRODUCTS : "offers"
+    FARMS ||--o{ PICKUP_LOCATIONS : "has"
+    FARMS ||--o{ ORDERS : "receives"
+    FARMS ||--o{ REVIEWS : "receives"
+    FARMS ||--o{ FAVORITES : "is_favorited_by"
+    
+    PRODUCTS ||--o{ PRODUCT_IMAGES : "has"
+    PRODUCTS ||--o{ ORDER_ITEMS : "included_in"
+    PRODUCTS ||--o{ MESSAGES : "referenced_in"
+    
+    PICKUP_LOCATIONS ||--o{ ORDERS : "used_for"
+    
+    ORDERS ||--o{ ORDER_ITEMS : "contains"
+    ORDERS ||--o{ REVIEWS : "receives"
+    ORDERS ||--o{ MESSAGES : "referenced_in"
+            </pre>
+        </div>
+    </div>
+    
+    <div id="dataflow" class="tab-content">
+        <h2>Data Flow Diagram</h2>
+        <p>This diagram illustrates how data moves through the HarvestLink system, showing user interactions, process flows, and data storage.</p>
+        <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    %% External Actors
+    Consumer[Consumer]
+    Producer[Producer]
+    
+    %% Client Applications
+    MobileApp[Mobile Application]
+    WebApp[Web Application]
+    
+    %% Core Processes
+    Auth[Authentication Process]
+    FarmDiscovery[Farm Discovery Process]
+    Ordering[Ordering Process]
+    Inventory[Inventory Management]
+    Messaging[Messaging System]
+    Payments[Payment Processing]
+    Notifications[Notification System]
+    
+    %% Data Stores
+    UserDB[(User Database)]
+    FarmDB[(Farm Database)]
+    ProductDB[(Product Database)]
+    OrderDB[(Order Database)]
+    MessageDB[(Message Database)]
+    ImageStore[(Image Storage)]
+    
+    %% External Systems
+    PaymentGateway[Payment Gateway]
+    PushService[Push Notification Service]
+    MapsService[Maps Service]
+    
+    %% Consumer Flows
+    Consumer -->|"Register/Login"| MobileApp
+    Consumer -->|"Register/Login"| WebApp
+    MobileApp -->|"Authentication Request"| Auth
+    WebApp -->|"Authentication Request"| Auth
+    Auth -->|"Store User Data"| UserDB
+    Auth -->|"Return JWT Token"| MobileApp
+    Auth -->|"Return JWT Token"| WebApp
+    
+    Consumer -->|"Search for Farms"| MobileApp
+    MobileApp -->|"Query Farms"| FarmDiscovery
+    FarmDiscovery -->|"Retrieve Farm Data"| FarmDB
+    FarmDiscovery -->|"Retrieve Product Data"| ProductDB
+    FarmDiscovery -->|"Return Results"| MobileApp
+    MobileApp -->|"Display Farms/Products"| Consumer
+    
+    Consumer -->|"Place Order"| MobileApp
+    MobileApp -->|"Create Order"| Ordering
+    Ordering -->|"Store Order"| OrderDB
+    Ordering -->|"Process Payment"| Payments
+    Payments -->|"Payment Request"| PaymentGateway
+    PaymentGateway -->|"Payment Confirmation"| Payments
+    Payments -->|"Update Order Status"| OrderDB
+    Ordering -->|"Notify Producer"| Notifications
+    Notifications -->|"Send Push Notification"| PushService
+    PushService -->|"Deliver Notification"| Producer
+    
+    Consumer -->|"Send Message"| MobileApp
+    MobileApp -->|"Store Message"| Messaging
+    Messaging -->|"Save Message"| MessageDB
+    Messaging -->|"Notify Recipient"| Notifications
+    
+    %% Producer Flows
+    Producer -->|"Register/Login"| MobileApp
+    Producer -->|"Manage Farm Profile"| MobileApp
+    MobileApp -->|"Update Farm Data"| FarmDB
+    Producer -->|"Upload Farm Images"| MobileApp
+    MobileApp -->|"Store Images"| ImageStore
+    ImageStore -->|"Return Image URLs"| MobileApp
+    MobileApp -->|"Update Farm with Image URLs"| FarmDB
+    
+    Producer -->|"Manage Products"| MobileApp
+    MobileApp -->|"Create/Update Products"| Inventory
+    Inventory -->|"Store Product Data"| ProductDB
+    Producer -->|"Upload Product Images"| MobileApp
+    MobileApp -->|"Store Images"| ImageStore
+    ImageStore -->|"Return Image URLs"| MobileApp
+    MobileApp -->|"Update Products with Image URLs"| ProductDB
+    
+    Producer -->|"View Orders"| MobileApp
+    MobileApp -->|"Retrieve Orders"| OrderDB
+    OrderDB -->|"Return Order Data"| MobileApp
+    MobileApp -->|"Display Orders"| Producer
+    Producer -->|"Update Order Status"| MobileApp
+    MobileApp -->|"Update Order"| OrderDB
+    OrderDB -->|"Trigger Notification"| Notifications
+    Notifications -->|"Notify Consumer"| Consumer
+    
+    %% Location Services
+    Consumer -->|"Search by Location"| MobileApp
+    MobileApp -->|"Location Query"| MapsService
+    MapsService -->|"Return Location Data"| MobileApp
+    MobileApp -->|"Filter Farms by Location"| FarmDiscovery
+    
+    %% Realtime Updates
+    OrderDB -->|"Order Status Change"| MobileApp
+    MessageDB -->|"New Message"| MobileApp
+    ProductDB -->|"Inventory Update"| MobileApp
+    
+    %% Offline Sync
+    MobileApp -->|"Cache Data"| MobileApp
+    MobileApp -->|"Sync when Online"| FarmDB
+    MobileApp -->|"Sync when Online"| ProductDB
+    MobileApp -->|"Sync when Online"| OrderDB
+    
+    %% Styling
+    classDef actors fill:#f9d5e5,stroke:#eeac99,stroke-width:2px
+    classDef applications fill:#d0e0ff,stroke:#3080ff,stroke-width:2px
+    classDef processes fill:#eeeeee,stroke:#999999,stroke-width:2px
+    classDef dataStores fill:#c7f0d8,stroke:#43aa8b,stroke-width:2px
+    classDef externalSystems fill:#f0d0ff,stroke:#a030ff,stroke-width:2px
+    
+    class Consumer,Producer actors
+    class MobileApp,WebApp applications
+    class Auth,FarmDiscovery,Ordering,Inventory,Messaging,Payments,Notifications processes
+    class UserDB,FarmDB,ProductDB,OrderDB,MessageDB,ImageStore dataStores
+    class PaymentGateway,PushService,MapsService externalSystems
+            </pre>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true
+            }
+        });
+        
+        // Tab functionality
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].className = tabcontent[i].className.replace(" active", "");
+            }
+            
+            // Remove active class from all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            // Show the current tab and add active class
+            document.getElementById(tabName).className += " active";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>
