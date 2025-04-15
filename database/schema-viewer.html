@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarvestLink Database Schema</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .diagram-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        pre {
+            white-space: pre-wrap;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .table-info {
+            margin-top: 50px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .table-container {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HarvestLink Database Schema</h1>
+    
+    <p>This diagram illustrates the database schema for the HarvestLink MVP, showing tables, relationships, and key fields.</p>
+    
+    <div class="diagram-container">
+        <pre class="mermaid">
+erDiagram
+    USERS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        string email UK
+        string password_hash
+        string phone
+        string user_type
+        boolean email_verified
+        boolean phone_verified
+        timestamp last_sign_in
+        jsonb metadata
+    }
+    
+    PROFILES {
+        uuid id PK "FK to USERS"
+        timestamp created_at
+        timestamp updated_at
+        string username UK
+        string full_name
+        string avatar_url
+        string bio
+        string location
+        jsonb preferences
+    }
+    
+    FARMS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid owner_id FK "FK to USERS"
+        string name
+        string description
+        string logo_url
+        string banner_url
+        string address
+        string city
+        string state
+        string zip_code
+        string country
+        decimal latitude
+        decimal longitude
+        string website
+        string phone
+        string email
+        boolean is_verified
+        boolean is_active
+        string[] growing_practices
+        decimal average_rating
+        timestamp verification_date
+        uuid verified_by FK "FK to USERS (admin)"
+    }
+    
+    FARM_IMAGES {
+        uuid id PK
+        timestamp created_at
+        uuid farm_id FK
+        string image_url
+        string caption
+        boolean is_primary
+        integer display_order
+    }
+    
+    CATEGORIES {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        string name UK
+        string description
+        string icon_url
+        integer display_order
+        uuid parent_id FK "Self-reference for hierarchy"
+    }
+    
+    PRODUCTS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid farm_id FK
+        uuid category_id FK
+        string name
+        string description
+        string sku
+        decimal price
+        string unit
+        boolean is_organic
+        boolean is_featured
+        boolean is_active
+        date harvest_date
+        date available_until
+        string[] tags
+        jsonb nutrition_info
+        string storage_instructions
+    }
+    
+    PRODUCT_IMAGES {
+        uuid id PK
+        timestamp created_at
+        uuid product_id FK
+        string image_url
+        boolean is_primary
+        integer display_order
+    }
+    
+    INVENTORY {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid product_id FK
+        integer quantity_available
+        integer quantity_reserved
+        string lot_number
+        date expiration_date
+        string storage_location
+        timestamp last_inventory_update
+    }
+    
+    PICKUP_LOCATIONS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid farm_id FK
+        string name
+        string address
+        string city
+        string state
+        string zip_code
+        decimal latitude
+        decimal longitude
+        boolean is_active
+        string[] available_days
+        jsonb available_hours
+        string instructions
+        integer max_orders_per_day
+    }
+    
+    ORDERS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid consumer_id FK "FK to USERS"
+        uuid farm_id FK
+        string status
+        decimal subtotal
+        decimal tax
+        decimal total_amount
+        timestamp pickup_date
+        uuid pickup_location_id FK
+        string notes
+        string payment_status
+        string payment_method
+        string payment_intent_id
+        timestamp payment_processed_at
+        timestamp cancelled_at
+        string cancellation_reason
+    }
+    
+    ORDER_ITEMS {
+        uuid id PK
+        timestamp created_at
+        uuid order_id FK
+        uuid product_id FK
+        uuid inventory_id FK
+        integer quantity
+        decimal unit_price
+        decimal total_price
+        string notes
+    }
+    
+    REVIEWS {
+        uuid id PK
+        timestamp created_at
+        timestamp updated_at
+        uuid consumer_id FK "FK to USERS"
+        uuid farm_id FK
+        uuid order_id FK
+        integer rating
+        string comment
+        boolean is_verified
+        boolean is_public
+        timestamp verified_at
+        uuid verified_by FK "FK to USERS (admin)"
+        string[] helpful_tags
+    }
+    
+    MESSAGES {
+        uuid id PK
+        timestamp created_at
+        uuid sender_id FK "FK to USERS"
+        uuid recipient_id FK "FK to USERS"
+        string content
+        boolean is_read
+        timestamp read_at
+        uuid related_order_id FK
+        uuid related_product_id FK
+        string message_type
+    }
+    
+    FAVORITES {
+        uuid id PK
+        timestamp created_at
+        uuid user_id FK "FK to USERS"
+        uuid farm_id FK
+        uuid product_id FK
+    }
+    
+    NOTIFICATIONS {
+        uuid id PK
+        timestamp created_at
+        uuid user_id FK "FK to USERS"
+        string type
+        string title
+        string content
+        boolean is_read
+        timestamp read_at
+        jsonb data
+        string action_url
+    }
+    
+    USERS ||--|| PROFILES : "has"
+    USERS ||--o{ FARMS : "owns"
+    USERS ||--o{ ORDERS : "places"
+    USERS ||--o{ REVIEWS : "writes"
+    USERS ||--o{ MESSAGES : "sends"
+    USERS ||--o{ MESSAGES : "receives"
+    USERS ||--o{ FAVORITES : "has"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    
+    FARMS ||--o{ FARM_IMAGES : "has"
+    FARMS ||--o{ PRODUCTS : "offers"
+    FARMS ||--o{ PICKUP_LOCATIONS : "has"
+    FARMS ||--o{ ORDERS : "receives"
+    FARMS ||--o{ REVIEWS : "receives"
+    FARMS ||--o{ FAVORITES : "is_favorited_by"
+    
+    CATEGORIES ||--o{ PRODUCTS : "contains"
+    CATEGORIES ||--o{ CATEGORIES : "has_subcategories"
+    
+    PRODUCTS ||--o{ PRODUCT_IMAGES : "has"
+    PRODUCTS ||--|| INVENTORY : "has"
+    PRODUCTS ||--o{ ORDER_ITEMS : "included_in"
+    PRODUCTS ||--o{ MESSAGES : "referenced_in"
+    PRODUCTS ||--o{ FAVORITES : "is_favorited"
+    
+    INVENTORY ||--o{ ORDER_ITEMS : "allocated_to"
+    
+    PICKUP_LOCATIONS ||--o{ ORDERS : "used_for"
+    
+    ORDERS ||--o{ ORDER_ITEMS : "contains"
+    ORDERS ||--o{ REVIEWS : "receives"
+    ORDERS ||--o{ MESSAGES : "referenced_in"
+        </pre>
+    </div>
+    
+    <div class="table-info">
+        <h2>Table Definitions</h2>
+        
+        <div class="table-container">
+            <h3>USERS</h3>
+            <p>Stores authentication and basic user information.</p>
+            <table>
+                <tr>
+                    <th>Column</th>
+                    <th>Type</th>
+                    <th>Constraints</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>UUID</td>
+                    <td>PRIMARY KEY</td>
+                    <td>Unique identifier</td>
+                </tr>
+                <tr>
+                    <td>created_at</td>
+                    <td>TIMESTAMP</td>
+                    <td>NOT NULL, DEFAULT now()</td>
+                    <td>Record creation timestamp</td>
+                </tr>
+                <tr>
+                    <td>updated_at</td>
+                    <td>TIMESTAMP</td>
+                    <td>NOT NULL, DEFAULT now()</td>
+                    <td>Record update timestamp</td>
+                </tr>
+                <tr>
+                    <td>email</td>
+                    <td>TEXT</td>
+                    <td>UNIQUE, NOT NULL</td>
+                    <td>User's email address</td>
+                </tr>
+                <tr>
+                    <td>password_hash</td>
+                    <td>TEXT</td>
+                    <td>NOT NULL</td>
+                    <td>Hashed password (managed by Supabase Auth)</td>
+                </tr>
+                <tr>
+                    <td>phone</td>
+                    <td>TEXT</td>
+                    <td></td>
+                    <td>User's phone number</td>
+                </tr>
+                <tr>
+                    <td>user_type</td>
+                    <td>TEXT</td>
+                    <td>NOT NULL, CHECK (user_type IN ('consumer', 'producer', 'admin'))</td>
+                    <td>User role</td>
+                </tr>
+                <tr>
+                    <td>email_verified</td>
+                    <td>BOOLEAN</td>
+                    <td>NOT NULL, DEFAULT false</td>
+                    <td>Whether email is verified</td>
+                </tr>
+                <tr>
+                    <td>phone_verified</td>
+                    <td>BOOLEAN</td>
+                    <td>NOT NULL, DEFAULT false</td>
+                    <td>Whether phone is verified</td>
+                </tr>
+                <tr>
+                    <td>last_sign_in</td>
+                    <td>TIMESTAMP</td>
+                    <td></td>
+                    <td>Last sign-in timestamp</td>
+                </tr>
+                <tr>
+                    <td>metadata</td>
+                    <td>JSONB</td>
+                    <td></td>
+                    <td>Additional user metadata</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="table-container">
+            <h3>PROFILES</h3>
+            <p>Stores user profile information.</p>
+            <table>
+                <tr>
+                    <th>Column</th>
+                    <th>Type</th>
+                    <th>Constraints</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>UUID</td>
+                    <td>PRIMARY KEY, REFERENCES users(id)</td>
+                    <td>User ID (1:1 with USERS)</td>
+                </tr>
+                <tr>
+                    <td>created_at</td>
+                    <td>TIMESTAMP</td>
+                    <td>NOT NULL, DEFAULT now()</td>
+                    <td>Record creation timestamp</td>
+                </tr>
+                <tr>
+                    <td>updated_at</td>
+                    <td>TIMESTAMP</td>
+                    <td>NOT NULL, DEFAULT now()</td>
+                    <td>Record update timestamp</td>
+                </tr>
+                <tr>
+                    <td>username</td>
+                    <td>TEXT</td>
+                    <td>UNIQUE</td>
+                    <td>User's chosen username</td>
+                </tr>
+                <tr>
+                    <td>full_name</td>
+                    <td>TEXT</td>
+                    <td></td>
+                    <td>User's full name</td>
+                </tr>
+                <tr>
+                    <td>avatar_url</td>
+                    <td>TEXT</td>
+                    <td></td>
+                    <td>URL to user's profile picture</td>
+                </tr>
+                <tr>
+                    <td>bio</td>
+                    <td>TEXT</td>
+                    <td></td>
+                    <td>User's biography</td>
+                </tr>
+                <tr>
+                    <td>location</td>
+                    <td>TEXT</td>
+                    <td></td>
+                    <td>User's general location</td>
+                </tr>
+                <tr>
+                    <td>preferences</td>
+                    <td>JSONB</td>
+                    <td></td>
+                    <td>User preferences (notifications, privacy, etc.)</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Add more tables as needed -->
+    </div>
+    
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            er: {
+                diagramPadding: 20,
+                layoutDirection: 'TB',
+                minEntityWidth: 100,
+                minEntityHeight: 75,
+                entityPadding: 15,
+                stroke: 'gray',
+                fill: 'honeydew',
+                fontSize: 12
+            }
+        });
+    </script>
+</body>
+</html>
