@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Text, View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import { RootNavigator } from '@/navigation';
+import { useAuthStore } from '@/stores/authStore';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
+  const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     async function prepare() {
       try {
-        // Simulate some resource loading
+        // Load fonts, assets, or any other resources here
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
         console.warn(e);
@@ -39,11 +41,8 @@ export default function App() {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>HarvestLink</Text>
-        <Text style={{ marginTop: 10 }}>Connecting farms directly to your table</Text>
-      </View>
-      <StatusBar style="auto" />
+      <RootNavigator />
+      <StatusBar style={isAuthenticated ? 'light' : 'dark'} />
     </SafeAreaProvider>
   );
 }
