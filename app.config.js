@@ -11,7 +11,6 @@ export default {
     backgroundColor: "#ffffff"
   },
   updates: {
-    fallbackToCacheTimeout: 0,
     url: "https://u.expo.dev/your-project-id" // For EAS Update
   },
   assetBundlePatterns: ["**/*"],
@@ -41,7 +40,8 @@ export default {
     ]
   },
   web: {
-    favicon: "./assets/images/favicon.png"
+    favicon: "./assets/images/favicon.png",
+    bundler: "metro"
   },
   plugins: [
     "expo-camera",
@@ -53,6 +53,11 @@ export default {
       {
         ios: {
           useFrameworks: "static"
+        },
+        android: {
+          compileSdkVersion: 34,
+          targetSdkVersion: 34,
+          buildToolsVersion: "34.0.0"
         }
       }
     ]
@@ -61,5 +66,8 @@ export default {
     eas: {
       projectId: "your-eas-project-id"
     }
+  },
+  runtimeVersion: {
+    policy: "appVersion"
   }
 };
