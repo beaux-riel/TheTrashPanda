@@ -5,6 +5,7 @@ export default {
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   userInterfaceStyle: "automatic", // Support both light and dark mode
+  newArchEnabled: true,
   splash: {
     image: "./assets/images/splash.png",
     resizeMode: "contain",

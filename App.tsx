@@ -4,6 +4,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 import { RootNavigator } from '@/navigation';
 import { useAuthStore } from '@/stores/authStore';
+import { useFonts } from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -12,21 +14,31 @@ export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const { isAuthenticated } = useAuthStore();
 
+  // Load your fonts
+  const [fontsLoaded] = useFonts({
+    Inter: require('./assets/fonts/Inter-VariableFont.ttf'),
+    ...Ionicons.font,
+  });
+
   useEffect(() => {
     async function prepare() {
       try {
-        // Load fonts, assets, or any other resources here
+        // Load any other resources here
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
         console.warn(e);
       } finally {
-        // Tell the application to render
-        setAppIsReady(true);
+        // Only set app ready if fonts are also loaded
+        if (fontsLoaded) {
+          setAppIsReady(true);
+        }
       }
     }
 
-    prepare();
-  }, []);
+    if (fontsLoaded) {
+      prepare();
+    }
+  }, [fontsLoaded]);
 
   const onLayoutRootView = React.useCallback(async () => {
     if (appIsReady) {

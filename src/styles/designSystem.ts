@@ -128,9 +128,9 @@ export const typography = {
   
   // Line Heights (unitless multipliers)
   lineHeight: {
-    tight: 1.2,    // Headings
-    normal: 1.5,   // Body text
-    relaxed: 1.75, // Larger blocks of text
+    tight: 12,    // Headings
+    normal: 15,   // Body text
+    relaxed: 17, // Larger blocks of text
   },
   
   // Letter Spacing
