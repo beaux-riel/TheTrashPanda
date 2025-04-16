@@ -68,3 +68,8 @@ coverage/
 
 # Wireframes
 wireframes/
+
+
+.history/
+.vscode
+
