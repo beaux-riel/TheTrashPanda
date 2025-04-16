@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { theme } from '@/styles/designSystem';
+import { createShadow } from '@/utils/shadowUtils';
 
 export default function HomeScreen() {
   return (
@@ -178,11 +179,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borders.radius.full,
     paddingHorizontal: theme.spacing[4],
     paddingVertical: theme.spacing[3],
-    shadowColor: theme.colors.neutral.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    ...createShadow(theme.colors.neutral.black, 0, 2, 0.1, 4, 2),
   },
   searchText: {
     marginLeft: theme.spacing[2],
@@ -218,11 +215,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.neutral.white,
     borderRadius: theme.borders.radius.lg,
     marginRight: theme.spacing[4],
-    shadowColor: theme.colors.neutral.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    ...createShadow(theme.colors.neutral.black, 0, 2, 0.1, 4, 2),
     overflow: 'hidden',
   },
   farmImage: {
@@ -273,11 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.neutral.white,
     borderRadius: theme.borders.radius.lg,
     marginBottom: theme.spacing[4],
-    shadowColor: theme.colors.neutral.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    ...createShadow(theme.colors.neutral.black, 0, 2, 0.1, 4, 2),
     overflow: 'hidden',
   },
   productImage: {
