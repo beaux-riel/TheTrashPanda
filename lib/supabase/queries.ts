@@ -483,6 +483,8 @@ const KNOWN_CATEGORIES = new Set([
   "Other"
 ]);
 
+const KNOWN_QUANTITIES = new Set(["plenty", "some", "last_few"]);
+
 function validateListingFields(input: CreateListingInput): {
   title: string;
   description: string | null;
@@ -499,6 +501,10 @@ function validateListingFields(input: CreateListingInput): {
 
   if (!KNOWN_CATEGORIES.has(input.category)) {
     throw new Error(`Unknown listing category: ${input.category}`);
+  }
+
+  if (!KNOWN_QUANTITIES.has(input.quantity)) {
+    throw new Error(`Unknown listing quantity: ${input.quantity}`);
   }
 
   const priceLabel = input.price_label?.trim() ? input.price_label.trim() : null;

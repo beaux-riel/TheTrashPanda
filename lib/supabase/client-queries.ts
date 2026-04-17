@@ -50,6 +50,8 @@ const KNOWN_CATEGORIES = new Set([
   "Other"
 ]);
 
+const KNOWN_QUANTITIES = new Set(["plenty", "some", "last_few"]);
+
 function validateListingInput(input: ClientCreateListingInput) {
   const title = (input.title ?? "").trim();
   if (!title) throw new Error("Listing title is required.");
@@ -62,6 +64,10 @@ function validateListingInput(input: ClientCreateListingInput) {
 
   if (!KNOWN_CATEGORIES.has(input.category)) {
     throw new Error(`Unknown listing category: ${input.category}`);
+  }
+
+  if (!KNOWN_QUANTITIES.has(input.quantity)) {
+    throw new Error(`Unknown listing quantity: ${input.quantity}`);
   }
 
   const priceLabel = input.price_label?.trim() ?? null;
