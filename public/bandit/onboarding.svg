@@ -1,0 +1,19 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit onboarding</title>
+  <rect width="320" height="320" rx="40" fill="#F5F0E8"/>
+  <path d="M40 220C92 170 164 156 280 160V240H40V220Z" fill="#D5E4CE"/>
+  <path d="M192 70C222.928 70 248 95.0721 248 126V190H136V126C136 95.0721 161.072 70 192 70Z" fill="#76706A"/>
+  <path d="M156 72L178 100H144L156 72Z" fill="#2D2A26"/>
+  <path d="M228 72L206 100H240L228 72Z" fill="#2D2A26"/>
+  <ellipse cx="192" cy="138" rx="24" ry="18" fill="#F5F0E8"/>
+  <circle cx="180" cy="134" r="5" fill="#2D2A26"/>
+  <circle cx="204" cy="134" r="5" fill="#2D2A26"/>
+  <path d="M192 144L197 152H187L192 144Z" fill="#2D2A26"/>
+  <path d="M132 178L110 204" stroke="#76706A" stroke-width="10" stroke-linecap="round"/>
+  <path d="M252 178L274 158" stroke="#76706A" stroke-width="10" stroke-linecap="round"/>
+  <rect x="54" y="86" width="86" height="112" rx="18" fill="#FFF9F2" stroke="#D8C8B3" stroke-width="6"/>
+  <circle cx="98" cy="120" r="18" fill="#DAA520"/>
+  <path d="M78 154H118" stroke="#3A5A40" stroke-width="8" stroke-linecap="round"/>
+  <path d="M78 174H118" stroke="#3A5A40" stroke-width="8" stroke-linecap="round"/>
+  <path d="M230 214C248 184 270 174 284 182C296 190 292 214 278 226C264 238 244 234 230 214Z" fill="#D94F30"/>
+</svg>

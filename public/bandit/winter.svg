@@ -1,0 +1,18 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit winter</title>
+  <rect width="320" height="320" rx="40" fill="#ECF2F5"/>
+  <ellipse cx="160" cy="264" rx="92" ry="20" fill="#DDE8EE"/>
+  <ellipse cx="160" cy="150" rx="58" ry="46" fill="#6E6660"/>
+  <path d="M118 98L140 122H106L118 98Z" fill="#2D2A26"/>
+  <path d="M202 98L180 122H214L202 98Z" fill="#2D2A26"/>
+  <rect x="122" y="102" width="76" height="24" rx="12" fill="#C24C32"/>
+  <path d="M126 104C126 88 142 76 160 76C178 76 194 88 194 104" stroke="#C24C32" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="160" cy="170" rx="24" ry="18" fill="#F5F0E8"/>
+  <circle cx="148" cy="166" r="5" fill="#2D2A26"/>
+  <circle cx="172" cy="166" r="5" fill="#2D2A26"/>
+  <rect x="116" y="198" width="88" height="50" rx="24" fill="#6B8EA8"/>
+  <rect x="82" y="210" width="26" height="34" rx="8" fill="#C7924A"/>
+  <rect x="214" y="202" width="24" height="42" rx="8" fill="#E0C26F"/>
+  <circle cx="70" cy="88" r="6" fill="#6B8EA8"/>
+  <circle cx="248" cy="104" r="8" fill="#9CB6C8"/>
+</svg>

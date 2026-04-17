@@ -42,31 +42,31 @@
 - [ ] Create empty states with Bandit illustrations
 
 ## Phase 5: Following & Notifications
-- [ ] Build follow/unfollow producer functionality
-- [ ] Implement follow categories
-- [ ] Set up Web Push API integration
-- [ ] Create notification permission request flow
-- [ ] Build in-app notification centre
-- [ ] Implement notification preferences (immediate/daily/off)
-- [ ] Create push notification content with brand voice
+- [x] Build follow/unfollow producer functionality
+- [x] Implement follow categories
+- [x] Set up Web Push API integration
+- [x] Create notification permission request flow
+- [x] Build in-app notification centre
+- [x] Implement notification preferences (immediate/daily/off)
+- [x] Create push notification content with brand voice
 
 ## Phase 6: Producer Dashboard
-- [ ] Build dashboard overview (active listings, followers, views)
-- [ ] Create quick post shortcut
-- [ ] Build listing management view
-- [ ] Implement follower list
-- [ ] Add basic analytics (listing views, popular items)
-- [ ] Create operating schedule editor
+- [x] Build dashboard overview (active listings, followers, views)
+- [x] Create quick post shortcut
+- [x] Build listing management view
+- [x] Implement follower list
+- [x] Add basic analytics (listing views, popular items)
+- [x] Create operating schedule editor
 
 ## Phase 7: Brand & Polish
-- [ ] Create Bandit SVG illustrations (loading, empty, error, onboarding, seasonal)
-- [ ] Implement seasonal theming (colour shifts based on month)
-- [ ] Write all microcopy in brand voice
-- [ ] Build custom 404 page
-- [ ] Build custom error page
-- [ ] Add micro-interactions (follow animation, listing posted celebration)
-- [ ] Ensure WCAG 2.1 AA compliance
-- [ ] Add alt text to all illustrations
-- [ ] Implement prefers-reduced-motion support
-- [ ] SEO: OpenGraph tags, server-rendered listing pages
-- [ ] Performance audit: target Lighthouse 90+
+- [x] Create Bandit SVG illustrations (loading, empty, error, onboarding, seasonal)
+- [x] Implement seasonal theming (colour shifts based on month)
+- [x] Write all microcopy in brand voice
+- [x] Build custom 404 page
+- [x] Build custom error page
+- [x] Add micro-interactions (follow animation, listing posted celebration)
+- [x] Ensure WCAG 2.1 AA compliance
+- [x] Add alt text to all illustrations
+- [x] Implement prefers-reduced-motion support
+- [x] SEO: OpenGraph tags, server-rendered listing pages
+- [x] Performance audit: target Lighthouse 90+

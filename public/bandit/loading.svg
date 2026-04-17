@@ -1,0 +1,20 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit loading</title>
+  <rect width="320" height="320" rx="40" fill="#F5F0E8"/>
+  <ellipse cx="157" cy="264" rx="86" ry="24" fill="#E4D8C8"/>
+  <path d="M86 208C86 168.235 118.235 136 158 136C197.765 136 230 168.235 230 208V216H86V208Z" fill="#3A5A40"/>
+  <ellipse cx="158" cy="152" rx="68" ry="54" fill="#6E6660"/>
+  <circle cx="132" cy="148" r="12" fill="#2D2A26"/>
+  <circle cx="184" cy="148" r="12" fill="#2D2A26"/>
+  <path d="M112 94L138 120H102L112 94Z" fill="#2D2A26"/>
+  <path d="M206 94L180 120H216L206 94Z" fill="#2D2A26"/>
+  <ellipse cx="158" cy="174" rx="28" ry="20" fill="#F5F0E8"/>
+  <circle cx="145" cy="168" r="5" fill="#2D2A26"/>
+  <circle cx="171" cy="168" r="5" fill="#2D2A26"/>
+  <path d="M158 174L164 182H152L158 174Z" fill="#2D2A26"/>
+  <rect x="86" y="196" width="144" height="20" rx="10" fill="#2D2A26"/>
+  <rect x="84" y="212" width="148" height="50" rx="22" fill="#8A7F76"/>
+  <rect x="104" y="224" width="108" height="22" rx="11" fill="#DAA520"/>
+  <path d="M116 244L132 212" stroke="#D94F30" stroke-width="8" stroke-linecap="round"/>
+  <path d="M198 244L184 214" stroke="#D94F30" stroke-width="8" stroke-linecap="round"/>
+</svg>

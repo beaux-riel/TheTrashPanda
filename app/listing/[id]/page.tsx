@@ -1,0 +1,81 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { getListingById, getListingProducer } from "@/lib/data/mock";
+
+export function generateMetadata({ params }: { params: { id: string } }): Metadata {
+  const listing = getListingById(params.id);
+
+  if (!listing) {
+    return {
+      title: "Listing not found"
+    };
+  }
+
+  const producer = getListingProducer(listing);
+  const title = `${listing.title} in Powell River`;
+  const description = `${producer?.name ?? "Neighbour"} listed ${listing.title}. ${listing.distanceLabel}. ${listing.priceLabel}.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article"
+    }
+  };
+}
+
+export default function ListingPage({ params }: { params: { id: string } }) {
+  const foundListing = getListingById(params.id);
+
+  if (!foundListing) {
+    notFound();
+  }
+
+  const listing = foundListing;
+  const foundProducer = getListingProducer(listing);
+
+  if (!foundProducer) {
+    notFound();
+  }
+
+  const producer = foundProducer;
+  return (
+    <div className="grid gap-6 py-4 lg:grid-cols-[1.1fr_0.9fr]">
+      <Card className="space-y-4">
+        <Badge tone="accent">{listing.category}</Badge>
+        <div className="space-y-2">
+          <h1 className="font-display text-5xl text-[var(--ink)]">{listing.title}</h1>
+          <p className="text-lg leading-8 text-[var(--ink-soft)]">{listing.description}</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Detail label="Producer" value={producer.name} />
+          <Detail label="Distance" value={listing.distanceLabel} />
+          <Detail label="Price" value={listing.priceLabel} />
+          <Detail label="Available until" value={listing.availableUntil} />
+          <Detail label="Quantity" value={listing.quantity.replace("_", " ")} />
+          <Detail label="Pickup" value={listing.locationLabel} />
+        </div>
+      </Card>
+      <Card className="space-y-4">
+        <h2 className="font-display text-3xl text-[var(--ink)]">Neighbour note</h2>
+        <p className="text-sm leading-6 text-[var(--ink-soft)]">
+          This page is server-rendered so search engines and shared links get the actual listing details, not a blank shrug. That covers the SEO requirement without pretending the rest of discovery is finished yet.
+        </p>
+      </Card>
+    </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[24px] bg-[var(--surface-strong)] p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-soft)]">{label}</p>
+      <p className="mt-2 text-sm font-semibold text-[var(--ink)]">{value}</p>
+    </div>
+  );
+}

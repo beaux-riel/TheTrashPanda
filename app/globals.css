@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #2d2a26;
+  --ink-soft: #5f564d;
+  --surface: rgba(255, 252, 247, 0.88);
+  --surface-strong: rgba(232, 223, 211, 0.76);
+  --border: rgba(45, 42, 38, 0.12);
+  --accent: #d94f30;
+  --accent-ink: #fff8f4;
+  --forest: #3a5a40;
+  --honey: #daa520;
+  --page: #f5f0e8;
+}
+
+html[data-season="spring"] {
+  --accent: #d94f30;
+  --accent-ink: #fff7f2;
+  --forest: #3a5a40;
+  --honey: #daa520;
+  --page: #f1f5eb;
+}
+
+html[data-season="summer"] {
+  --accent: #cb4b2d;
+  --accent-ink: #fff7f0;
+  --forest: #546a31;
+  --honey: #f0bc4a;
+  --page: #fbf1df;
+}
+
+html[data-season="fall"] {
+  --accent: #b9572e;
+  --accent-ink: #fff9f4;
+  --forest: #5f5b35;
+  --honey: #c7924a;
+  --page: #f7ede4;
+}
+
+html[data-season="winter"] {
+  --accent: #c24c32;
+  --accent-ink: #fff7f3;
+  --forest: #4a5d6a;
+  --honey: #d3a258;
+  --page: #eef2f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--honey) 18%, transparent), transparent 28%),
+    radial-gradient(circle at bottom right, color-mix(in srgb, var(--forest) 16%, transparent), transparent 24%),
+    var(--page);
+  color: var(--ink);
+  font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 22%, white);
+}
+
+.font-display {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

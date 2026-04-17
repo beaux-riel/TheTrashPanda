@@ -1,0 +1,16 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit empty state</title>
+  <rect width="320" height="320" rx="40" fill="#F5F0E8"/>
+  <rect x="62" y="202" width="196" height="18" rx="9" fill="#C9B7A1"/>
+  <rect x="90" y="126" width="140" height="96" rx="24" fill="#FFF9F2" stroke="#D8C8B3" stroke-width="6" stroke-dasharray="12 12"/>
+  <ellipse cx="160" cy="258" rx="76" ry="18" fill="#E6DACB"/>
+  <ellipse cx="160" cy="146" rx="60" ry="48" fill="#6E6660"/>
+  <path d="M116 98L138 118H104L116 98Z" fill="#2D2A26"/>
+  <path d="M204 98L182 118H216L204 98Z" fill="#2D2A26"/>
+  <ellipse cx="160" cy="168" rx="24" ry="18" fill="#F5F0E8"/>
+  <circle cx="148" cy="164" r="5" fill="#2D2A26"/>
+  <circle cx="172" cy="164" r="5" fill="#2D2A26"/>
+  <path d="M150 182C154 178 166 178 170 182" stroke="#2D2A26" stroke-width="4" stroke-linecap="round"/>
+  <path d="M104 204L86 226" stroke="#6E6660" stroke-width="10" stroke-linecap="round"/>
+  <path d="M216 204L234 226" stroke="#6E6660" stroke-width="10" stroke-linecap="round"/>
+</svg>

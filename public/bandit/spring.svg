@@ -1,0 +1,17 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit spring</title>
+  <rect width="320" height="320" rx="40" fill="#EEF5E8"/>
+  <ellipse cx="160" cy="264" rx="88" ry="20" fill="#DCE8D5"/>
+  <ellipse cx="160" cy="144" rx="58" ry="46" fill="#6E6660"/>
+  <path d="M118 92L140 118H106L118 92Z" fill="#2D2A26"/>
+  <path d="M202 92L180 118H214L202 92Z" fill="#2D2A26"/>
+  <ellipse cx="160" cy="166" rx="24" ry="18" fill="#F5F0E8"/>
+  <circle cx="148" cy="162" r="5" fill="#2D2A26"/>
+  <circle cx="172" cy="162" r="5" fill="#2D2A26"/>
+  <rect x="118" y="192" width="84" height="54" rx="24" fill="#819E5A"/>
+  <path d="M106 214L90 250" stroke="#6E6660" stroke-width="10" stroke-linecap="round"/>
+  <path d="M214 214L230 250" stroke="#6E6660" stroke-width="10" stroke-linecap="round"/>
+  <path d="M244 208C246 192 258 182 270 182C282 182 294 192 296 208" stroke="#79A86A" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="62" cy="92" r="8" fill="#DAA520"/>
+  <circle cx="84" cy="76" r="8" fill="#D94F30"/>
+</svg>
