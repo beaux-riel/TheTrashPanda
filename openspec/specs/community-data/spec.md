@@ -1,7 +1,7 @@
 # Community Intelligence
 
 ## Purpose
-The brain behind HarvestLink — and the foundation for Le-WM integration. Every listing, search, and interaction generates data that, when aggregated and anonymized, paints a picture of the community's food ecosystem. This is Phase 2 functionality, but the data collection begins from day one.
+The brain behind HarvestLink — and the foundation for Le-WM (LeCun World Model) integration. Every listing, search, follow, and interaction generates an event stream that, when aggregated, builds an internal model of how the community's food ecosystem actually works — predicting state changes before they happen. This is NOT Phase 2. The data collection and event architecture are DAY ONE infrastructure. The analytics dashboards come later, but the event pipeline ships with MVP.
 
 ## Requirements
 
@@ -87,12 +87,31 @@ The system SHALL provide a public community dashboard accessible without login, 
 - AND the data tells a story: "Powell River has 34 active food producers serving 200+ regular users"
 - AND Bandit provides seasonal commentary
 
-### Requirement: Le-WM integration readiness
-The system SHALL store data in a format compatible with world model training. Event streams SHALL include temporal, spatial, and categorical dimensions.
+### Requirement: Le-WM event pipeline (Day One)
+The system SHALL emit structured events for every state change in the food network. Events SHALL be stored in an append-only event log from launch day. The event schema SHALL include temporal, spatial, categorical, and relational dimensions suitable for world model training.
 
-#### Scenario: Data export for Le-WM
-- GIVEN the Le-WM system needs training data
-- WHEN a data export is requested
-- THEN anonymized event streams are available in a structured format
-- AND each event includes: timestamp, category, area hash, event type (listed/searched/gone), quantity signal
-- AND the export covers configurable time ranges
+#### Scenario: Listing lifecycle events
+- GIVEN a producer creates, updates, marks gone, or lets a listing expire
+- WHEN the state change occurs
+- THEN an event is emitted: {type: 'listing.*', timestamp, category, area_hash, quantity_before, quantity_after, time_to_gone_ms, producer_hash, season}
+- AND the event is written to the events table in real-time
+- AND no personally identifiable information is included
+
+#### Scenario: Demand signal events
+- GIVEN a consumer searches, filters, views a listing, or follows a category
+- WHEN the interaction occurs
+- THEN an event is emitted: {type: 'demand.*', timestamp, query/category, area_hash, result_count, session_hash}
+- AND zero-result searches are flagged as unmet demand signals
+
+#### Scenario: Temporal pattern extraction
+- GIVEN 30+ days of event data exist
+- WHEN the Le-WM pipeline processes the event log
+- THEN it can extract: weekly posting rhythms, seasonal availability curves, demand/supply correlation, producer reliability patterns
+- AND the data is queryable by time range, category, and area
+
+#### Scenario: Event log export
+- GIVEN an external system or analysis tool needs the event data
+- WHEN an export is requested via API
+- THEN anonymized event streams are available in JSONL format
+- AND each event includes all dimensions needed for world model training
+- AND the export supports configurable time ranges and filters

@@ -131,13 +131,20 @@ harvestlink/
 - subscription (jsonb — web push subscription object)
 - created_at
 
-### search_signals (for future community data)
+### events (Le-WM event pipeline — Day One)
 - id (uuid, PK)
-- query (text)
-- category_match (text, nullable)
-- area_hash (text — anonymized location)
-- result_count (integer)
-- created_at
+- type (text — 'listing.created', 'listing.updated', 'listing.gone', 'listing.expired', 'demand.search', 'demand.filter', 'demand.view', 'demand.follow', 'follow.created', 'follow.removed')
+- category (text, nullable)
+- area_hash (text — geohash of anonymized location)
+- season (text — 'spring', 'summer', 'fall', 'winter')
+- data (jsonb — event-specific payload: quantity_before/after, time_to_gone_ms, result_count, query, etc.)
+- producer_hash (text, nullable — anonymized producer identifier)
+- session_hash (text, nullable — anonymized session identifier)
+- created_at (timestamptz, indexed)
+
+### search_signals (view on events table, filtered to demand.search)
+- Materialized from events where type = 'demand.search'
+- Provides backward-compatible query interface
 
 ## Key Decisions
 - **Tailwind CSS** for styling — fast, responsive, customizable
