@@ -4,15 +4,16 @@ import { BanditIllustration } from "@/components/brand/bandit-illustration";
 import { HomeDiscovery } from "@/components/discovery/home-discovery";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
-import { buildCommunitySnapshot } from "@/lib/data/mock";
 import { getListingsData, getProducersData } from "@/lib/data/bridge";
+import { getSeasonFromDate } from "@/lib/utils/season";
 
 export default async function HomePage() {
   const [listings, producers] = await Promise.all([
     getListingsData(),
     getProducersData()
   ]);
-  const snapshot = buildCommunitySnapshot();
+  const activeCount = listings.filter((l) => l.status === "active").length;
+  const season = getSeasonFromDate();
 
   return (
     <div className="space-y-8 py-4">
@@ -37,13 +38,13 @@ export default async function HomePage() {
             </Link>
           </div>
           <dl className="grid gap-4 pt-4 sm:grid-cols-3">
-            <Stat label="Active listings" value={snapshot.activeListings.toString()} />
-            <Stat label="Producers on watch" value={producers.length.toString()} />
-            <Stat label="Season vibe" value={snapshot.season} />
+            <Stat label="Active listings" value={activeCount.toString()} />
+            <Stat label="Producers" value={producers.length.toString()} />
+            <Stat label="Season vibe" value={season} />
           </dl>
         </div>
         <div className="rounded-[36px] border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-6 shadow-card">
-          <BanditIllustration variant={snapshot.season} priority />
+          <BanditIllustration variant={season} priority />
           <p className="mt-4 text-sm leading-6 text-[var(--ink-soft)]">
             Bandit changes outfits with the season, stays accessible, and shows up in loading, onboarding, empty, error, and 404 states.
           </p>

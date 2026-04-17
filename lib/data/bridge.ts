@@ -20,6 +20,7 @@ import {
   getListings as supaGetListings,
   getListingById as supaGetListingById,
   getProducer as supaGetProducer,
+  getProducersList as supaGetProducers,
   type ListingWithProducer
 } from "../supabase/queries";
 
@@ -165,8 +166,32 @@ export async function getProducerData(
 }
 
 export async function getProducersData(): Promise<Producer[]> {
-  // For now, always use mock producers — Supabase profiles query would need
-  // a filter for is_producer=true. Add when we have real producers.
+  if (isSupabaseConfigured()) {
+    try {
+      const rows = await supaGetProducers();
+      if (rows.length > 0) {
+        return rows.map((row) => {
+          const coords = row.location as { coordinates?: [number, number] } | null;
+          return {
+            id: row.id,
+            slug: row.display_name?.toLowerCase().replace(/\s+/g, "-") ?? row.id,
+            name: row.display_name ?? "Unknown",
+            bio: row.bio ?? "",
+            categories: row.categories ?? [],
+            locationLabel: row.location_label ?? "",
+            lat: coords?.coordinates?.[1] ?? 0,
+            lng: coords?.coordinates?.[0] ?? 0,
+            pickupDetails: row.pickup_details ?? "",
+            scheduleSummary: row.schedule_summary ?? "",
+            followerCount: 0,
+            activeListingIds: []
+          };
+        });
+      }
+    } catch {
+      // Fall through to mock
+    }
+  }
   return [...mockProducers];
 }
 

@@ -233,6 +233,21 @@ export async function markListingGone(
 // producers / profiles
 // ---------------------------------------------------------------------------
 
+export async function getProducersList(
+  client?: HL | null
+): Promise<ProfileRow[]> {
+  const supabase = resolveClient(client);
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("is_producer", true)
+    .order("display_name");
+  if (error) throw error;
+  return (data as ProfileRow[]) ?? [];
+}
+
 export async function getProducer(
   idOrSlug: string,
   client?: HL | null

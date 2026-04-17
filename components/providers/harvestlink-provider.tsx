@@ -19,8 +19,8 @@ import {
   initialFollows,
   initialNotifications,
   initialSchedule,
-  listings,
-  producers,
+  listings as mockListings,
+  producers as mockProducers,
   type Follow,
   type Listing,
   type NotificationFrequency,
@@ -28,6 +28,7 @@ import {
   type PermissionState,
   type ScheduleSlot
 } from "@/lib/data/mock";
+import { fetchListingsClient, fetchProducersClient } from "@/lib/data/client-bridge";
 import {
   createCategoryNotificationCopy,
   createProducerNotificationCopy
@@ -45,7 +46,7 @@ type PromptContext = {
 
 type HarvestLinkContextValue = {
   season: ReturnType<typeof getSeasonFromDate>;
-  producers: typeof producers;
+  producers: typeof mockProducers;
   listings: Listing[];
   follows: Follow[];
   notifications: NotificationItem[];
@@ -55,7 +56,7 @@ type HarvestLinkContextValue = {
   unreadCount: number;
   promptContext: PromptContext;
   celebrationMessage: string | null;
-  dashboardProducer: (typeof producers)[0];
+  dashboardProducer: (typeof mockProducers)[0];
   communitySnapshot: ReturnType<typeof buildCommunitySnapshot>;
   isFollowingProducer: (producerId: string) => boolean;
   isFollowingCategory: (category: string) => boolean;
@@ -110,7 +111,8 @@ function writeStoredState<T>(key: string, value: T) {
 export function HarvestLinkProvider({ children }: { children: ReactNode }) {
   const [follows, setFollows] = useState<Follow[]>(initialFollows);
   const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
-  const [dashboardListings, setDashboardListings] = useState<Listing[]>(listings);
+  const [dashboardListings, setDashboardListings] = useState<Listing[]>(mockListings);
+  const [allProducers, setAllProducers] = useState(mockProducers);
   const [schedule, setSchedule] = useState<ScheduleSlot[]>(initialSchedule);
   const [notificationPermission, setNotificationPermission] = useState<PermissionState>("default");
   const [promptContext, setPromptContext] = useState<PromptContext>(null);
@@ -119,7 +121,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setFollows(readStoredState(FOLLOWS_KEY, initialFollows));
     setNotifications(readStoredState(NOTIFICATIONS_KEY, initialNotifications));
-    setDashboardListings(readStoredState(LISTINGS_KEY, listings));
+    setDashboardListings(readStoredState(LISTINGS_KEY, mockListings));
     setSchedule(readStoredState(SCHEDULE_KEY, initialSchedule));
 
     if (typeof window !== "undefined" && "Notification" in window) {
@@ -127,6 +129,18 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
     } else {
       setNotificationPermission("unsupported");
     }
+
+    // Fetch live data from Supabase (falls back to mock via client-bridge)
+    fetchListingsClient().then((live) => {
+      if (live.length > 0) {
+        setDashboardListings(live);
+        writeStoredState(LISTINGS_KEY, live);
+      }
+    }).catch(() => { /* mock data already loaded */ });
+
+    fetchProducersClient().then((live) => {
+      if (live.length > 0) setAllProducers(live);
+    }).catch(() => { /* mock data already loaded */ });
   }, []);
 
   useEffect(() => {
@@ -146,12 +160,12 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
   }, [schedule]);
 
   const unreadCount = notifications.filter((item) => item.unread).length;
-  const dashboardProducer = producers[0];
+  const dashboardProducer = allProducers[0];
 
   const value = useMemo<HarvestLinkContextValue>(
     () => ({
       season: getSeasonFromDate(),
-      producers,
+      producers: allProducers,
       listings: dashboardListings,
       follows,
       notifications,
@@ -167,7 +181,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
       isFollowingCategory: (category) =>
         follows.some((follow) => follow.category?.toLowerCase() === category.toLowerCase()),
       toggleProducerFollow: (producerId) => {
-        const producer = producers.find((item) => item.id === producerId);
+        const producer = allProducers.find((item) => item.id === producerId);
         if (!producer) {
           return;
         }
@@ -379,6 +393,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
       dismissCelebration: () => setCelebrationMessage(null)
     }),
     [
+      allProducers,
       celebrationMessage,
       dashboardListings,
       follows,
