@@ -7,17 +7,19 @@ import { useHarvestLink } from "@/hooks/use-harvestlink";
 
 export function CategoryFollowButton({ category }: { category: string }) {
   const { isFollowingCategory, toggleCategoryFollow } = useHarvestLink();
-  const [animate, setAnimate] = useState(false);
+  const [busy, setBusy] = useState(false);
   const following = isFollowingCategory(category);
 
   return (
     <Button
-      className={animate ? "motion-safe:animate-peek" : undefined}
+      className={busy ? "motion-safe:animate-peek" : undefined}
       variant={following ? "secondary" : "primary"}
+      disabled={busy}
       onClick={() => {
-        setAnimate(true);
+        if (busy) return;
+        setBusy(true);
         toggleCategoryFollow(category);
-        window.setTimeout(() => setAnimate(false), 500);
+        window.setTimeout(() => setBusy(false), 500);
       }}
     >
       {following ? `Watching ${category}` : `Follow ${category}`}

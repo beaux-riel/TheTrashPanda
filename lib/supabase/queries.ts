@@ -1,10 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { createBrowserSupabaseClient } from "./client";
-import {
-  createServerSupabaseClient,
-  createServiceSupabaseClient
-} from "./server";
 import type {
   Database,
   EventInsert,
@@ -25,14 +21,23 @@ type HL = SupabaseClient<Database>;
 // ---------------------------------------------------------------------------
 // client resolution
 // Prefer whichever context the caller is in — server components / route handlers
-// hit createServerSupabaseClient, the browser hits createBrowserSupabaseClient.
+// hit createServerSupabaseClient (loaded lazily so this module stays client-safe),
+// the browser hits createBrowserSupabaseClient.
 // ---------------------------------------------------------------------------
 function resolveClient(explicit?: HL | null): HL | null {
   if (explicit) return explicit;
   if (typeof window === "undefined") {
+    // Lazy load the server module so importing this file from a client
+    // component doesn't drag "next/headers" into the client bundle.
+    const { createServerSupabaseClient } = require("./server") as typeof import("./server");
     return createServerSupabaseClient();
   }
   return createBrowserSupabaseClient();
+}
+
+function serviceClient() {
+  const { createServiceSupabaseClient } = require("./server") as typeof import("./server");
+  return createServiceSupabaseClient();
 }
 
 // ---------------------------------------------------------------------------
@@ -174,20 +179,23 @@ export async function createListing(
   const supabase = resolveClient(client);
   if (!supabase) return null;
 
+  const { title, description, priceLabel } = validateListingFields(input);
+
   // Build the insert payload; the location geography is only settable via SQL
   // string (PostgREST accepts WKT for geography columns).
   const row: Record<string, unknown> = {
     producer_id: input.producer_id,
-    title: input.title,
-    description: input.description ?? null,
+    title,
+    description,
     category: input.category,
     quantity: input.quantity,
-    price_label: input.price_label ?? null,
-    location_label: input.location_label ?? null,
+    price_label: priceLabel,
+    location_label: input.location_label?.trim() || null,
     photos: input.photos ?? [],
     available_until: input.available_until ?? null
   };
-  if (input.lng != null && input.lat != null) {
+  if (input.lng != null || input.lat != null) {
+    assertLngLat(input.lng, input.lat);
     row.location = `SRID=4326;POINT(${input.lng} ${input.lat})`;
   }
 
@@ -297,20 +305,22 @@ export async function toggleFollow(
   const supabase = resolveClient(client);
   if (!supabase) return { action: "removed", row: null };
 
-  const matchQuery = supabase
+  let matchQuery = supabase
     .from("follows")
     .select("*")
     .eq("follower_id", userId)
     .eq("follow_type", target.type)
     .limit(1);
 
-  if (target.type === "producer") matchQuery.eq("producer_id", target.producerId);
-  if (target.type === "category") matchQuery.eq("category", target.category);
+  // Fix: the original code called .eq() on the builder without reassigning,
+  // so producer/category narrowing was silently dropped.
+  if (target.type === "producer") matchQuery = matchQuery.eq("producer_id", target.producerId);
+  if (target.type === "category") matchQuery = matchQuery.eq("category", target.category);
 
   const { data: existing } = await matchQuery.maybeSingle();
 
   if (existing) {
-    await supabase.from("follows").delete().eq("id", existing.id);
+    await supabase.from("follows").delete().eq("id", (existing as FollowRow).id);
     void logEvent("follow.removed", {
       category: (existing as FollowRow).category,
       metadata: { followType: (existing as FollowRow).follow_type }
@@ -326,6 +336,14 @@ export async function toggleFollow(
   if (target.type === "producer") insert.producer_id = target.producerId;
   if (target.type === "category") insert.category = target.category;
   if (target.type === "area") {
+    assertLngLat(target.areaLng, target.areaLat);
+    if (
+      typeof target.radiusKm !== "number" ||
+      !Number.isFinite(target.radiusKm) ||
+      target.radiusKm <= 0
+    ) {
+      throw new Error("Follow area radius must be a positive number.");
+    }
     insert.area_center = `SRID=4326;POINT(${target.areaLng} ${target.areaLat})`;
     insert.area_radius_km = target.radiusKm;
   }
@@ -335,7 +353,14 @@ export async function toggleFollow(
     .insert(insert as never)
     .select("*")
     .single();
-  if (error) throw error;
+  if (error) {
+    // Race window: unique-index violation means a concurrent toggle already
+    // inserted the row. Treat as "already following" instead of failing.
+    if ((error as { code?: string }).code === "23505") {
+      return { action: "added", row: null };
+    }
+    throw error;
+  }
 
   const row = data as FollowRow;
   void logEvent("follow.created", {
@@ -391,7 +416,7 @@ export async function createNotification(params: {
   href?: string | null;
   kind: NotificationKind;
 }) {
-  const supabase = createServiceSupabaseClient();
+  const supabase = serviceClient();
   if (!supabase) return;
   await supabase.from("notifications").insert({
     user_id: params.userId,
@@ -436,6 +461,68 @@ export async function logEvent(type: EventType, input: LogEventInput = {}): Prom
 // ---------------------------------------------------------------------------
 // helpers
 // ---------------------------------------------------------------------------
+
+// Guards for anything we shove into a WKT POINT string — never trust the
+// caller to hand us a number. Defensive because we're interpolating into SQL.
+function assertLngLat(lng: unknown, lat: unknown): asserts lng is number {
+  if (typeof lng !== "number" || !Number.isFinite(lng)) {
+    throw new Error("Longitude must be a finite number.");
+  }
+  if (typeof lat !== "number" || !Number.isFinite(lat)) {
+    throw new Error("Latitude must be a finite number.");
+  }
+  if (lng < -180 || lng > 180) {
+    throw new Error("Longitude must be between -180 and 180.");
+  }
+  if (lat < -90 || lat > 90) {
+    throw new Error("Latitude must be between -90 and 90.");
+  }
+}
+
+const KNOWN_CATEGORIES = new Set([
+  "Eggs",
+  "Produce",
+  "Baked Goods",
+  "Preserved",
+  "Dairy",
+  "Meat & Fish",
+  "Honey",
+  "Plants",
+  "Prepared Food",
+  "Other"
+]);
+
+const KNOWN_QUANTITIES = new Set(["plenty", "some", "last_few"]);
+
+function validateListingFields(input: CreateListingInput): {
+  title: string;
+  description: string | null;
+  priceLabel: string | null;
+} {
+  const title = (input.title ?? "").trim();
+  if (!title) throw new Error("Listing title is required.");
+  if (title.length > 200) throw new Error("Listing title must be 200 characters or fewer.");
+
+  const description = input.description?.trim() ? input.description.trim() : null;
+  if (description && description.length > 2000) {
+    throw new Error("Listing description must be 2000 characters or fewer.");
+  }
+
+  if (!KNOWN_CATEGORIES.has(input.category)) {
+    throw new Error(`Unknown listing category: ${input.category}`);
+  }
+
+  if (!KNOWN_QUANTITIES.has(input.quantity)) {
+    throw new Error(`Unknown listing quantity: ${input.quantity}`);
+  }
+
+  const priceLabel = input.price_label?.trim() ? input.price_label.trim() : null;
+  if (priceLabel && priceLabel.length > 100) {
+    throw new Error("Price label must be 100 characters or fewer.");
+  }
+
+  return { title, description, priceLabel };
+}
 
 // Haversine distance in meters. Sufficient for within-Powell-River filtering;
 // swap for ST_Distance in a SQL view if you need strict accuracy or volume.
@@ -493,7 +580,7 @@ export async function recordSignal(input: {
   metadata?: Json;
   recordedAt?: string;
 }): Promise<void> {
-  const supabase = createServiceSupabaseClient();
+  const supabase = serviceClient();
   if (!supabase) return;
   await supabase.from("external_signals").insert({
     signal_type: input.signalType,

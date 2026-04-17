@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { BanditIllustration } from "@/components/brand/bandit-illustration";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useAuth } from "@/lib/auth/auth-provider";
 import { categoryPalette, listings, producers } from "@/lib/data/mock";
 import {
   LOCATION_SUGGESTIONS,
@@ -14,8 +16,19 @@ import {
   getListingDistanceLabel,
   type UserLocation
 } from "@/lib/discovery";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 type OnboardingIntent = "consumer" | "producer" | "both";
+
+const ONBOARDING_DRAFT_KEY = "thetrashpanda.onboardingDraft";
+
+type OnboardingDraft = {
+  intent: OnboardingIntent | null;
+  location: UserLocation | null;
+  manualLocation: string;
+  producerCategories: string[];
+  bio: string;
+};
 
 const categoryEmoji: Record<string, string> = {
   Eggs: "🥚",
@@ -32,6 +45,8 @@ const categoryEmoji: Record<string, string> = {
 
 export default function OnboardingPage() {
   const allCategories = Object.keys(categoryPalette);
+  const router = useRouter();
+  const { user, isConfigured, status, refreshProfile } = useAuth();
   const [step, setStep] = useState(1);
   const [intent, setIntent] = useState<OnboardingIntent | null>(null);
   const [location, setLocation] = useState<UserLocation | null>(null);
@@ -39,6 +54,38 @@ export default function OnboardingPage() {
   const [producerCategories, setProducerCategories] = useState<string[]>([]);
   const [bio, setBio] = useState("");
   const [locating, setLocating] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Restore draft on mount (e.g., after the user signs in and comes back).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = window.localStorage.getItem(ONBOARDING_DRAFT_KEY);
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw) as OnboardingDraft;
+      if (draft.intent) setIntent(draft.intent);
+      if (draft.location) setLocation(draft.location);
+      if (draft.manualLocation) setManualLocation(draft.manualLocation);
+      if (draft.producerCategories?.length) setProducerCategories(draft.producerCategories);
+      if (draft.bio) setBio(draft.bio);
+    } catch {
+      /* ignore corrupt draft */
+    }
+  }, []);
+
+  // Keep the draft synced so a login round-trip doesn't lose the form.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const draft: OnboardingDraft = {
+      intent,
+      location,
+      manualLocation,
+      producerCategories,
+      bio
+    };
+    window.localStorage.setItem(ONBOARDING_DRAFT_KEY, JSON.stringify(draft));
+  }, [intent, location, manualLocation, producerCategories, bio]);
 
   const previewListings = useMemo(
     () =>
@@ -56,19 +103,77 @@ export default function OnboardingPage() {
   const isProducerFlow = intent === "producer" || intent === "both";
   const isLastSetupStep = isProducerFlow ? step === 3 : step === 2;
 
+  const persistOnboarding = async (): Promise<boolean> => {
+    // Unconfigured Supabase => demo mode; skip save and jump to preview.
+    if (!isConfigured) return true;
+
+    if (!user) {
+      // Kick the user to login, preserving their place.
+      router.push(`/auth/login?next=${encodeURIComponent("/onboarding")}`);
+      return false;
+    }
+
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) return true;
+
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const update: Record<string, unknown> = {
+        is_producer: isProducerFlow,
+        bio: bio.trim() || null,
+        categories: isProducerFlow ? producerCategories : [],
+        location_label: location?.label ?? (manualLocation.trim() || null)
+      };
+      if (location && Number.isFinite(location.lng) && Number.isFinite(location.lat)) {
+        update.location = `SRID=4326;POINT(${location.lng} ${location.lat})`;
+      }
+      const { error } = await supabase
+        .from("profiles")
+        .update(update as never)
+        .eq("id", user.id);
+      if (error) throw error;
+      await refreshProfile();
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem(ONBOARDING_DRAFT_KEY);
+      }
+      return true;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Couldn't save onboarding.";
+      setSaveError(message);
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const nextStep = () => {
     if (step === 1 && intent) {
       setStep(2);
       return;
     }
 
-    if (step === 2 && (!isProducerFlow || location || manualLocation.trim())) {
-      setStep(isProducerFlow ? 3 : 4);
+    if (step === 2 && !isProducerFlow && (location || manualLocation.trim())) {
+      // Consumer flow: step 2 is the last setup step — persist before the preview.
+      void (async () => {
+        if (status === "loading") return;
+        const ok = await persistOnboarding();
+        if (ok) setStep(4);
+      })();
+      return;
+    }
+
+    if (step === 2 && isProducerFlow && (location || manualLocation.trim())) {
+      setStep(3);
       return;
     }
 
     if (step === 3) {
-      setStep(4);
+      void (async () => {
+        if (status === "loading") return;
+        const ok = await persistOnboarding();
+        if (ok) setStep(4);
+      })();
     }
   };
 
@@ -281,16 +386,23 @@ export default function OnboardingPage() {
             ) : null}
 
             {step < 4 ? (
-              <div className="flex flex-wrap justify-between gap-3">
-                <Button variant="ghost" onClick={() => setStep((current) => Math.max(1, current - 1))} disabled={step === 1}>
-                  Back
-                </Button>
-                <Button
-                  onClick={nextStep}
-                  disabled={(step === 1 && !intent) || (step === 2 && !location && !manualLocation.trim()) || (step === 3 && !producerCategories.length)}
-                >
-                  {isLastSetupStep ? "You&apos;re in" : "Next"}
-                </Button>
+              <div className="space-y-2">
+                {saveError ? (
+                  <p className="text-sm text-[color:rgba(217,79,48,0.9)]">
+                    {saveError}
+                  </p>
+                ) : null}
+                <div className="flex flex-wrap justify-between gap-3">
+                  <Button variant="ghost" onClick={() => setStep((current) => Math.max(1, current - 1))} disabled={step === 1 || saving}>
+                    Back
+                  </Button>
+                  <Button
+                    onClick={nextStep}
+                    disabled={saving || (step === 1 && !intent) || (step === 2 && !location && !manualLocation.trim()) || (step === 3 && !producerCategories.length)}
+                  >
+                    {saving ? "Saving…" : isLastSetupStep ? "You're in" : "Next"}
+                  </Button>
+                </div>
               </div>
             ) : null}
           </div>

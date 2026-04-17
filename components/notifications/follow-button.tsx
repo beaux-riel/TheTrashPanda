@@ -7,20 +7,24 @@ import { useHarvestLink } from "@/hooks/use-harvestlink";
 
 export function FollowButton({ producerId, producerName }: { producerId: string; producerName: string }) {
   const { isFollowingProducer, toggleProducerFollow } = useHarvestLink();
-  const [animate, setAnimate] = useState(false);
+  const [busy, setBusy] = useState(false);
   const following = isFollowingProducer(producerId);
 
   return (
     <Button
-      className={animate ? "motion-safe:animate-peek" : undefined}
+      className={busy ? "motion-safe:animate-peek" : undefined}
+      disabled={busy}
       onClick={() => {
+        if (busy) return;
         if (following && !window.confirm(`Stop following ${producerName}? You won't get nudges when they post.`)) {
           return;
         }
 
-        setAnimate(true);
+        setBusy(true);
         toggleProducerFollow(producerId);
-        window.setTimeout(() => setAnimate(false), 500);
+        // Quick debounce — the optimistic toggle is synchronous; the DB call
+        // races behind it. 500ms is enough to absorb a double-click.
+        window.setTimeout(() => setBusy(false), 500);
       }}
     >
       {following ? "Following ✓" : "Follow this producer"}

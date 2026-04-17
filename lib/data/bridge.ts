@@ -103,8 +103,10 @@ export async function getListingsData(filters?: {
           : undefined
       });
       return rows.map(adaptListingRow);
-    } catch {
-      // Supabase failed — fall through to mock
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[bridge] getListings failed, falling back to mock", err);
+      }
     }
   }
 
@@ -121,8 +123,10 @@ export async function getListingData(id: string): Promise<Listing | null> {
       const row = await supaGetListingById(id);
       if (row) return adaptListingRow(row);
       return null;
-    } catch {
-      // Fall through
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[bridge] Supabase read failed, falling back to mock", err);
+      }
     }
   }
 
@@ -153,8 +157,10 @@ export async function getProducerData(
         };
       }
       return null;
-    } catch {
-      // Fall through
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[bridge] Supabase read failed, falling back to mock", err);
+      }
     }
   }
 
@@ -188,8 +194,10 @@ export async function getProducersData(): Promise<Producer[]> {
           };
         });
       }
-    } catch {
-      // Fall through to mock
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[bridge] getProducersList failed, falling back to mock", err);
+      }
     }
   }
   return [...mockProducers];
