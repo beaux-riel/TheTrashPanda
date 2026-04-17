@@ -13,7 +13,7 @@ import { useHarvestLink } from "@/hooks/use-harvestlink";
 const navItems = [
   { href: "/", label: "Explore", icon: "🗺️" },
   { href: "/producers", label: "Producers", icon: "🌱" },
-  { href: "/about/bandit", label: "Meet Bandit", icon: "🦝" },
+  { href: "/about/bandit", label: "Meet Bandit", icon: "" },
   { href: "/onboarding", label: "Get Started", icon: "👋" },
   { href: "/notifications", label: "Notifications", icon: "🔔", showBadge: true },
   { href: "/dashboard", label: "Dashboard", icon: "📋" },

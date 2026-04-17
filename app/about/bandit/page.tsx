@@ -41,7 +41,7 @@ export default function BanditPage() {
       <section className="grid gap-8 lg:grid-cols-[1fr_1fr] items-center">
         <div className="space-y-6">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
-            🦝 The mascot. The myth. The trash panda.
+            The mascot. The myth. The trash panda.
           </p>
           <h1 className="font-display text-6xl leading-[1.1] text-[var(--ink)]">
             Meet Bandit.

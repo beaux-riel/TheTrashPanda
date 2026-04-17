@@ -72,7 +72,7 @@ export default async function HomePage() {
             className="w-48 sm:w-56 lg:max-w-[320px] lg:w-auto"
           />
           <p className="text-center text-sm font-medium italic text-[var(--ink-soft)]">
-            🦝 {greeting}
+            {greeting}
           </p>
         </div>
       </section>

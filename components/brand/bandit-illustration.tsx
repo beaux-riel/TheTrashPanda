@@ -119,12 +119,12 @@ export function BanditIllustration({
   const imageName = variantImage[variant] ?? variantImage[getFallbackVariant(variant)];
 
   return (
-    <div className={cn("relative aspect-square w-full max-w-[320px]", className)}>
+    <div className={cn("relative aspect-square w-full max-w-[320px] overflow-hidden rounded-2xl", className)}>
       <Image
         src={`/images/bandit/${imageName}`}
         alt={altText[variant] ?? "Bandit the trash panda"}
         fill
-        className="object-contain"
+        className="object-cover"
         priority={priority}
         sizes="(max-width: 768px) 60vw, 320px"
         onError={(e) => {

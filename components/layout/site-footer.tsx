@@ -37,7 +37,7 @@ export function SiteFooter() {
           </Link>
           <span>·</span>
           <Link href="/about/bandit" className="hover:text-[var(--accent)] transition">
-            Meet Bandit 🦝
+            Meet Bandit
           </Link>
           <span>·</span>
           <span>© {year} The Trash Panda</span>

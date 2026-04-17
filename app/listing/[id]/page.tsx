@@ -77,7 +77,7 @@ export default async function ListingPage({ params }: { params: { id: string } }
           This page is server-rendered so search engines and shared links get the actual listing details, not a blank shrug. That covers the SEO requirement without pretending the rest of discovery is finished yet.
         </p>
         <p className="text-xs italic text-[var(--ink-soft)]">
-          🦝 Bandit says: support your neighbours. Every dollar spent local stays local.
+          Bandit says: support your neighbours. Every dollar spent local stays local.
         </p>
       </Card>
     </div>

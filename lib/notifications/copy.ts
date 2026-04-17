@@ -2,7 +2,7 @@ import type { Listing, Producer } from "@/lib/data/mock";
 
 export function createProducerNotificationCopy(producer: Producer, listing: Listing) {
   return {
-    title: `🦝 ${producer.name} just listed ${listing.title}`,
+    title: `${producer.name} just listed ${listing.title}`,
     body: `${listing.distanceLabel}. ${listing.quantity === "last_few" ? "Last few, so hustle." : "Worth a detour if your bag's empty."}`
   };
 }

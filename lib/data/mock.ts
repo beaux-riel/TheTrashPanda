@@ -744,7 +744,7 @@ export const initialFollows: Follow[] = [
 export const initialNotifications: NotificationItem[] = [
   {
     id: "notif-1",
-    title: "🦝 Blueberry Commons just posted green onions",
+    title: "Blueberry Commons just posted green onions",
     body: "The green onions are back. You know what to do.",
     href: "/listing/listing-green-onions",
     createdAt: "7 minutes ago",
