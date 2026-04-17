@@ -11,6 +11,7 @@ import {
   quantityLabels,
   type UserLocation
 } from "@/lib/discovery";
+import { escapeHtml } from "@/lib/utils/escape-html";
 
 const MAPBOX_VERSION = "v3.20.0";
 
@@ -228,15 +229,16 @@ export function HarvestLinkMap({
           }
 
           popupRef.current?.remove();
+          const props = feature.properties as Record<string, unknown>;
           popupRef.current = new mapboxgl.Popup({ offset: 16 })
             .setLngLat(feature.geometry.coordinates)
             .setHTML(
               `<article class="harvestlink-popup">
-                <p class="harvestlink-popup__eyebrow">${feature.properties.producerName}</p>
-                <a class="harvestlink-popup__title" href="${feature.properties.href}">${feature.properties.title}</a>
+                <p class="harvestlink-popup__eyebrow">${escapeHtml(props.producerName)}</p>
+                <a class="harvestlink-popup__title" href="${escapeHtml(props.href)}">${escapeHtml(props.title)}</a>
                 <div class="harvestlink-popup__meta">
-                  <span class="harvestlink-popup__badge">${feature.properties.quantityLabel}</span>
-                  <span>${feature.properties.distanceLabel}</span>
+                  <span class="harvestlink-popup__badge">${escapeHtml(props.quantityLabel)}</span>
+                  <span>${escapeHtml(props.distanceLabel)}</span>
                 </div>
               </article>`
             )
