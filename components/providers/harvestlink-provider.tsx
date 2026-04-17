@@ -29,6 +29,16 @@ import {
   type ScheduleSlot
 } from "@/lib/data/mock";
 import { fetchListingsClient, fetchProducersClient } from "@/lib/data/client-bridge";
+import { useAuth } from "@/lib/auth/auth-provider";
+import {
+  createListingClient,
+  getFollowsClient,
+  getNotificationsClient,
+  markListingGoneClient,
+  markNotificationReadClient,
+  toggleFollowClient
+} from "@/lib/supabase/client-queries";
+import type { FollowRow, NotificationRow } from "@/lib/supabase/types";
 import {
   createCategoryNotificationCopy,
   createProducerNotificationCopy
@@ -56,6 +66,7 @@ type HarvestLinkContextValue = {
   unreadCount: number;
   promptContext: PromptContext;
   celebrationMessage: string | null;
+  loginRequired: boolean;
   dashboardProducer: (typeof mockProducers)[0];
   communitySnapshot: ReturnType<typeof buildCommunitySnapshot>;
   isFollowingProducer: (producerId: string) => boolean;
@@ -67,6 +78,7 @@ type HarvestLinkContextValue = {
   markNotificationRead: (notificationId: string) => void;
   markAllNotificationsRead: () => void;
   dismissPrompt: () => void;
+  dismissLoginRequired: () => void;
   requestPushAccess: () => Promise<void>;
   sendTestNotification: (listingId: string) => void;
   markListingGone: (listingId: string) => void;
@@ -108,7 +120,39 @@ function writeStoredState<T>(key: string, value: T) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
+function adaptFollowRow(row: FollowRow, producerName?: string): Follow {
+  const label =
+    row.follow_type === "producer"
+      ? producerName ?? "Producer"
+      : row.follow_type === "category"
+      ? row.category ?? "Category"
+      : "Watched area";
+  return {
+    id: row.id,
+    type: row.follow_type,
+    label,
+    producerId: row.producer_id ?? undefined,
+    category: row.category ?? undefined,
+    radiusKm: row.area_radius_km ?? undefined,
+    frequency: row.frequency,
+    muted: row.muted
+  };
+}
+
+function adaptNotificationRow(row: NotificationRow): NotificationItem {
+  return {
+    id: row.id,
+    title: row.title,
+    body: row.body ?? "",
+    href: row.href ?? "#",
+    createdAt: new Date(row.created_at).toLocaleString(),
+    unread: row.unread,
+    kind: row.kind
+  };
+}
+
 export function HarvestLinkProvider({ children }: { children: ReactNode }) {
+  const { user, isConfigured } = useAuth();
   const [follows, setFollows] = useState<Follow[]>(initialFollows);
   const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
   const [dashboardListings, setDashboardListings] = useState<Listing[]>(mockListings);
@@ -117,6 +161,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
   const [notificationPermission, setNotificationPermission] = useState<PermissionState>("default");
   const [promptContext, setPromptContext] = useState<PromptContext>(null);
   const [celebrationMessage, setCelebrationMessage] = useState<string | null>(null);
+  const [loginRequired, setLoginRequired] = useState(false);
 
   useEffect(() => {
     setFollows(readStoredState(FOLLOWS_KEY, initialFollows));
@@ -142,6 +187,37 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
       if (live.length > 0) setAllProducers(live);
     }).catch(() => { /* mock data already loaded */ });
   }, []);
+
+  // Hydrate the authed user's follows + notifications from Supabase on sign-in.
+  useEffect(() => {
+    if (!isConfigured || !user) return;
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const [followRows, notificationRows] = await Promise.all([
+          getFollowsClient(user.id),
+          getNotificationsClient(user.id)
+        ]);
+        if (cancelled) return;
+        const producerNameById = new Map(allProducers.map((p) => [p.id, p.name]));
+        setFollows(
+          followRows.map((row) =>
+            adaptFollowRow(row, row.producer_id ? producerNameById.get(row.producer_id) : undefined)
+          )
+        );
+        setNotifications((notificationRows as NotificationRow[]).map(adaptNotificationRow));
+      } catch (err) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("[HarvestLinkProvider] hydrate failed", err);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isConfigured, user, allProducers]);
 
   useEffect(() => {
     writeStoredState(FOLLOWS_KEY, follows);
@@ -175,6 +251,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
       unreadCount,
       promptContext,
       celebrationMessage,
+      loginRequired,
       dashboardProducer,
       communitySnapshot: buildCommunitySnapshot(),
       isFollowingProducer: (producerId) => follows.some((follow) => follow.producerId === producerId),
@@ -186,53 +263,95 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
           return;
         }
 
+        if (isConfigured && !user) {
+          setLoginRequired(true);
+          return;
+        }
+
         const existing = follows.find((follow) => follow.producerId === producerId);
+        const tempId = `follow-${producerId}`;
 
         startTransition(() => {
           if (existing) {
             setFollows((current) => current.filter((follow) => follow.id !== existing.id));
             setCelebrationMessage(`Quieted ${producer.name} for now. No hard feelings, just fewer pings.`);
-            return;
+          } else {
+            setFollows((current) => [
+              {
+                id: tempId,
+                type: "producer",
+                label: producer.name,
+                producerId,
+                frequency: "immediate",
+                muted: false
+              },
+              ...current
+            ]);
+            setPromptContext({ producerName: producer.name });
+            setCelebrationMessage(`${producer.name} is in your loop now. Bandit approves the excellent taste.`);
           }
-
-          setFollows((current) => [
-            {
-              id: `follow-${producerId}`,
-              type: "producer",
-              label: producer.name,
-              producerId,
-              frequency: "immediate",
-              muted: false
-            },
-            ...current
-          ]);
-          setPromptContext({ producerName: producer.name });
-          setCelebrationMessage(`${producer.name} is in your loop now. Bandit approves the excellent taste.`);
         });
+
+        if (isConfigured && user) {
+          void toggleFollowClient(user.id, { type: "producer", producerId })
+            .then((result) => {
+              if (result.action === "added" && result.row) {
+                setFollows((current) =>
+                  current.map((f) => (f.id === tempId ? adaptFollowRow(result.row!, producer.name) : f))
+                );
+              }
+            })
+            .catch((err) => {
+              if (process.env.NODE_ENV === "development") {
+                console.error("[toggleProducerFollow] Supabase failed", err);
+              }
+            });
+        }
       },
       toggleCategoryFollow: (category) => {
+        if (isConfigured && !user) {
+          setLoginRequired(true);
+          return;
+        }
+
         const existing = follows.find((follow) => follow.category === category);
+        const tempId = `category-${category.toLowerCase()}`;
 
         startTransition(() => {
           if (existing) {
             setFollows((current) => current.filter((follow) => follow.id !== existing.id));
             setCelebrationMessage(`${category} watch switched off. Your phone can exhale.`);
-            return;
+          } else {
+            setFollows((current) => [
+              {
+                id: tempId,
+                type: "category",
+                label: category,
+                category,
+                frequency: "daily",
+                muted: false
+              },
+              ...current
+            ]);
+            setCelebrationMessage(`${category} joined your watch list. If eggs pop up, you’ll hear about it.`);
           }
-
-          setFollows((current) => [
-            {
-              id: `category-${category.toLowerCase()}`,
-              type: "category",
-              label: category,
-              category,
-              frequency: "daily",
-              muted: false
-            },
-            ...current
-          ]);
-          setCelebrationMessage(`${category} joined your watch list. If eggs pop up, you’ll hear about it.`);
         });
+
+        if (isConfigured && user) {
+          void toggleFollowClient(user.id, { type: "category", category })
+            .then((result) => {
+              if (result.action === "added" && result.row) {
+                setFollows((current) =>
+                  current.map((f) => (f.id === tempId ? adaptFollowRow(result.row!) : f))
+                );
+              }
+            })
+            .catch((err) => {
+              if (process.env.NODE_ENV === "development") {
+                console.error("[toggleCategoryFollow] Supabase failed", err);
+              }
+            });
+        }
       },
       updateFollowPreference: (followId, frequency) => {
         setFollows((current) =>
@@ -269,11 +388,29 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
               : notification
           )
         );
+        if (isConfigured && user) {
+          void markNotificationReadClient(notificationId).catch((err) => {
+            if (process.env.NODE_ENV === "development") {
+              console.error("[markNotificationRead] Supabase failed", err);
+            }
+          });
+        }
       },
       markAllNotificationsRead: () => {
+        const unreadIds = notifications.filter((n) => n.unread).map((n) => n.id);
         setNotifications((current) => current.map((notification) => ({ ...notification, unread: false })));
+        if (isConfigured && user) {
+          unreadIds.forEach((id) => {
+            void markNotificationReadClient(id).catch((err) => {
+              if (process.env.NODE_ENV === "development") {
+                console.error("[markAllNotificationsRead] Supabase failed", err);
+              }
+            });
+          });
+        }
       },
       dismissPrompt: () => setPromptContext(null),
+      dismissLoginRequired: () => setLoginRequired(false),
       requestPushAccess: async () => {
         const permission = await requestNotificationPermission();
         setNotificationPermission(permission);
@@ -310,6 +447,11 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
         showBrowserNotification(nextNotification.title, nextNotification.body, nextNotification.href);
       },
       markListingGone: (listingId) => {
+        if (isConfigured && !user) {
+          setLoginRequired(true);
+          return;
+        }
+
         setDashboardListings((current) =>
           current.map((listing) =>
             listing.id === listingId
@@ -321,21 +463,87 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
           )
         );
         setCelebrationMessage("Marked gone. Short, sweet, and no one has to wonder if the eggs vanished.");
+
+        if (isConfigured && user) {
+          void markListingGoneClient(listingId).catch((err) => {
+            if (process.env.NODE_ENV === "development") {
+              console.error("[markListingGone] Supabase failed", err);
+            }
+          });
+        }
       },
       repostListing: (listingId) => {
-        const listing = getListingById(listingId);
+        const listing = dashboardListings.find((l) => l.id === listingId) ?? getListingById(listingId);
         if (!listing) {
           return;
         }
 
-        const producer = getListingProducer(listing);
+        const producer =
+          allProducers.find((p) => p.id === listing.producerId) ?? getListingProducer(listing);
         if (!producer) {
           return;
         }
 
+        if (isConfigured && !user) {
+          setLoginRequired(true);
+          return;
+        }
+
+        if (isConfigured && user) {
+          void createListingClient({
+            producer_id: user.id,
+            title: listing.title,
+            description: listing.description || null,
+            category: listing.category,
+            quantity: listing.quantity,
+            price_label: listing.priceLabel,
+            location_label: listing.locationLabel,
+            photos: [],
+            lng: listing.lng || undefined,
+            lat: listing.lat || undefined
+          })
+            .then((row) => {
+              if (!row) return;
+              const revived: Listing = {
+                ...listing,
+                id: row.id,
+                postedLabel: "posted just now",
+                postedAt: row.created_at,
+                status: "active",
+                availableUntil: "7 days from now"
+              };
+              setDashboardListings((current) => [revived, ...current]);
+              const copy = createCategoryNotificationCopy(revived.category, revived, producer);
+              setNotifications((current) => [
+                {
+                  id: `notif-${Date.now() + 1}`,
+                  title: copy.title,
+                  body: copy.body,
+                  href: `/listing/${revived.id}`,
+                  createdAt: "just now",
+                  unread: true,
+                  kind: "category"
+                },
+                ...current
+              ]);
+              setCelebrationMessage(`Reposted ${listing.title}. Nice little encore.`);
+            })
+            .catch((err) => {
+              if (process.env.NODE_ENV === "development") {
+                console.error("[repostListing] Supabase failed", err);
+              }
+              setCelebrationMessage("Repost didn't stick — give it another go.");
+            });
+          return;
+        }
+
+        // Unconfigured fallback: local-only optimistic repost.
         const revived: Listing = {
           ...listing,
-          id: `listing-${Date.now()}`,
+          id:
+            typeof crypto !== "undefined" && "randomUUID" in crypto
+              ? crypto.randomUUID()
+              : `listing-${Date.now()}`,
           postedLabel: "posted just now",
           postedAt: new Date().toISOString(),
           status: "active",
@@ -397,12 +605,15 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
       celebrationMessage,
       dashboardListings,
       follows,
+      isConfigured,
+      loginRequired,
       notificationPermission,
       notifications,
       promptContext,
       schedule,
       dashboardProducer,
-      unreadCount
+      unreadCount,
+      user
     ]
   );
 

@@ -1,10 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { createBrowserSupabaseClient } from "./client";
-import {
-  createServerSupabaseClient,
-  createServiceSupabaseClient
-} from "./server";
 import type {
   Database,
   EventInsert,
@@ -25,14 +21,23 @@ type HL = SupabaseClient<Database>;
 // ---------------------------------------------------------------------------
 // client resolution
 // Prefer whichever context the caller is in — server components / route handlers
-// hit createServerSupabaseClient, the browser hits createBrowserSupabaseClient.
+// hit createServerSupabaseClient (loaded lazily so this module stays client-safe),
+// the browser hits createBrowserSupabaseClient.
 // ---------------------------------------------------------------------------
 function resolveClient(explicit?: HL | null): HL | null {
   if (explicit) return explicit;
   if (typeof window === "undefined") {
+    // Lazy load the server module so importing this file from a client
+    // component doesn't drag "next/headers" into the client bundle.
+    const { createServerSupabaseClient } = require("./server") as typeof import("./server");
     return createServerSupabaseClient();
   }
   return createBrowserSupabaseClient();
+}
+
+function serviceClient() {
+  const { createServiceSupabaseClient } = require("./server") as typeof import("./server");
+  return createServiceSupabaseClient();
 }
 
 // ---------------------------------------------------------------------------
@@ -391,7 +396,7 @@ export async function createNotification(params: {
   href?: string | null;
   kind: NotificationKind;
 }) {
-  const supabase = createServiceSupabaseClient();
+  const supabase = serviceClient();
   if (!supabase) return;
   await supabase.from("notifications").insert({
     user_id: params.userId,
@@ -493,7 +498,7 @@ export async function recordSignal(input: {
   metadata?: Json;
   recordedAt?: string;
 }): Promise<void> {
-  const supabase = createServiceSupabaseClient();
+  const supabase = serviceClient();
   if (!supabase) return;
   await supabase.from("external_signals").insert({
     signal_type: input.signalType,
