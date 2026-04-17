@@ -1,11 +1,10 @@
 import Link from "next/link";
 
 import { BanditIllustration } from "@/components/brand/bandit-illustration";
+import { HomeDiscovery } from "@/components/discovery/home-discovery";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
-import { ListingCard } from "@/components/listings/listing-card";
-import { MapPlaceholder } from "@/components/map/map-placeholder";
-import { buildCommunitySnapshot, listings, producers } from "@/lib/data/mock";
+import { buildCommunitySnapshot, producers } from "@/lib/data/mock";
 
 export default function HomePage() {
   const snapshot = buildCommunitySnapshot();
@@ -19,17 +18,17 @@ export default function HomePage() {
             Local food without the startup costume.
           </h1>
           <p className="max-w-2xl text-lg leading-8 text-[var(--ink-soft)]">
-            Browse what&apos;s nearby, follow the neighbours you trust, and let Bandit handle the nudges. The map and feed below stay stubbed for now so the Phase 5-7 work can do its thing.
+            Browse what&apos;s nearby, follow the neighbours you trust, and let Bandit handle the nudges. The map below is live now, the feed listens to the same filters, and nobody had to say &quot;ecosystem&quot; out loud.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link className={buttonStyles()} href="/producer/cedar-bloom">
               Visit a producer
             </Link>
+            <Link className={buttonStyles("secondary")} href="/onboarding">
+              Start onboarding
+            </Link>
             <Link className={buttonStyles("secondary")} href="/dashboard">
               Open producer dashboard
-            </Link>
-            <Link className={buttonStyles("secondary")} href="/notifications">
-              Crack open the bell
             </Link>
           </div>
           <dl className="grid gap-4 pt-4 sm:grid-cols-3">
@@ -46,25 +45,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      <MapPlaceholder />
-
       <section className="space-y-4">
         <div className="flex items-end justify-between gap-3">
           <div>
-            <h2 className="font-display text-3xl text-[var(--ink)]">Fresh around town</h2>
+            <h2 className="font-display text-3xl text-[var(--ink)]">Map, feed, and a decent sniff test</h2>
             <p className="text-sm text-[var(--ink-soft)]">
-              Feed cards stay server-rendered so shared links and search previews have something decent to chew on.
+              Search, category filters, radius controls, and view toggles all point at the same discovery state.
             </p>
           </div>
           <Link className={buttonStyles("secondary")} href="/settings/notifications">
             Tune your pings
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {listings.slice(0, 3).map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
+        <HomeDiscovery />
       </section>
     </div>
   );
