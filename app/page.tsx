@@ -43,10 +43,10 @@ export default async function HomePage() {
             <Stat label="Season vibe" value={season} />
           </dl>
         </div>
-        <div className="rounded-[36px] border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-6 shadow-card">
-          <BanditIllustration variant={season} priority />
-          <p className="mt-4 text-sm leading-6 text-[var(--ink-soft)]">
-            Bandit changes outfits with the season, stays accessible, and shows up in loading, onboarding, empty, error, and 404 states.
+        <div className="flex flex-col items-center justify-center rounded-[36px] border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-6 shadow-card">
+          <BanditIllustration variant={season} priority className="max-w-[280px]" />
+          <p className="mt-3 text-center text-sm font-medium text-[var(--ink-soft)]">
+            🦝 Bandit&apos;s {season} mode
           </p>
         </div>
       </section>
