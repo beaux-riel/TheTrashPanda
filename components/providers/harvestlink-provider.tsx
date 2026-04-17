@@ -78,10 +78,10 @@ type HarvestLinkContextValue = {
 
 const HarvestLinkContext = createContext<HarvestLinkContextValue | null>(null);
 
-const FOLLOWS_KEY = "harvestlink.follows";
-const NOTIFICATIONS_KEY = "harvestlink.notifications";
-const LISTINGS_KEY = "harvestlink.dashboardListings";
-const SCHEDULE_KEY = "harvestlink.schedule";
+const FOLLOWS_KEY = "thetrashpanda.follows";
+const NOTIFICATIONS_KEY = "thetrashpanda.notifications";
+const LISTINGS_KEY = "thetrashpanda.dashboardListings";
+const SCHEDULE_KEY = "thetrashpanda.schedule";
 
 function readStoredState<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") {

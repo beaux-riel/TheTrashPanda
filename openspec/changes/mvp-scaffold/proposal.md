@@ -1,10 +1,10 @@
 # MVP Scaffold — Project Foundation
 
 ## What
-Scaffold the HarvestLink v2 application from scratch using Next.js (App Router), Supabase, and Mapbox GL JS as a Progressive Web App. This replaces the old React Native prototype with a modern web-first architecture.
+Scaffold the The Trash Panda v2 application from scratch using Next.js (App Router), Supabase, and Mapbox GL JS as a Progressive Web App. This replaces the old React Native prototype with a modern web-first architecture.
 
 ## Why
-The original HarvestLink was a React Native prototype from 2024. The new vision is a community food network — not a marketplace — that needs to work on any device without app store friction. A PWA with Next.js gives us server rendering (SEO for "Powell River eggs"), offline support, and instant deploys via Vercel.
+The original The Trash Panda was a React Native prototype from 2024. The new vision is a community food network — not a marketplace — that needs to work on any device without app store friction. A PWA with Next.js gives us server rendering (SEO for "Powell River eggs"), offline support, and instant deploys via Vercel.
 
 ## Scope
 

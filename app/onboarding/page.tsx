@@ -110,7 +110,7 @@ export default function OnboardingPage() {
             <BanditIllustration variant="onboarding" priority className="mx-auto max-w-[240px]" />
             <div className="mt-4 space-y-2 text-center lg:text-left">
               <h2 className="font-display text-3xl text-[var(--ink)]">
-                {step === 1 && "What brings you to HarvestLink?"}
+                {step === 1 && "What brings you to The Trash Panda?"}
                 {step === 2 && "Tell us roughly where you are"}
                 {step === 3 && "What do you grow, make, or sell?"}
                 {step === 4 && "You&apos;re in!"}
@@ -154,7 +154,7 @@ export default function OnboardingPage() {
                   <div className="space-y-2">
                     <h3 className="font-display text-2xl text-[var(--ink)]">Location</h3>
                     <p className="text-sm leading-6 text-[var(--ink-soft)]">
-                      Let HarvestLink start around your actual corner of Powell River. No creepy precision. Just enough to keep the route sensible.
+                      Let The Trash Panda start around your actual corner of Powell River. No creepy precision. Just enough to keep the route sensible.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">

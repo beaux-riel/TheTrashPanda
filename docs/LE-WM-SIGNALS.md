@@ -1,12 +1,12 @@
 # Le-WM: World Model Signals Architecture
 
-*How HarvestLink understands its community's food resilience.*
+*How The Trash Panda understands its community's food resilience.*
 
 ---
 
 ## Philosophy
 
-HarvestLink captures two types of signals:
+The Trash Panda captures two types of signals:
 
 1. **Internal events** — what happens inside the app (listings, searches, follows, views)
 2. **External signals** — what happens in the world that affects local food (weather, fuel, ferries, supply chains)

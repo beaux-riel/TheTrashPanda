@@ -1,4 +1,4 @@
-// Database types for HarvestLink v2 — mirrors supabase/migrations/001_initial_schema.sql.
+// Database types for The Trash Panda v2 — mirrors supabase/migrations/001_initial_schema.sql.
 // Hand-written to stay in sync with the schema; regenerate with
 // `supabase gen types typescript` once the project is linked.
 

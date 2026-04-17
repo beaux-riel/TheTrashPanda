@@ -10,7 +10,7 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
-const DISMISS_KEY = "harvestlink.install.dismissed";
+const DISMISS_KEY = "thetrashpanda.install.dismissed";
 
 export function InstallPrompt() {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
@@ -76,7 +76,7 @@ export function InstallPrompt() {
         <div className="relative flex flex-col gap-4 pr-16 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--forest)]">PWA install</p>
-            <h3 className="font-display text-3xl text-[var(--ink)]">Add HarvestLink to your home screen</h3>
+            <h3 className="font-display text-3xl text-[var(--ink)]">Add The Trash Panda to your home screen</h3>
             <p className="max-w-2xl text-sm leading-6 text-[var(--ink-soft)]">
               Open the map faster, catch local food sooner, and give Bandit a suspiciously permanent place on your phone.
             </p>

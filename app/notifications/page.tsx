@@ -30,7 +30,7 @@ export default function NotificationsPage() {
                 Browser access: {notificationPermission}
               </Badge>
             </div>
-            <h1 className="font-display text-4xl text-[var(--ink)]">The bell, the nudges, the whole raccoon orchestra.</h1>
+            <h1 className="font-display text-4xl text-[var(--ink)]">The bell, the nudges, the whole trash panda orchestra.</h1>
             <p className="max-w-2xl text-sm leading-6 text-[var(--ink-soft)]">
               Push notifications ask politely after a meaningful action, fall back to in-app if denied, and keep the copy warm instead of sounding like a bank alert.
             </p>

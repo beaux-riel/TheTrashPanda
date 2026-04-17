@@ -13,15 +13,15 @@ import { getSeasonFromDate } from "@/lib/utils/season";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://harvestlink.app"),
+  metadataBase: new URL("https://thetrashpanda.ca"),
   title: {
-    default: "HarvestLink",
-    template: "%s | HarvestLink"
+    default: "The Trash Panda",
+    template: "%s | The Trash Panda"
   },
   description:
-    "HarvestLink is a community food network for Powell River, BC. Follow producers, catch fresh listings, and keep local food moving neighbour to neighbour.",
+    "The Trash Panda is a community food network for Powell River, BC. Follow producers, catch fresh listings, and keep local food moving neighbour to neighbour.",
   openGraph: {
-    title: "HarvestLink",
+    title: "The Trash Panda",
     description:
       "Follow Powell River producers, catch fresh listings, and keep the local food loop weird, warm, and useful.",
     type: "website",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: "HarvestLink"
+    title: "The Trash Panda"
   }
 };
 

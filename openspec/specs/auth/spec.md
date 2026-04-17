@@ -1,7 +1,7 @@
 # Authentication & Profiles
 
 ## Purpose
-HarvestLink uses passwordless authentication to minimize friction. Users can browse freely without an account, and sign up when they want to follow producers or post listings. Profiles support dual roles — the same person can be both a consumer and a producer.
+The Trash Panda uses passwordless authentication to minimize friction. Users can browse freely without an account, and sign up when they want to follow producers or post listings. Profiles support dual roles — the same person can be both a consumer and a producer.
 
 ## Requirements
 
@@ -9,7 +9,7 @@ HarvestLink uses passwordless authentication to minimize friction. Users can bro
 The system SHALL allow unauthenticated users to browse the map, feed, and producer profiles without creating an account.
 
 #### Scenario: First-time visitor views map
-- GIVEN a user visits HarvestLink for the first time
+- GIVEN a user visits The Trash Panda for the first time
 - WHEN the app loads
 - THEN the map view is displayed with all active listings visible
 - AND no login prompt is shown
@@ -68,7 +68,7 @@ The system SHALL collect the following for producer profiles: display name, bio 
 #### Scenario: Producer without a photo
 - GIVEN a producer has not uploaded a profile photo
 - WHEN their profile is displayed
-- THEN a Bandit illustration placeholder is shown (raccoon holding a "photo coming soon" sign)
+- THEN a Bandit illustration placeholder is shown (trash panda holding a "photo coming soon" sign)
 
 ### Requirement: Consumer profiles
 The system SHALL collect the following for consumer profiles: display name, location (for distance calculations), notification preferences. Consumer profiles SHALL be private by default.

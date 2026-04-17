@@ -1,6 +1,6 @@
-# HarvestLink Database Schema
+# The Trash Panda Database Schema
 
-This document outlines the comprehensive database schema for the HarvestLink MVP, including entity relationships, attributes, data types, and constraints.
+This document outlines the comprehensive database schema for the The Trash Panda MVP, including entity relationships, attributes, data types, and constraints.
 
 ## Entity-Relationship Diagram
 

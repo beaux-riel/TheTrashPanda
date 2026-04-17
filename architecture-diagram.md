@@ -1,6 +1,6 @@
-# HarvestLink System Architecture Diagram
+# The Trash Panda System Architecture Diagram
 
-Below is the system architecture diagram for the HarvestLink MVP, showing all key components and data flows.
+Below is the system architecture diagram for the The Trash Panda MVP, showing all key components and data flows.
 
 ```mermaid
 graph TB

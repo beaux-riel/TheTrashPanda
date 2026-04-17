@@ -1,13 +1,13 @@
-# HarvestLink Implementation Guide
+# The Trash Panda Implementation Guide
 
-This document provides a guide to implementing the HarvestLink application using the technology stack and architecture defined in the implementation plan.
+This document provides a guide to implementing the The Trash Panda application using the technology stack and architecture defined in the implementation plan.
 
 ## Getting Started
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/beaux-riel/HarvestLink.git
-   cd HarvestLink
+   cd The Trash Panda
    ```
 
 2. Install dependencies:
@@ -39,7 +39,7 @@ This document provides a guide to implementing the HarvestLink application using
 The project follows a modular structure as outlined in the implementation plan:
 
 ```
-HarvestLink/
+The Trash Panda/
 ├── assets/             # Static assets (images, fonts)
 ├── src/                # Source code
 │   ├── api/            # API services and endpoints

@@ -1,6 +1,6 @@
-# HarvestLink Database Schema
+# The Trash Panda Database Schema
 
-This directory contains the database schema for the HarvestLink application, including entity relationships, attributes, data types, and constraints.
+This directory contains the database schema for the The Trash Panda application, including entity relationships, attributes, data types, and constraints.
 
 ## Files
 
@@ -25,7 +25,7 @@ Open `schema.md` in a Markdown viewer or on GitHub to see the complete schema do
 You can run a simple HTTP server to view the schema:
 
 ```bash
-cd /workspace/HarvestLink
+cd /workspace/The Trash Panda
 node server.js
 ```
 
@@ -42,7 +42,7 @@ To implement this schema in your Supabase project:
 
 ## Schema Overview
 
-The HarvestLink database schema includes the following main entities:
+The Trash Panda database schema includes the following main entities:
 
 - **Users & Profiles**: Authentication and user information
 - **Farms**: Producer profiles and farm details

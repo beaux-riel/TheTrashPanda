@@ -147,7 +147,7 @@ export function HarvestLinkMap({
         });
 
         const onLoad = () => {
-          map.addSource("harvestlink-listings", {
+          map.addSource("thetrashpanda-listings", {
             type: "geojson",
             data: {
               type: "FeatureCollection",
@@ -159,9 +159,9 @@ export function HarvestLinkMap({
           });
 
           map.addLayer({
-            id: "harvestlink-clusters",
+            id: "thetrashpanda-clusters",
             type: "circle",
-            source: "harvestlink-listings",
+            source: "thetrashpanda-listings",
             filter: ["has", "point_count"],
             paint: {
               "circle-color": "rgba(58, 90, 64, 0.9)",
@@ -172,9 +172,9 @@ export function HarvestLinkMap({
           });
 
           map.addLayer({
-            id: "harvestlink-cluster-count",
+            id: "thetrashpanda-cluster-count",
             type: "symbol",
-            source: "harvestlink-listings",
+            source: "thetrashpanda-listings",
             filter: ["has", "point_count"],
             layout: {
               "text-field": ["get", "point_count_abbreviated"],
@@ -186,9 +186,9 @@ export function HarvestLinkMap({
           });
 
           map.addLayer({
-            id: "harvestlink-points",
+            id: "thetrashpanda-points",
             type: "circle",
-            source: "harvestlink-listings",
+            source: "thetrashpanda-listings",
             filter: ["!", ["has", "point_count"]],
             paint: {
               "circle-color": [
@@ -205,9 +205,9 @@ export function HarvestLinkMap({
         };
 
         const onClusterClick = (event: { point: unknown }) => {
-          const features = map.queryRenderedFeatures(event.point, { layers: ["harvestlink-clusters"] });
+          const features = map.queryRenderedFeatures(event.point, { layers: ["thetrashpanda-clusters"] });
           const clusterId = features[0]?.properties?.cluster_id;
-          const source = map.getSource("harvestlink-listings");
+          const source = map.getSource("thetrashpanda-listings");
 
           source.getClusterExpansionZoom?.(clusterId, (error: unknown, zoom: number) => {
             if (error || !features[0]) {
@@ -252,12 +252,12 @@ export function HarvestLinkMap({
         };
 
         map.on("load", onLoad);
-        map.on("click", "harvestlink-clusters", onClusterClick);
-        map.on("click", "harvestlink-points", onPointClick);
-        map.on("mouseenter", "harvestlink-clusters", onEnter);
-        map.on("mouseleave", "harvestlink-clusters", onLeave);
-        map.on("mouseenter", "harvestlink-points", onEnter);
-        map.on("mouseleave", "harvestlink-points", onLeave);
+        map.on("click", "thetrashpanda-clusters", onClusterClick);
+        map.on("click", "thetrashpanda-points", onPointClick);
+        map.on("mouseenter", "thetrashpanda-clusters", onEnter);
+        map.on("mouseleave", "thetrashpanda-clusters", onLeave);
+        map.on("mouseenter", "thetrashpanda-points", onEnter);
+        map.on("mouseleave", "thetrashpanda-points", onLeave);
 
         mapRef.current = map;
         window.setTimeout(() => {
@@ -278,7 +278,7 @@ export function HarvestLinkMap({
   }, [token]);
 
   useEffect(() => {
-    const source = mapRef.current?.getSource("harvestlink-listings");
+    const source = mapRef.current?.getSource("thetrashpanda-listings");
     source?.setData(geojson);
     mapRef.current?.resize();
   }, [geojson]);

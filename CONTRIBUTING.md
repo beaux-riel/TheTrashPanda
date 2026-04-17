@@ -1,4 +1,4 @@
-# Contributing to HarvestLink
+# Contributing to The Trash Panda
 
 Thanks for wanting to help. Bandit appreciates it. 🦝
 
@@ -58,7 +58,7 @@ If you want to contribute illustrations:
 
 ## Running Your Own Instance
 
-HarvestLink is designed to be forked for other communities. You'll need:
+The Trash Panda is designed to be forked for other communities. You'll need:
 - A Supabase project (free tier works)
 - A Mapbox token (free tier works)
 - A Vercel account (free tier works)

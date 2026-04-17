@@ -1,8 +1,8 @@
-# HarvestLink Implementation Plan
+# The Trash Panda Implementation Plan
 
 ## Technology Stack Overview
 
-This document outlines the detailed implementation plan for HarvestLink using React Native with Expo for cross-platform development and Supabase as the backend solution.
+This document outlines the detailed implementation plan for The Trash Panda using React Native with Expo for cross-platform development and Supabase as the backend solution.
 
 **Core Technologies:**
 - **Frontend:** React Native with Expo
@@ -50,8 +50,8 @@ This document outlines the detailed implementation plan for HarvestLink using Re
 ```javascript
 // app.config.js
 export default {
-  name: "HarvestLink",
-  slug: "harvestlink",
+  name: "The Trash Panda",
+  slug: "thetrashpanda",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
@@ -68,12 +68,12 @@ export default {
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.harvestlink.app",
+    bundleIdentifier: "com.thetrashpanda.app",
     buildNumber: "1.0.0",
     infoPlist: {
-      NSCameraUsageDescription: "HarvestLink uses your camera to take photos of products and scan QR codes.",
-      NSLocationWhenInUseUsageDescription: "HarvestLink uses your location to find nearby farms and pickup points.",
-      NSPhotoLibraryUsageDescription: "HarvestLink needs access to your photo library to upload product images."
+      NSCameraUsageDescription: "The Trash Panda uses your camera to take photos of products and scan QR codes.",
+      NSLocationWhenInUseUsageDescription: "The Trash Panda uses your location to find nearby farms and pickup points.",
+      NSPhotoLibraryUsageDescription: "The Trash Panda needs access to your photo library to upload product images."
     }
   },
   android: {
@@ -81,7 +81,7 @@ export default {
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#FFFFFF"
     },
-    package: "com.harvestlink.app",
+    package: "com.thetrashpanda.app",
     versionCode: 1,
     permissions: [
       "CAMERA",
@@ -353,7 +353,7 @@ export const signInWithGoogle = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'harvestlink://auth/callback',
+      redirectTo: 'thetrashpanda://auth/callback',
     },
   });
   
@@ -365,7 +365,7 @@ export const signInWithApple = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'apple',
     options: {
-      redirectTo: 'harvestlink://auth/callback',
+      redirectTo: 'thetrashpanda://auth/callback',
     },
   });
   
@@ -393,7 +393,7 @@ export const signOut = async () => {
 
 export const resetPassword = async (email: string) => {
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'harvestlink://auth/reset-password',
+    redirectTo: 'thetrashpanda://auth/reset-password',
   });
   
   if (error) throw error;
@@ -652,7 +652,7 @@ export const unsubscribe = (channel: RealtimeChannel) => {
 
 ## 5. State Management Approach
 
-For HarvestLink, we'll use a combination of **React Context API** for global state and **Zustand** for more complex state management needs:
+For The Trash Panda, we'll use a combination of **React Context API** for global state and **Zustand** for more complex state management needs:
 
 ### Context API for Authentication and Theme
 
@@ -833,7 +833,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: 'harvestlink-cart',
+      name: 'thetrashpanda-cart',
       getStorage: () => AsyncStorage,
     }
   )
@@ -1056,7 +1056,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { supabase } from '../config/supabaseClient';
 
 // Open SQLite database
-const db = SQLite.openDatabase('harvestlink.db');
+const db = SQLite.openDatabase('thetrashpanda.db');
 
 // Initialize database tables
 export const initDatabase = () => {
@@ -1278,7 +1278,7 @@ export const setupNetworkListener = () => {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                           HarvestLink App                               │
+│                           The Trash Panda App                               │
 │                                                                         │
 │  ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐   │
 │  │   Presentation  │     │     Domain      │     │      Data       │   │

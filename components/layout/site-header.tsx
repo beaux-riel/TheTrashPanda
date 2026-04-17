@@ -11,6 +11,7 @@ import { useHarvestLink } from "@/hooks/use-harvestlink";
 
 const navItems = [
   { href: "/", label: "Map-ish" },
+  { href: "/about/bandit", label: "Meet Bandit" },
   { href: "/onboarding", label: "Start here" },
   { href: "/notifications", label: "Bell" },
   { href: "/dashboard", label: "Producer den" },
@@ -37,7 +38,7 @@ export function SiteHeader() {
             </div>
             <div>
               <span className="font-display text-3xl text-[var(--ink)]">
-                HarvestLink
+                The Trash Panda
               </span>
               <p className="text-sm text-[var(--ink-soft)]">Powell River&apos;s neighbour-powered food loop.</p>
             </div>

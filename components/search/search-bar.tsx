@@ -37,7 +37,7 @@ export function SearchBar({
           placeholder="Search eggs, producers, bread drama..."
           className="w-full border-none bg-transparent text-base text-[var(--ink)] outline-none placeholder:text-[var(--ink-soft)]"
           type="search"
-          aria-label="Search HarvestLink listings"
+          aria-label="Search The Trash Panda listings"
         />
         <Badge tone={resultCount ? "forest" : "neutral"}>{resultCount} match{resultCount === 1 ? "" : "es"}</Badge>
       </label>

@@ -1,7 +1,7 @@
 # PWA & Technical Foundation
 
 ## Purpose
-HarvestLink is a Progressive Web App — no app store, no gatekeeping, works on any phone with a browser. This spec defines the technical foundation that everything else builds on. Performance, offline capability, and accessibility are not afterthoughts — they're requirements for an app that needs to work for a 70-year-old farmer checking their phone between chores.
+The Trash Panda is a Progressive Web App — no app store, no gatekeeping, works on any phone with a browser. This spec defines the technical foundation that everything else builds on. Performance, offline capability, and accessibility are not afterthoughts — they're requirements for an app that needs to work for a 70-year-old farmer checking their phone between chores.
 
 ## Requirements
 
@@ -9,30 +9,30 @@ HarvestLink is a Progressive Web App — no app store, no gatekeeping, works on 
 The system SHALL be a Progressive Web App (PWA) installable on mobile and desktop. The system SHALL prompt users to "Add to Home Screen" at an appropriate moment.
 
 #### Scenario: Install prompt
-- GIVEN a user has visited HarvestLink 3+ times
+- GIVEN a user has visited The Trash Panda 3+ times
 - WHEN they next visit
-- THEN a non-intrusive install banner appears: "Add HarvestLink to your home screen for quick access"
+- THEN a non-intrusive install banner appears: "Add The Trash Panda to your home screen for quick access"
 - AND the banner includes Bandit holding a phone
 - AND dismissing the banner does not show it again for 30 days
 
 #### Scenario: Installed PWA experience
-- GIVEN a user has installed HarvestLink to their home screen
+- GIVEN a user has installed The Trash Panda to their home screen
 - WHEN they open it
 - THEN it launches in standalone mode (no browser chrome)
 - AND it feels like a native app with smooth transitions
-- AND the splash screen shows Bandit and the HarvestLink logo
+- AND the splash screen shows Bandit and the The Trash Panda logo
 
 ### Requirement: Offline support
 The system SHALL provide basic offline functionality for cached content. The system SHALL clearly indicate when content may be stale.
 
 #### Scenario: Offline — cached content available
 - GIVEN a user has previously viewed the map and listings
-- WHEN they open HarvestLink without internet
+- WHEN they open The Trash Panda without internet
 - THEN cached listings and map tiles are displayed
 - AND a banner reads "You're offline — showing what we last saw. Connect to get fresh listings."
 
 #### Scenario: Offline — no cached content
-- GIVEN a user has never opened HarvestLink before
+- GIVEN a user has never opened The Trash Panda before
 - WHEN they try to access it without internet
 - THEN a friendly offline page is shown with Bandit sitting in the rain
 - AND the message reads "We need internet to load the map. Try again when you're connected."
@@ -62,14 +62,14 @@ The system SHALL use a service worker to cache: static assets, map tiles for the
 The system SHALL achieve first meaningful paint under 2 seconds on a 3G connection. The system SHALL achieve a Lighthouse performance score of 90+.
 
 #### Scenario: First load performance
-- GIVEN a user on a slow connection visits HarvestLink
+- GIVEN a user on a slow connection visits The Trash Panda
 - WHEN the page loads
 - THEN the map skeleton and navigation appear within 2 seconds
 - AND listing data loads progressively (skeleton cards → real content)
 - AND images lazy-load as they enter the viewport
 
 #### Scenario: Subsequent loads
-- GIVEN a user has visited HarvestLink before
+- GIVEN a user has visited The Trash Panda before
 - WHEN they return
 - THEN cached assets make the load near-instant
 - AND only new listing data is fetched from the network
@@ -79,7 +79,7 @@ The system SHALL be mobile-first responsive. The system SHALL provide a good exp
 
 #### Scenario: Mobile experience (primary)
 - GIVEN a user is on a phone (320–480px)
-- WHEN they use HarvestLink
+- WHEN they use The Trash Panda
 - THEN the map fills most of the screen
 - AND the feed is a single-column card layout
 - AND all touch targets are at least 44px
@@ -87,14 +87,14 @@ The system SHALL be mobile-first responsive. The system SHALL provide a good exp
 
 #### Scenario: Desktop experience
 - GIVEN a user is on a desktop (1024px+)
-- WHEN they use HarvestLink
+- WHEN they use The Trash Panda
 - THEN the map takes 60% of the viewport with a sidebar feed
 - AND producer profiles have a richer layout
 - AND hover states provide additional context
 
 #### Scenario: Tablet experience
 - GIVEN a user is on a tablet (768–1024px)
-- WHEN they use HarvestLink
+- WHEN they use The Trash Panda
 - THEN the layout adapts to use available space
 - AND the map and feed can be viewed side-by-side
 
@@ -126,7 +126,7 @@ The system SHALL server-render listing pages and producer profiles for search en
 #### Scenario: Google search for local food
 - GIVEN someone searches "eggs Powell River"
 - WHEN Google results load
-- THEN active HarvestLink listings for eggs in Powell River appear in results
+- THEN active The Trash Panda listings for eggs in Powell River appear in results
 - AND the result shows a rich snippet with producer name, item, and availability
 
 #### Scenario: Shared listing link
@@ -139,7 +139,7 @@ The system SHALL server-render listing pages and producer profiles for search en
 The system SHALL use privacy-respecting analytics with no third-party trackers. The system SHOULD use self-hosted analytics (e.g., Plausible or Umami).
 
 #### Scenario: Analytics collection
-- GIVEN a user browses HarvestLink
+- GIVEN a user browses The Trash Panda
 - WHEN page views and interactions occur
 - THEN analytics are collected without cookies or personal identifiers
 - AND no data is shared with third parties

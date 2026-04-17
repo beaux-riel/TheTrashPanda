@@ -5,7 +5,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        raccoon: "#2D2A26",
+        ink: "#2D2A26",
         cream: "#F5F0E8",
         tomato: "#D94F30",
         forest: "#3A5A40",

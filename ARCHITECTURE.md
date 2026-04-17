@@ -1,13 +1,13 @@
-# HarvestLink Architecture Documentation
+# The Trash Panda Architecture Documentation
 
-This directory contains architectural diagrams and documentation for the HarvestLink application. These diagrams provide a comprehensive view of the system architecture, component relationships, data flows, and database schema.
+This directory contains architectural diagrams and documentation for the The Trash Panda application. These diagrams provide a comprehensive view of the system architecture, component relationships, data flows, and database schema.
 
 ## Diagram Overview
 
 ### System Architecture Diagram
 **File:** [architecture-diagram.md](architecture-diagram.md)
 
-This high-level diagram shows the main components of the HarvestLink system and how they interact. It includes:
+This high-level diagram shows the main components of the The Trash Panda system and how they interact. It includes:
 - Client applications (mobile and web)
 - API layer
 - Database

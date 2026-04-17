@@ -1,6 +1,6 @@
-# HarvestLink Database Schema Diagram
+# The Trash Panda Database Schema Diagram
 
-This diagram illustrates the database schema for the HarvestLink application, showing tables, relationships, and key fields.
+This diagram illustrates the database schema for the The Trash Panda application, showing tables, relationships, and key fields.
 
 ```mermaid
 erDiagram

@@ -94,5 +94,5 @@ The system MAY provide email notification digests. Email notifications SHALL be 
 - GIVEN a user wants email notifications
 - WHEN they enable email digest in settings
 - THEN they receive a weekly email summarizing activity from their follows
-- AND the email has the HarvestLink brand personality (Bandit illustrations, warm copy)
+- AND the email has the The Trash Panda brand personality (Bandit illustrations, warm copy)
 - AND every email has a one-click unsubscribe

@@ -32,7 +32,7 @@
 ## Directory Structure
 
 ```
-harvestlink/
+thetrashpanda/
 ├── app/
 │   ├── layout.tsx              # Root layout, providers, nav
 │   ├── page.tsx                # Landing/map (default view)

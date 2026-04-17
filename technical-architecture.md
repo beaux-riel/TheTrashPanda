@@ -1,6 +1,6 @@
-# HarvestLink Technical Architecture Diagram
+# The Trash Panda Technical Architecture Diagram
 
-This diagram provides a more detailed view of the technical architecture for the HarvestLink MVP, focusing on implementation details and component interactions.
+This diagram provides a more detailed view of the technical architecture for the The Trash Panda MVP, focusing on implementation details and component interactions.
 
 ```mermaid
 graph TB

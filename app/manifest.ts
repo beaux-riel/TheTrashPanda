@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "HarvestLink",
-    short_name: "HarvestLink",
+    name: "The Trash Panda",
+    short_name: "The Trash Panda",
     description: "Powell River's community food network.",
     start_url: "/",
     display: "standalone",

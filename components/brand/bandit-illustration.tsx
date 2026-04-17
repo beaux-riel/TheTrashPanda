@@ -71,10 +71,10 @@ const variantImage: Record<BanditVariant, string> = {
 };
 
 const altText: Record<BanditVariant, string> = {
-  loading: "Bandit the raccoon holding a tomato while the app loads",
+  loading: "Bandit the trash panda holding a tomato while the app loads",
   empty: "Bandit prowling through an empty moonlit garden",
   error: "Bandit caught red-handed in street art style",
-  onboarding: "Bandit and the baby raccoons raiding a garden",
+  onboarding: "Bandit and the baby trash pandas raiding a garden",
   "not-found": "Bandit prowling through an empty moonlit garden",
   spring: "Bandit in rain boots with seedlings",
   summer: "Bandit lounging on watermelons with sunglasses",
@@ -122,7 +122,7 @@ export function BanditIllustration({
     <div className={cn("relative aspect-square w-full max-w-[320px]", className)}>
       <Image
         src={`/images/bandit/${imageName}`}
-        alt={altText[variant] ?? "Bandit the raccoon"}
+        alt={altText[variant] ?? "Bandit the trash panda"}
         fill
         className="object-contain"
         priority={priority}

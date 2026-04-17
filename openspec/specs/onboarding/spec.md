@@ -1,7 +1,7 @@
 # Onboarding & First Experience
 
 ## Purpose
-The first 30 seconds decide if someone stays or leaves. HarvestLink's onboarding is designed around one principle: show value before asking for anything. The map works without signup. Signup is a natural step when you want to do more, not a gate.
+The first 30 seconds decide if someone stays or leaves. The Trash Panda's onboarding is designed around one principle: show value before asking for anything. The map works without signup. Signup is a natural step when you want to do more, not a gate.
 
 ## Requirements
 
@@ -9,7 +9,7 @@ The first 30 seconds decide if someone stays or leaves. HarvestLink's onboarding
 The system SHALL show the full map and feed to unauthenticated users. The system SHALL NOT gate core discovery behind authentication.
 
 #### Scenario: First visit experience
-- GIVEN a person clicks a link to HarvestLink
+- GIVEN a person clicks a link to The Trash Panda
 - WHEN the app loads
 - THEN they immediately see the map with active listings
 - AND they can browse, search, filter, and view producer profiles
@@ -65,7 +65,7 @@ The system SHALL provide lightweight consumer onboarding: location and optional 
 - AND they're returned to the producer they wanted to follow, with the follow already active
 
 ### Requirement: Bandit guides onboarding
-The system SHALL include Bandit the raccoon throughout onboarding as a guide character, providing personality and reducing the feeling of filling out forms.
+The system SHALL include Bandit the trash panda throughout onboarding as a guide character, providing personality and reducing the feeling of filling out forms.
 
 #### Scenario: Bandit encouragement
 - GIVEN a user is midway through producer onboarding
@@ -80,22 +80,22 @@ The system SHALL provide a shareable link that producers and consumers can send 
 - GIVEN a user wants to invite a neighbour
 - WHEN they tap "Invite a neighbour" from settings or profile
 - THEN a shareable link is generated with an optional personal message
-- AND the link opens HarvestLink centred on the inviter's area
+- AND the link opens The Trash Panda centred on the inviter's area
 - AND Bandit: "Spread the word. The more neighbours, the better the map."
 
 ### Requirement: Default community
 The system SHALL default to Powell River as the initial community. The system SHOULD support expanding to additional communities in the future.
 
 #### Scenario: First launch defaults
-- GIVEN a user with no location data opens HarvestLink
+- GIVEN a user with no location data opens The Trash Panda
 - WHEN the map loads
 - THEN it centres on Powell River, BC
 - AND the community name "Powell River" appears in the header
 - AND future expansion points exist for adding new communities
 
 #### Scenario: User outside Powell River
-- GIVEN a user in Sechelt visits HarvestLink
+- GIVEN a user in Sechelt visits The Trash Panda
 - WHEN they allow geolocation
 - THEN the map centres on their location
-- AND if no listings exist nearby, a message reads: "Nothing here yet — but you could be the first. HarvestLink is growing, one town at a time."
-- AND a "Bring HarvestLink to your town" call-to-action is shown
+- AND if no listings exist nearby, a message reads: "Nothing here yet — but you could be the first. The Trash Panda is growing, one town at a time."
+- AND a "Bring The Trash Panda to your town" call-to-action is shown

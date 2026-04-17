@@ -11,7 +11,7 @@ export function SiteFooter() {
           <div className="relative h-16 w-16 flex-shrink-0">
             <Image
               src="/images/bandit/street.webp"
-              alt="Bandit the River City Raccoon"
+              alt="Bandit the River City Trash Panda"
               fill
               className="object-contain"
               sizes="64px"
@@ -19,7 +19,7 @@ export function SiteFooter() {
           </div>
           <div>
             <p className="font-display text-lg text-[var(--ink)]">
-              Built by raccoons, for neighbours.
+              Built by trash pandas, for neighbours.
             </p>
             <p className="text-xs text-[var(--ink-soft)]">
               Open source under MIT. Your food network belongs to you.
@@ -36,7 +36,11 @@ export function SiteFooter() {
             About
           </Link>
           <span>·</span>
-          <span>© {year} HarvestLink</span>
+          <Link href="/about/bandit" className="hover:text-[var(--accent)] transition">
+            Meet Bandit 🦝
+          </Link>
+          <span>·</span>
+          <span>© {year} The Trash Panda</span>
           <span>·</span>
           <span className="italic">Powell River, BC 🇨🇦</span>
         </div>

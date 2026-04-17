@@ -34,7 +34,7 @@ export function AnalyticsPanel() {
         <ul className="space-y-3 text-sm leading-6 text-[var(--ink-soft)]">
           <li>Post before 9am if you want the breakfast crowd to pounce.</li>
           <li>Seedlings get saved more than they get viewed. Gardeners are commitment-phobic until payday.</li>
-          <li>If things feel slow, share your profile link instead of posting the same listing five times like a raccoon with a megaphone.</li>
+          <li>If things feel slow, share your profile link instead of posting the same listing five times like a trash panda with a megaphone.</li>
         </ul>
       </Card>
     </div>

@@ -1,7 +1,7 @@
 # Availability Listings
 
 ## Purpose
-The core unit of HarvestLink. A listing is not a product page — it's a signal: "I have this thing, right now (or soon), come get it." Listings are intentionally ephemeral. They reflect the real-time state of what's available in the community.
+The core unit of The Trash Panda. A listing is not a product page — it's a signal: "I have this thing, right now (or soon), come get it." Listings are intentionally ephemeral. They reflect the real-time state of what's available in the community.
 
 ## Requirements
 

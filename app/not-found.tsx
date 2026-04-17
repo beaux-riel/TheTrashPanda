@@ -12,7 +12,7 @@ export default function NotFound() {
         </div>
         <h1 className="font-display text-5xl text-[var(--ink)]">Bandit looked everywhere.</h1>
         <p className="text-lg leading-8 text-[var(--ink-soft)]">
-          This page is emptier than the produce aisle at Save-On after a ferry cancellation. Even raccoons know when to turn back.
+          This page is emptier than the produce aisle at Save-On after a ferry cancellation. Even trash pandas know when to turn back.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link className={buttonStyles()} href="/">

@@ -1,14 +1,14 @@
 # Brand & Personality Layer
 
 ## Purpose
-HarvestLink's brand is not a coat of paint — it's structural. Every screen, state, error, and transition has personality baked in. This spec defines the requirements for the brand layer that makes HarvestLink feel like it was built by your neighbours, not a startup.
+The Trash Panda's brand is not a coat of paint — it's structural. Every screen, state, error, and transition has personality baked in. This spec defines the requirements for the brand layer that makes The Trash Panda feel like it was built by your neighbours, not a startup.
 
 Reference: BRAND.md for full voice, colour, typography, and illustration guidelines.
 
 ## Requirements
 
 ### Requirement: Bandit mascot integration
-The system SHALL include Bandit the raccoon as a recurring character throughout the application. Bandit SHALL appear in loading states, empty states, error pages, onboarding, notifications, and seasonal transitions.
+The system SHALL include Bandit the trash panda as a recurring character throughout the application. Bandit SHALL appear in loading states, empty states, error pages, onboarding, notifications, and seasonal transitions.
 
 #### Scenario: Loading state
 - GIVEN the app is loading content
@@ -132,7 +132,7 @@ The system SHALL ensure all personality elements are accessible. Illustrations S
 #### Scenario: Screen reader experience
 - GIVEN a screen reader user navigates the app
 - WHEN Bandit illustrations are encountered
-- THEN descriptive alt text is provided: "Bandit the raccoon looking confused, peering into an empty basket"
+- THEN descriptive alt text is provided: "Bandit the trash panda looking confused, peering into an empty basket"
 - AND the personality translates through text, not just visuals
 
 #### Scenario: Reduced motion preference

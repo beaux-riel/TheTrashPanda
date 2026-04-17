@@ -1,6 +1,6 @@
-# HarvestLink Data Flow Diagram
+# The Trash Panda Data Flow Diagram
 
-This diagram illustrates the key data flows within the HarvestLink application, showing how information moves between users, components, and systems.
+This diagram illustrates the key data flows within the The Trash Panda application, showing how information moves between users, components, and systems.
 
 ```mermaid
 flowchart TD

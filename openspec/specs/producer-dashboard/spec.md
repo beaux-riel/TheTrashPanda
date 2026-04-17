@@ -1,7 +1,7 @@
 # Producer Dashboard
 
 ## Purpose
-Where producers manage their presence on HarvestLink. Designed for speed and simplicity — a hobby farmer checking their phone between feeding chickens should be able to post a listing in 30 seconds. No dashboards that require a business degree.
+Where producers manage their presence on The Trash Panda. Designed for speed and simplicity — a hobby farmer checking their phone between feeding chickens should be able to post a listing in 30 seconds. No dashboards that require a business degree.
 
 ## Requirements
 
@@ -78,10 +78,10 @@ The system SHALL provide basic analytics: listing views, most popular items, and
 The system SHALL generate a unique QR code for each producer's profile. Producers SHOULD be able to print this for physical display.
 
 #### Scenario: Generate QR code
-- GIVEN a producer wants to promote their HarvestLink presence
+- GIVEN a producer wants to promote their The Trash Panda presence
 - WHEN they tap "Get your QR code"
 - THEN a printable QR code is generated linking to their public profile
-- AND it includes the HarvestLink branding and Bandit
+- AND it includes the The Trash Panda branding and Bandit
 - AND options are provided: "Save image", "Print", "Share link"
 
 #### Scenario: QR code at a farm gate

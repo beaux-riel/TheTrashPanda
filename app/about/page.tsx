@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "HarvestLink is decentralised food infrastructure for small towns. Open source, community-owned, raccoon-endorsed.",
+    "The Trash Panda is decentralised food infrastructure for small towns. Open source, community-owned, trash panda-endorsed.",
 };
 
 export default function AboutPage() {
@@ -29,7 +29,7 @@ export default function AboutPage() {
             This is a coordination problem, not a supply problem.
           </p>
           <p className="max-w-2xl text-lg leading-8 text-[var(--ink-soft)]">
-            HarvestLink makes the invisible local food economy visible. Every
+            The Trash Panda makes the invisible local food economy visible. Every
             small town has people growing, baking, preserving, and selling food
             from their homes — but nobody knows about it unless they already
             know.

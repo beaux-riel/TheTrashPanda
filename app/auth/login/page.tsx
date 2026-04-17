@@ -5,7 +5,7 @@ import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
   title: "Sign in",
-  description: "Sign in to HarvestLink with a magic link. No passwords, just a friendly email."
+  description: "Sign in to The Trash Panda with a magic link. No passwords, just a friendly email."
 };
 
 export default function LoginPage({
@@ -46,7 +46,7 @@ export default function LoginPage({
         <LoginForm next={next} initialError={error} />
 
         <p className="pt-2 text-xs text-[var(--ink-soft)]">
-          By signing in you agree to keep things neighbourly. HarvestLink only stores what it needs
+          By signing in you agree to keep things neighbourly. The Trash Panda only stores what it needs
           to help you post listings, follow producers, and catch fresh food nearby.
         </p>
       </div>

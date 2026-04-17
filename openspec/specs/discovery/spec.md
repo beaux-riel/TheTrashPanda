@@ -1,7 +1,7 @@
 # Discovery & Map
 
 ## Purpose
-The primary experience of HarvestLink. Users open the app and immediately see what's available around them — on a map or in a feed. Discovery is designed to feel like walking through a farmers market: visual, spatial, and serendipitous.
+The primary experience of The Trash Panda. Users open the app and immediately see what's available around them — on a map or in a feed. Discovery is designed to feel like walking through a farmers market: visual, spatial, and serendipitous.
 
 ## Requirements
 
@@ -9,14 +9,14 @@ The primary experience of HarvestLink. Users open the app and immediately see wh
 The system SHALL display an interactive map as the default view, showing pins for all active listings within the user's visible area.
 
 #### Scenario: First load — logged in user
-- GIVEN a logged-in user opens HarvestLink
+- GIVEN a logged-in user opens The Trash Panda
 - WHEN the map loads
 - THEN it centres on the user's saved location
 - AND active listing pins are displayed within the visible area
 - AND pins are colour-coded by category
 
 #### Scenario: First load — guest user
-- GIVEN a guest user opens HarvestLink for the first time
+- GIVEN a guest user opens The Trash Panda for the first time
 - WHEN the map loads
 - THEN it centres on Powell River (default community)
 - AND a gentle prompt asks "Want to see what's near you?" to request geolocation

@@ -1,7 +1,7 @@
 # Community Intelligence
 
 ## Purpose
-The brain behind HarvestLink — and the foundation for Le-WM (LeCun World Model) integration. Every listing, search, follow, and interaction generates an event stream that, when aggregated, builds an internal model of how the community's food ecosystem actually works — predicting state changes before they happen. This is NOT Phase 2. The data collection and event architecture are DAY ONE infrastructure. The analytics dashboards come later, but the event pipeline ships with MVP.
+The brain behind The Trash Panda — and the foundation for Le-WM (LeCun World Model) integration. Every listing, search, follow, and interaction generates an event stream that, when aggregated, builds an internal model of how the community's food ecosystem actually works — predicting state changes before they happen. This is NOT Phase 2. The data collection and event architecture are DAY ONE infrastructure. The analytics dashboards come later, but the event pipeline ships with MVP.
 
 ## Requirements
 
@@ -24,7 +24,7 @@ The system SHALL collect anonymized, aggregated data from all listings and searc
 The system SHALL generate an auto-built seasonal calendar from historical listing data, showing what's typically available and when.
 
 #### Scenario: View seasonal calendar
-- GIVEN HarvestLink has 6 months of listing data
+- GIVEN The Trash Panda has 6 months of listing data
 - WHEN a user views the community page
 - THEN a visual calendar shows what's typically in season: "Blueberries: July–August", "Eggs: Year-round", "Squash: September–October"
 - AND the calendar updates automatically as more data accumulates
@@ -81,7 +81,7 @@ The system SHALL anonymize all community-level data. Individual producer or cons
 The system SHALL provide a public community dashboard accessible without login, showing community food health at a glance.
 
 #### Scenario: View community dashboard
-- GIVEN a city councillor visits the HarvestLink community page
+- GIVEN a city councillor visits the The Trash Panda community page
 - WHEN the dashboard loads
 - THEN they see: total active producers, total listings this month, category coverage, seasonal calendar, demand gaps, resilience trend
 - AND the data tells a story: "Powell River has 34 active food producers serving 200+ regular users"

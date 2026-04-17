@@ -68,7 +68,7 @@ export function getBanditVariant(
 /** One-liner greeting for each Bandit state */
 export function getBanditGreeting(variant: string): string {
   const greetings: Record<string, string> = {
-    "dawn-coffee": "Even raccoons need coffee before they can forage.",
+    "dawn-coffee": "Even trash pandas need coffee before they can forage.",
     "morning-garden": "Best stuff goes fast. Bandit's already in the dirt.",
     "bread-morning": "Fresh bread run. The neighbourhood smells incredible.",
     "midday-market": "Peak hours. What are you looking for?",
@@ -77,7 +77,7 @@ export function getBanditGreeting(variant: string): string {
     "night-prowl": "The night shift. Best produce gets snagged after dark.",
     "rain-boots": "Rain means the garden's happy. And Bandit has boots.",
     "rain-heavy": "Staying dry. The kale doesn't mind though.",
-    "sunny-bright": "Solar-powered raccoon. Everything's growing.",
+    "sunny-bright": "Solar-powered trash panda. Everything's growing.",
     "cloudy-cozy": "Sweater weather. Root vegetable weather.",
     "windy-chaos": "Hold onto your lettuce.",
     "snow-cozy": "Preserved goods season. Bandit planned ahead.",
