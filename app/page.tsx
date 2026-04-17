@@ -32,70 +32,60 @@ export default async function HomePage() {
   const greeting = getBanditGreeting(banditState);
 
   return (
-    <div className="space-y-8 py-4">
-      <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="space-y-4 rounded-[36px] border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-6 shadow-card">
+    <div className="space-y-6 py-2 sm:space-y-8 sm:py-4">
+      {/* Hero — stacks on mobile, side-by-side on desktop */}
+      <section className="grid gap-4 sm:gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="space-y-4 rounded-2xl border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-5 shadow-card sm:rounded-[36px] sm:p-6">
           <div className="flex items-center gap-2">
             <Badge tone="gold">Powell River</Badge>
             <span className="text-xs text-[var(--ink-soft)]">
               {weather.temp}°C · {weather.description}
             </span>
           </div>
-          <h1 className="font-display text-5xl leading-tight text-[var(--ink)]">
+          <h1 className="font-display text-3xl leading-tight text-[var(--ink)] sm:text-4xl lg:text-5xl">
             Local food without the startup costume.
           </h1>
-          <p className="max-w-2xl text-lg leading-8 text-[var(--ink-soft)]">
-            Browse what&apos;s nearby, follow the neighbours you trust, and let
-            Bandit handle the nudges. The map below is live — the feed listens
-            to the same filters, and nobody had to say &quot;ecosystem&quot; out
-            loud.
+          <p className="max-w-2xl text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
+            See what your neighbours are growing, making, and selling right now.
+            No subscriptions, no middlemen — just the local food loop.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Link className={buttonStyles()} href="/producer/cedar-bloom">
-              Visit a producer
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            <Link className={buttonStyles()} href="/onboarding">
+              Get started
             </Link>
-            <Link className={buttonStyles("secondary")} href="/onboarding">
-              Start onboarding
-            </Link>
-            <Link className={buttonStyles("secondary")} href="/dashboard">
-              Open producer dashboard
+            <Link className={buttonStyles("secondary")} href="/about">
+              Learn more
             </Link>
           </div>
-          <dl className="grid gap-4 pt-4 sm:grid-cols-3">
-            <Stat label="Active listings" value={activeCount.toString()} />
+          <dl className="grid grid-cols-3 gap-3 pt-2 sm:gap-4 sm:pt-4">
+            <Stat label="Listings" value={activeCount.toString()} />
             <Stat label="Producers" value={producers.length.toString()} />
             <Stat label="Weather" value={`${weather.temp}°C`} />
           </dl>
         </div>
-        <div className="flex flex-col items-center justify-center rounded-[36px] border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-6 shadow-card">
+
+        {/* Bandit card — smaller on mobile */}
+        <div className="flex flex-row items-center gap-4 rounded-2xl border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-4 shadow-card sm:rounded-[36px] sm:p-6 lg:flex-col lg:justify-center">
           <BanditIllustration
             variant={banditVariant}
             priority
-            className="max-w-[280px]"
+            className="w-24 flex-shrink-0 sm:w-32 lg:max-w-[280px] lg:w-auto"
           />
-          <p className="mt-3 text-center text-sm font-medium italic text-[var(--ink-soft)]">
+          <p className="text-sm font-medium italic text-[var(--ink-soft)] lg:mt-3 lg:text-center">
             🦝 {greeting}
           </p>
         </div>
       </section>
 
-      <section className="space-y-4">
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <h2 className="font-display text-3xl text-[var(--ink)]">
-              Map, feed, and a decent sniff test
-            </h2>
-            <p className="text-sm text-[var(--ink-soft)]">
-              Search, category filters, radius controls, and view toggles all
-              point at the same discovery state.
-            </p>
-          </div>
-          <Link
-            className={buttonStyles("secondary")}
-            href="/settings/notifications"
-          >
-            Tune your pings
-          </Link>
+      {/* Discovery section */}
+      <section className="space-y-3 sm:space-y-4">
+        <div>
+          <h2 className="font-display text-2xl text-[var(--ink)] sm:text-3xl">
+            What&apos;s available now
+          </h2>
+          <p className="text-sm text-[var(--ink-soft)]">
+            Browse listings from local producers in Powell River.
+          </p>
         </div>
         <HomeDiscovery />
       </section>
@@ -105,11 +95,11 @@ export default async function HomePage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[24px] bg-[var(--surface)] p-4">
-      <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-soft)]">
+    <div className="rounded-xl bg-[var(--surface)] p-3 sm:rounded-[24px] sm:p-4">
+      <dt className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--ink-soft)] sm:text-xs sm:tracking-[0.18em]">
         {label}
       </dt>
-      <dd className="mt-2 font-display text-3xl text-[var(--ink)]">{value}</dd>
+      <dd className="mt-1 font-display text-xl text-[var(--ink)] sm:mt-2 sm:text-3xl">{value}</dd>
     </div>
   );
 }

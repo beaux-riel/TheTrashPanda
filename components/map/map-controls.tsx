@@ -9,7 +9,8 @@ export function MapControls({
   view,
   onToggleCategory,
   onRadiusChange,
-  onViewChange
+  onViewChange,
+  hideViewToggle = false
 }: {
   categories: string[];
   selectedCategories: string[];
@@ -18,12 +19,14 @@ export function MapControls({
   onToggleCategory: (category: string) => void;
   onRadiusChange: (value: number) => void;
   onViewChange: (value: DiscoveryView) => void;
+  hideViewToggle?: boolean;
 }) {
   const radiusOptions = [1, 2, 5, 10];
 
   return (
-    <div className="space-y-4 rounded-[30px] border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.76)] p-4 shadow-card backdrop-blur">
-      <div className="flex gap-2 overflow-x-auto pb-1">
+    <div className="space-y-3">
+      {/* Category pills — horizontally scrollable on mobile */}
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide" style={{ WebkitOverflowScrolling: "touch" }}>
         <button
           type="button"
           onClick={() => onToggleCategory("__all__")}
@@ -33,7 +36,7 @@ export function MapControls({
               : "border border-[color:var(--border)] bg-[var(--surface)] text-[var(--ink-soft)]"
           }`}
         >
-          All categories
+          All
         </button>
         {categories.map((category) => {
           const active = selectedCategories.includes(category);
@@ -55,38 +58,41 @@ export function MapControls({
         })}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-2">
+      {/* Radius + view toggle row */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {radiusOptions.map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => onRadiusChange(option)}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                 radiusKm === option
                   ? "bg-[var(--honey)] text-[var(--ink)]"
                   : "border border-[color:var(--border)] bg-[var(--surface)] text-[var(--ink-soft)]"
               }`}
             >
-              {option}km
+              {option} km
             </button>
           ))}
         </div>
 
-        <div className="flex rounded-full border border-[color:var(--border)] bg-[var(--surface)] p-1">
-          {(["map", "feed"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => onViewChange(option)}
-              className={`rounded-full px-4 py-2 text-sm font-semibold capitalize transition ${
-                view === option ? "bg-[var(--accent)] text-[var(--accent-ink)]" : "text-[var(--ink-soft)]"
-              }`}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
+        {!hideViewToggle && (
+          <div className="flex rounded-full border border-[color:var(--border)] bg-[var(--surface)] p-1">
+            {(["feed", "map"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => onViewChange(option)}
+                className={`rounded-full px-4 py-1.5 text-sm font-semibold capitalize transition ${
+                  view === option ? "bg-[var(--accent)] text-[var(--accent-ink)]" : "text-[var(--ink-soft)]"
+                }`}
+              >
+                {option === "feed" ? "List" : "Map"}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -141,6 +141,15 @@ input[type="range"] {
   font-weight: 700;
 }
 
+/* Hide scrollbar on horizontal pill strips */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
