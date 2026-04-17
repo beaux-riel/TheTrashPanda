@@ -29,15 +29,6 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 no-underline">
-          <div className="relative h-9 w-9 flex-shrink-0 sm:h-10 sm:w-10">
-            <Image
-              src="/images/bandit/hero-tomato.webp"
-              alt="Bandit"
-              fill
-              className="object-contain"
-              sizes="40px"
-            />
-          </div>
           <div>
             <span className="font-display text-xl text-[var(--ink)] sm:text-2xl lg:text-3xl">
               The Trash Panda

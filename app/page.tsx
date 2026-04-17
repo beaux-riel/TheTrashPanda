@@ -64,14 +64,14 @@ export default async function HomePage() {
           </dl>
         </div>
 
-        {/* Bandit card — smaller on mobile */}
-        <div className="flex flex-row items-center gap-4 rounded-2xl border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-4 shadow-card sm:rounded-[36px] sm:p-6 lg:flex-col lg:justify-center">
+        {/* Bandit card — image large, subtext beneath */}
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-4 shadow-card sm:rounded-[36px] sm:p-6">
           <BanditIllustration
             variant={banditVariant}
             priority
-            className="w-24 flex-shrink-0 sm:w-32 lg:max-w-[280px] lg:w-auto"
+            className="w-48 sm:w-56 lg:max-w-[320px] lg:w-auto"
           />
-          <p className="text-sm font-medium italic text-[var(--ink-soft)] lg:mt-3 lg:text-center">
+          <p className="text-center text-sm font-medium italic text-[var(--ink-soft)]">
             🦝 {greeting}
           </p>
         </div>
