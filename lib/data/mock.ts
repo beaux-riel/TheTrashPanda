@@ -11,6 +11,8 @@ export type Producer = {
   bio: string;
   categories: string[];
   locationLabel: string;
+  lat: number;
+  lng: number;
   pickupDetails: string;
   scheduleSummary: string;
   followerCount: number;
@@ -26,7 +28,10 @@ export type Listing = {
   priceLabel: string;
   distanceLabel: string;
   postedLabel: string;
+  postedAt: string;
   locationLabel: string;
+  lat: number;
+  lng: number;
   views: number;
   status: "active" | "gone" | "expired";
   description: string;
@@ -81,12 +86,16 @@ export type CommunitySnapshot = {
 };
 
 export const categoryPalette: Record<string, string> = {
-  Eggs: "#F4D87A",
-  Produce: "#7EB36F",
-  "Baked Goods": "#C98A54",
-  Honey: "#DAA520",
-  Plants: "#5D8C62",
-  Other: "#8B6F5B"
+  Eggs: "#DAA520",
+  Produce: "#3A5A40",
+  "Baked Goods": "#D94F30",
+  Preserved: "#8B6914",
+  Dairy: "#4A90D9",
+  "Meat & Fish": "#8B2500",
+  Honey: "#FFB300",
+  Plants: "#2E8B57",
+  "Prepared Food": "#CD853F",
+  Other: "#888888"
 };
 
 export const producers: Producer[] = [
@@ -97,30 +106,36 @@ export const producers: Producer[] = [
     bio: "Eggs, greens, and a suspicious amount of dill from the upper end of Cranberry.",
     categories: ["Eggs", "Produce", "Plants"],
     locationLabel: "Cranberry, Powell River",
+    lat: 49.868,
+    lng: -124.51,
     pickupDetails: "Porch cooler by the red gate. If Bandit beats you there, be polite.",
     scheduleSummary: "Tue, Thu, Sat · 8am to noon",
     followerCount: 24,
     activeListingIds: ["listing-eggs", "listing-kale", "listing-seedlings"]
   },
   {
-    id: "producer-sunshine-oven",
-    slug: "sunshine-oven",
-    name: "Sunshine Oven",
+    id: "producer-shoreline-sourdough",
+    slug: "shoreline-sourdough",
+    name: "Shoreline Sourdough",
     bio: "Small-batch bread near Willingdon Beach. Sourdough first, gossip second.",
     categories: ["Baked Goods"],
     locationLabel: "Willingdon Beach, Powell River",
+    lat: 49.8445,
+    lng: -124.5265,
     pickupDetails: "Saturday table by the blue van.",
     scheduleSummary: "Wed to Sat · 7am to 1pm",
     followerCount: 31,
     activeListingIds: ["listing-sourdough"]
   },
   {
-    id: "producer-tidewater",
-    slug: "tidewater-honey",
-    name: "Tidewater Honey",
-    bio: "Wildflower honey and beeswax things from just past the ferry lineups.",
-    categories: ["Honey", "Other"],
+    id: "producer-townsite-garden-collective",
+    slug: "townsite-garden-collective",
+    name: "Townsite Garden Collective",
+    bio: "Neighbour-grown jars, herbs, and honey from the Townsite side, where everyone knows who forgot their basket.",
+    categories: ["Honey", "Preserved", "Other"],
     locationLabel: "Townsite, Powell River",
+    lat: 49.837,
+    lng: -124.543,
     pickupDetails: "Text the gate bell and give the bees a respectful wave.",
     scheduleSummary: "Fri & Sat · 10am to 4pm",
     followerCount: 16,
@@ -138,7 +153,10 @@ export const listings: Listing[] = [
     priceLabel: "$6 / dozen",
     distanceLabel: "900m away",
     postedLabel: "posted 28 minutes ago",
+    postedAt: "2026-04-17T13:32:00-07:00",
     locationLabel: "Cranberry pickup porch",
+    lat: 49.8682,
+    lng: -124.5094,
     views: 47,
     status: "active",
     description: "Brown and blue eggs. Neighbours keep calling them the fancy breakfast marbles.",
@@ -153,7 +171,10 @@ export const listings: Listing[] = [
     priceLabel: "Honour system jar",
     distanceLabel: "900m away",
     postedLabel: "posted 2 hours ago",
+    postedAt: "2026-04-17T11:58:00-07:00",
     locationLabel: "Cranberry pickup porch",
+    lat: 49.8675,
+    lng: -124.5111,
     views: 19,
     status: "active",
     description: "Still crisp, still not winning any popularity contests with children.",
@@ -168,7 +189,10 @@ export const listings: Listing[] = [
     priceLabel: "$4 each",
     distanceLabel: "900m away",
     postedLabel: "posted yesterday",
+    postedAt: "2026-04-16T14:15:00-07:00",
     locationLabel: "Cranberry pickup porch",
+    lat: 49.8691,
+    lng: -124.5123,
     views: 36,
     status: "active",
     description: "Sturdy little things. Already plotting world domination from their trays.",
@@ -176,14 +200,17 @@ export const listings: Listing[] = [
   },
   {
     id: "listing-sourdough",
-    producerId: "producer-sunshine-oven",
+    producerId: "producer-shoreline-sourdough",
     title: "Crackly sourdough loaves",
     category: "Baked Goods",
     quantity: "some",
     priceLabel: "$8 loaf",
     distanceLabel: "2.3km away",
     postedLabel: "posted 45 minutes ago",
+    postedAt: "2026-04-17T13:15:00-07:00",
     locationLabel: "Willingdon Beach table",
+    lat: 49.8449,
+    lng: -124.5258,
     views: 58,
     status: "active",
     description: "Still warm if the ferry gods are kind and the oven behaved.",
@@ -191,14 +218,17 @@ export const listings: Listing[] = [
   },
   {
     id: "listing-honey",
-    producerId: "producer-tidewater",
+    producerId: "producer-townsite-garden-collective",
     title: "Spring wildflower honey",
     category: "Honey",
     quantity: "last_few",
     priceLabel: "$14 jar",
     distanceLabel: "3.1km away",
     postedLabel: "posted today",
+    postedAt: "2026-04-17T09:12:00-07:00",
     locationLabel: "Townsite garden gate",
+    lat: 49.8375,
+    lng: -124.5422,
     views: 41,
     status: "active",
     description: "Sunny, floral, and absolutely not for the impatient tea stirrer.",
@@ -210,8 +240,8 @@ export const initialFollows: Follow[] = [
   {
     id: "follow-1",
     type: "producer",
-    label: "Sunshine Oven",
-    producerId: "producer-sunshine-oven",
+    label: "Shoreline Sourdough",
+    producerId: "producer-shoreline-sourdough",
     frequency: "immediate",
     muted: false
   },
@@ -237,7 +267,7 @@ export const initialFollows: Follow[] = [
 export const initialNotifications: NotificationItem[] = [
   {
     id: "notif-1",
-    title: "🦝 Sunshine Oven just posted crackly sourdough",
+    title: "🦝 Shoreline Sourdough just posted crackly sourdough",
     body: "Willingdon Beach is smelling smug again. There are still a few loaves left.",
     href: "/listing/listing-sourdough",
     createdAt: "7 minutes ago",
@@ -257,7 +287,7 @@ export const initialNotifications: NotificationItem[] = [
     id: "notif-3",
     title: "Loop check near Willingdon Beach",
     body: "A new bread listing popped inside your watched patch. Nice catch.",
-    href: "/producer/sunshine-oven",
+    href: "/producer/shoreline-sourdough",
     createdAt: "Today at 8:02am",
     unread: false,
     kind: "area"

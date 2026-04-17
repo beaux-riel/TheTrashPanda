@@ -10,6 +10,7 @@ import { useHarvestLink } from "@/hooks/use-harvestlink";
 
 const navItems = [
   { href: "/", label: "Map-ish" },
+  { href: "/onboarding", label: "Start here" },
   { href: "/notifications", label: "Bell" },
   { href: "/dashboard", label: "Producer den" },
   { href: "/settings/notifications", label: "Pings" }

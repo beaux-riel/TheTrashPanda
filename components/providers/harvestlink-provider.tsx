@@ -323,6 +323,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
           ...listing,
           id: `listing-${Date.now()}`,
           postedLabel: "posted just now",
+          postedAt: new Date().toISOString(),
           status: "active",
           availableUntil: "7 days from now"
         };
@@ -354,6 +355,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
           id: `listing-${Date.now()}`,
           status: "active",
           postedLabel: "posted just now",
+          postedAt: new Date().toISOString(),
           views: 0,
           availableUntil: "7 days from now"
         };
@@ -384,6 +386,7 @@ export function HarvestLinkProvider({ children }: { children: ReactNode }) {
       notifications,
       promptContext,
       schedule,
+      dashboardProducer,
       unreadCount
     ]
   );
