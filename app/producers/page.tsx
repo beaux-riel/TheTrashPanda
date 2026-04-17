@@ -1,0 +1,89 @@
+import Link from "next/link";
+
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { buttonStyles } from "@/components/ui/button";
+import { getProducersData, getListingsData } from "@/lib/data/bridge";
+
+export const metadata = {
+  title: "Producers",
+  description: "Browse local food producers in Powell River, BC.",
+};
+
+export default async function ProducersPage() {
+  const [producers, listings] = await Promise.all([
+    getProducersData(),
+    getListingsData(),
+  ]);
+
+  // Count active listings per producer
+  const listingCounts = new Map<string, number>();
+  for (const listing of listings) {
+    if (listing.status === "active") {
+      listingCounts.set(
+        listing.producerId,
+        (listingCounts.get(listing.producerId) ?? 0) + 1
+      );
+    }
+  }
+
+  return (
+    <div className="space-y-6 py-2 sm:py-4">
+      <div>
+        <h1 className="font-display text-3xl text-[var(--ink)] sm:text-4xl">
+          Local Producers
+        </h1>
+        <p className="mt-1 text-sm text-[var(--ink-soft)] sm:text-base">
+          {producers.length} producers in the Powell River food loop.
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {producers.map((producer) => {
+          const count = listingCounts.get(producer.id) ?? 0;
+          return (
+            <Link key={producer.id} href={`/producer/${producer.slug}`}>
+              <Card className="flex h-full flex-col gap-3 p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="flex items-start justify-between gap-2">
+                  <h2 className="font-display text-xl text-[var(--ink)] sm:text-2xl">
+                    {producer.name}
+                  </h2>
+                  {count > 0 && (
+                    <Badge tone="gold" className="shrink-0">
+                      {count} listing{count !== 1 ? "s" : ""}
+                    </Badge>
+                  )}
+                </div>
+                <p className="line-clamp-3 text-sm leading-6 text-[var(--ink-soft)]">
+                  {producer.bio}
+                </p>
+                <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
+                  {producer.categories.map((cat) => (
+                    <span
+                      key={cat}
+                      className="rounded-full bg-[var(--surface-strong)] px-2.5 py-1 text-xs font-semibold text-[var(--ink-soft)]"
+                    >
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-xs text-[var(--ink-soft)]">
+                  📍 {producer.locationLabel}
+                </p>
+              </Card>
+            </Link>
+          );
+        })}
+      </div>
+
+      <div className="text-center">
+        <p className="text-sm text-[var(--ink-soft)]">
+          Know a local producer who should be here?
+        </p>
+        <Link className={buttonStyles("secondary") + " mt-2 inline-block"} href="/onboarding">
+          Add a producer
+        </Link>
+      </div>
+    </div>
+  );
+}

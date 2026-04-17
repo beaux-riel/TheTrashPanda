@@ -44,7 +44,6 @@ export async function fetchListingsClient(): Promise<Listing[]> {
     }
 
     return data.map((row: any) => {
-      const coords = row.location as { coordinates?: [number, number] } | null;
       return {
         id: row.id,
         producerId: row.producer_id,
@@ -56,8 +55,8 @@ export async function fetchListingsClient(): Promise<Listing[]> {
         postedLabel: `posted ${timeAgo(row.created_at)}`,
         postedAt: row.created_at,
         locationLabel: row.location_label ?? "",
-        lat: coords?.coordinates?.[1] ?? 0,
-        lng: coords?.coordinates?.[0] ?? 0,
+        lat: row.lat ?? 0,
+        lng: row.lng ?? 0,
         views: 0,
         status: row.status,
         description: row.description ?? "",
@@ -97,7 +96,6 @@ export async function fetchProducersClient(): Promise<Producer[]> {
     }
 
     return data.map((row: any) => {
-      const coords = row.location as { coordinates?: [number, number] } | null;
       return {
         id: row.id,
         slug: row.display_name?.toLowerCase().replace(/\s+/g, "-") ?? row.id,
@@ -105,8 +103,8 @@ export async function fetchProducersClient(): Promise<Producer[]> {
         bio: row.bio ?? "",
         categories: row.categories ?? [],
         locationLabel: row.location_label ?? "",
-        lat: coords?.coordinates?.[1] ?? 0,
-        lng: coords?.coordinates?.[0] ?? 0,
+        lat: row.lat ?? 0,
+        lng: row.lng ?? 0,
         pickupDetails: row.pickup_details ?? "",
         scheduleSummary: row.schedule_summary ?? "",
         followerCount: 0,
