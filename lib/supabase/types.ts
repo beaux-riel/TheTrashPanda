@@ -204,6 +204,35 @@ export type Database = {
         Update: Record<string, never>;
         Relationships: [];
       };
+
+      external_signals: {
+        Row: {
+          id: string;
+          signal_type: SignalType;
+          source: string | null;
+          area_label: string | null;
+          value_numeric: number | null;
+          value_text: string | null;
+          unit: string | null;
+          metadata: Json;
+          recorded_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          signal_type: SignalType;
+          source?: string | null;
+          area_label?: string | null;
+          value_numeric?: number | null;
+          value_text?: string | null;
+          unit?: string | null;
+          metadata?: Json;
+          recorded_at?: string;
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -212,8 +241,18 @@ export type Database = {
   };
 };
 
+export type SignalType =
+  | "fuel_price"
+  | "ferry_status"
+  | "weather"
+  | "grocery_price"
+  | "supply_alert"
+  | "seasonal_marker";
+
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 export type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
 export type FollowRow = Database["public"]["Tables"]["follows"]["Row"];
 export type NotificationRow = Database["public"]["Tables"]["notifications"]["Row"];
 export type EventInsert = Database["public"]["Tables"]["events"]["Insert"];
+export type ExternalSignalRow = Database["public"]["Tables"]["external_signals"]["Row"];
+export type ExternalSignalInsert = Database["public"]["Tables"]["external_signals"]["Insert"];

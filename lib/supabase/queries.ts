@@ -435,5 +435,62 @@ function haversineMeters(lng1: number, lat1: number, lng2: number, lat2: number)
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
 }
 
+// ---------------------------------------------------------------------------
+// external signals
+// ---------------------------------------------------------------------------
+
+import type { ExternalSignalRow, SignalType } from "./types";
+
+export async function getSignals(
+  params: {
+    type?: SignalType;
+    areaLabel?: string;
+    since?: string;
+    limit?: number;
+  },
+  client?: HL | null
+): Promise<ExternalSignalRow[]> {
+  const supabase = resolveClient(client);
+  if (!supabase) return [];
+
+  let query = supabase
+    .from("external_signals")
+    .select("*")
+    .order("recorded_at", { ascending: false })
+    .limit(params.limit ?? 100);
+
+  if (params.type) query = query.eq("signal_type", params.type);
+  if (params.areaLabel) query = query.eq("area_label", params.areaLabel);
+  if (params.since) query = query.gte("recorded_at", params.since);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data as ExternalSignalRow[]) ?? [];
+}
+
+export async function recordSignal(input: {
+  signalType: SignalType;
+  source?: string;
+  areaLabel?: string;
+  valueNumeric?: number;
+  valueText?: string;
+  unit?: string;
+  metadata?: Json;
+  recordedAt?: string;
+}): Promise<void> {
+  const supabase = createServiceSupabaseClient();
+  if (!supabase) return;
+  await supabase.from("external_signals").insert({
+    signal_type: input.signalType,
+    source: input.source ?? null,
+    area_label: input.areaLabel ?? null,
+    value_numeric: input.valueNumeric ?? null,
+    value_text: input.valueText ?? null,
+    unit: input.unit ?? null,
+    metadata: input.metadata ?? {},
+    recorded_at: input.recordedAt ?? new Date().toISOString()
+  } as never);
+}
+
 // Re-export common types so consumers don't need to import from /types.
-export type { FollowType, Quantity, ListingStatus, NotificationFrequency, EventType };
+export type { FollowType, Quantity, ListingStatus, NotificationFrequency, EventType, SignalType };

@@ -5,17 +5,18 @@ import { FollowButton } from "@/components/notifications/follow-button";
 import { ListingCard } from "@/components/listings/listing-card";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { listings, producers } from "@/lib/data/mock";
+import { getProducerData, getListingsData } from "@/lib/data/bridge";
 
-export default function ProducerPage({ params }: { params: { id: string } }) {
-  const foundProducer = producers.find((item) => item.slug === params.id);
+export default async function ProducerPage({ params }: { params: { id: string } }) {
+  const foundProducer = await getProducerData(params.id);
 
   if (!foundProducer) {
     notFound();
   }
 
   const producer = foundProducer;
-  const producerListings = listings.filter((listing) => listing.producerId === producer.id && listing.status === "active");
+  const allListings = await getListingsData();
+  const producerListings = allListings.filter((listing) => listing.producerId === producer.id && listing.status === "active");
 
   return (
     <div className="space-y-6 py-4">

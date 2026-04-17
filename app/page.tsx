@@ -4,9 +4,14 @@ import { BanditIllustration } from "@/components/brand/bandit-illustration";
 import { HomeDiscovery } from "@/components/discovery/home-discovery";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
-import { buildCommunitySnapshot, producers } from "@/lib/data/mock";
+import { buildCommunitySnapshot } from "@/lib/data/mock";
+import { getListingsData, getProducersData } from "@/lib/data/bridge";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [listings, producers] = await Promise.all([
+    getListingsData(),
+    getProducersData()
+  ]);
   const snapshot = buildCommunitySnapshot();
 
   return (

@@ -3,10 +3,10 @@ import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { getListingById, getListingProducer } from "@/lib/data/mock";
+import { getListingData, getProducerData } from "@/lib/data/bridge";
 
-export function generateMetadata({ params }: { params: { id: string } }): Metadata {
-  const listing = getListingById(params.id);
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const listing = await getListingData(params.id);
 
   if (!listing) {
     return {
@@ -14,7 +14,7 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
     };
   }
 
-  const producer = getListingProducer(listing);
+  const producer = await getProducerData(listing.producerId);
   const title = `${listing.title} in Powell River`;
   const description = `${producer?.name ?? "Neighbour"} listed ${listing.title}. ${listing.distanceLabel}. ${listing.priceLabel}.`;
 
@@ -29,15 +29,15 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
   };
 }
 
-export default function ListingPage({ params }: { params: { id: string } }) {
-  const foundListing = getListingById(params.id);
+export default async function ListingPage({ params }: { params: { id: string } }) {
+  const foundListing = await getListingData(params.id);
 
   if (!foundListing) {
     notFound();
   }
 
   const listing = foundListing;
-  const foundProducer = getListingProducer(listing);
+  const foundProducer = await getProducerData(listing.producerId);
 
   if (!foundProducer) {
     notFound();
