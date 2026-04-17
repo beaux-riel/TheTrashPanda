@@ -305,20 +305,22 @@ export async function toggleFollow(
   const supabase = resolveClient(client);
   if (!supabase) return { action: "removed", row: null };
 
-  const matchQuery = supabase
+  let matchQuery = supabase
     .from("follows")
     .select("*")
     .eq("follower_id", userId)
     .eq("follow_type", target.type)
     .limit(1);
 
-  if (target.type === "producer") matchQuery.eq("producer_id", target.producerId);
-  if (target.type === "category") matchQuery.eq("category", target.category);
+  // Fix: the original code called .eq() on the builder without reassigning,
+  // so producer/category narrowing was silently dropped.
+  if (target.type === "producer") matchQuery = matchQuery.eq("producer_id", target.producerId);
+  if (target.type === "category") matchQuery = matchQuery.eq("category", target.category);
 
   const { data: existing } = await matchQuery.maybeSingle();
 
   if (existing) {
-    await supabase.from("follows").delete().eq("id", existing.id);
+    await supabase.from("follows").delete().eq("id", (existing as FollowRow).id);
     void logEvent("follow.removed", {
       category: (existing as FollowRow).category,
       metadata: { followType: (existing as FollowRow).follow_type }
@@ -351,7 +353,14 @@ export async function toggleFollow(
     .insert(insert as never)
     .select("*")
     .single();
-  if (error) throw error;
+  if (error) {
+    // Race window: unique-index violation means a concurrent toggle already
+    // inserted the row. Treat as "already following" instead of failing.
+    if ((error as { code?: string }).code === "23505") {
+      return { action: "added", row: null };
+    }
+    throw error;
+  }
 
   const row = data as FollowRow;
   void logEvent("follow.created", {
