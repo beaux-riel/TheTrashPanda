@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -62,9 +63,21 @@ export default async function ListingPage({ params }: { params: { id: string } }
         </div>
       </Card>
       <Card className="space-y-4">
+        <div className="relative mx-auto h-32 w-32">
+          <Image
+            src="/images/bandit/hero-tomato.webp"
+            alt="Bandit approves this listing"
+            fill
+            className="object-contain"
+            sizes="128px"
+          />
+        </div>
         <h2 className="font-display text-3xl text-[var(--ink)]">Neighbour note</h2>
         <p className="text-sm leading-6 text-[var(--ink-soft)]">
           This page is server-rendered so search engines and shared links get the actual listing details, not a blank shrug. That covers the SEO requirement without pretending the rest of discovery is finished yet.
+        </p>
+        <p className="text-xs italic text-[var(--ink-soft)]">
+          🦝 Bandit says: support your neighbours. Every dollar spent local stays local.
         </p>
       </Card>
     </div>

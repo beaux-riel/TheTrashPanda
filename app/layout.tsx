@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { CelebrationToast } from "@/components/layout/celebration-toast";
 import { PermissionBanner } from "@/components/layout/permission-banner";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { HarvestLinkProvider } from "@/components/providers/harvestlink-provider";
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <main className="mx-auto flex min-h-[calc(100vh-180px)] max-w-7xl flex-col gap-8 px-4 pb-20 sm:px-6 lg:px-8">
               {children}
             </main>
+            <SiteFooter />
             <InstallPrompt />
             <CelebrationToast />
           </HarvestLinkProvider>
