@@ -36,7 +36,12 @@ export async function fetchListingsClient(): Promise<Listing[]> {
       .order("created_at", { ascending: false })
       .limit(50);
 
-    if (error || !data || data.length === 0) return [...mockListings];
+    if (error || !data || data.length === 0) {
+      if (error && process.env.NODE_ENV === "development") {
+        console.error("[client-bridge] fetchListingsClient failed", error);
+      }
+      return [...mockListings];
+    }
 
     return data.map((row: any) => {
       const coords = row.location as { coordinates?: [number, number] } | null;
@@ -65,7 +70,10 @@ export async function fetchListingsClient(): Promise<Listing[]> {
           : "Until gone"
       };
     });
-  } catch {
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[client-bridge] fetchListingsClient threw", err);
+    }
     return [...mockListings];
   }
 }
@@ -81,7 +89,12 @@ export async function fetchProducersClient(): Promise<Producer[]> {
       .eq("is_producer", true)
       .order("display_name");
 
-    if (error || !data || data.length === 0) return [...mockProducers];
+    if (error || !data || data.length === 0) {
+      if (error && process.env.NODE_ENV === "development") {
+        console.error("[client-bridge] fetchProducersClient failed", error);
+      }
+      return [...mockProducers];
+    }
 
     return data.map((row: any) => {
       const coords = row.location as { coordinates?: [number, number] } | null;
@@ -100,7 +113,10 @@ export async function fetchProducersClient(): Promise<Producer[]> {
         activeListingIds: []
       };
     });
-  } catch {
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[client-bridge] fetchProducersClient threw", err);
+    }
     return [...mockProducers];
   }
 }

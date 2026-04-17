@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { CelebrationToast } from "@/components/layout/celebration-toast";
+import { DemoDataBanner } from "@/components/layout/demo-data-banner";
 import { PermissionBanner } from "@/components/layout/permission-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -42,7 +43,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <AuthProvider>
           <HarvestLinkProvider>
             <SiteHeader />
-            <div className="px-4 py-4 sm:px-6 lg:px-8">
+            <div className="space-y-3 px-4 py-4 sm:px-6 lg:px-8">
+              <DemoDataBanner />
               <PermissionBanner />
             </div>
             <main className="mx-auto flex min-h-[calc(100vh-180px)] max-w-7xl flex-col gap-8 px-4 pb-20 sm:px-6 lg:px-8">
