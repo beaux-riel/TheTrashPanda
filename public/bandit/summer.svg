@@ -1,0 +1,16 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit summer</title>
+  <rect width="320" height="320" rx="40" fill="#FFF3DD"/>
+  <circle cx="250" cy="74" r="26" fill="#F8D45C"/>
+  <ellipse cx="160" cy="264" rx="86" ry="20" fill="#E5D8C3"/>
+  <ellipse cx="160" cy="144" rx="58" ry="46" fill="#6E6660"/>
+  <path d="M118 92L140 118H106L118 92Z" fill="#2D2A26"/>
+  <path d="M202 92L180 118H214L202 92Z" fill="#2D2A26"/>
+  <rect x="136" y="142" width="50" height="12" rx="6" fill="#2D2A26"/>
+  <path d="M130 148C136 136 148 130 160 130C172 130 184 136 190 148" stroke="#2D2A26" stroke-width="6" stroke-linecap="round"/>
+  <rect x="114" y="190" width="92" height="58" rx="28" fill="#D94F30"/>
+  <circle cx="110" cy="228" r="10" fill="#7E2D1B"/>
+  <circle cx="214" cy="228" r="10" fill="#7E2D1B"/>
+  <circle cx="102" cy="84" r="10" fill="#DAA520"/>
+  <circle cx="84" cy="100" r="10" fill="#D94F30"/>
+</svg>

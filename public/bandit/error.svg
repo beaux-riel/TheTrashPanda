@@ -1,0 +1,19 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit error state</title>
+  <rect width="320" height="320" rx="40" fill="#F5F0E8"/>
+  <ellipse cx="160" cy="266" rx="92" ry="22" fill="#E5D8C9"/>
+  <rect x="70" y="150" width="78" height="92" rx="18" fill="#5A5450"/>
+  <rect x="82" y="164" width="54" height="64" rx="12" fill="#2D2A26"/>
+  <circle cx="110" cy="242" r="10" fill="#D94F30"/>
+  <path d="M160 100C200 100 232 132 232 172V214H88V172C88 132 120 100 160 100Z" fill="#7D746E"/>
+  <path d="M120 98L146 124H108L120 98Z" fill="#2D2A26"/>
+  <path d="M200 98L174 124H212L200 98Z" fill="#2D2A26"/>
+  <ellipse cx="160" cy="154" rx="26" ry="18" fill="#F5F0E8"/>
+  <circle cx="148" cy="148" r="5" fill="#2D2A26"/>
+  <circle cx="174" cy="148" r="5" fill="#2D2A26"/>
+  <path d="M148 170C154 166 166 166 172 170" stroke="#2D2A26" stroke-width="4" stroke-linecap="round"/>
+  <path d="M124 212L102 242" stroke="#7D746E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M196 212L214 240" stroke="#7D746E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M242 136L260 154" stroke="#D94F30" stroke-width="8" stroke-linecap="round"/>
+  <path d="M260 136L242 154" stroke="#D94F30" stroke-width="8" stroke-linecap="round"/>
+</svg>

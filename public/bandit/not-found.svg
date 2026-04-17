@@ -1,0 +1,16 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit 404</title>
+  <rect width="320" height="320" rx="40" fill="#F5F0E8"/>
+  <ellipse cx="160" cy="266" rx="88" ry="22" fill="#E5D8C9"/>
+  <path d="M94 238C94 214 113.402 194.5 137.333 194.5H182.667C206.598 194.5 226 214 226 238V242H94V238Z" fill="#D8A96A"/>
+  <path d="M112 194H208L194 128H126L112 194Z" fill="#F4E6D3"/>
+  <path d="M140 126H180" stroke="#C6A27B" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="160" cy="130" rx="58" ry="46" fill="#726B65"/>
+  <path d="M118 86L142 110H106L118 86Z" fill="#2D2A26"/>
+  <path d="M202 86L178 110H214L202 86Z" fill="#2D2A26"/>
+  <ellipse cx="160" cy="152" rx="26" ry="18" fill="#F5F0E8"/>
+  <circle cx="148" cy="148" r="5" fill="#2D2A26"/>
+  <circle cx="174" cy="148" r="5" fill="#2D2A26"/>
+  <path d="M150 166C154 170 166 170 170 166" stroke="#2D2A26" stroke-width="4" stroke-linecap="round"/>
+  <text x="64" y="66" fill="#D94F30" font-size="42" font-family="Georgia, serif">404</text>
+</svg>

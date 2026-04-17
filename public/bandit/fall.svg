@@ -1,0 +1,17 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Bandit fall</title>
+  <rect width="320" height="320" rx="40" fill="#F6EADF"/>
+  <ellipse cx="160" cy="264" rx="92" ry="22" fill="#E6D2C3"/>
+  <ellipse cx="160" cy="144" rx="58" ry="46" fill="#6E6660"/>
+  <path d="M118 92L140 118H106L118 92Z" fill="#2D2A26"/>
+  <path d="M202 92L180 118H214L202 92Z" fill="#2D2A26"/>
+  <ellipse cx="160" cy="166" rx="24" ry="18" fill="#F5F0E8"/>
+  <circle cx="148" cy="162" r="5" fill="#2D2A26"/>
+  <circle cx="172" cy="162" r="5" fill="#2D2A26"/>
+  <path d="M146 176C152 180 168 180 174 176" stroke="#2D2A26" stroke-width="4" stroke-linecap="round"/>
+  <rect x="116" y="194" width="88" height="50" rx="24" fill="#C77D3A"/>
+  <path d="M104 212L78 244" stroke="#7A4A24" stroke-width="8" stroke-linecap="round"/>
+  <path d="M216 212L242 244" stroke="#7A4A24" stroke-width="8" stroke-linecap="round"/>
+  <path d="M250 206L228 160" stroke="#A95A2A" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="258" cy="216" r="16" fill="#DAA520"/>
+</svg>
