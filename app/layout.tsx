@@ -5,6 +5,7 @@ import { CelebrationToast } from "@/components/layout/celebration-toast";
 import { PermissionBanner } from "@/components/layout/permission-banner";
 import { SiteHeader } from "@/components/layout/site-header";
 import { HarvestLinkProvider } from "@/components/providers/harvestlink-provider";
+import { AuthProvider } from "@/lib/auth/auth-provider";
 import { getSeasonFromDate } from "@/lib/utils/season";
 
 import "./globals.css";
@@ -36,16 +37,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html data-season={season} lang="en">
       <body>
-        <HarvestLinkProvider>
-          <SiteHeader />
-          <div className="px-4 py-4 sm:px-6 lg:px-8">
-            <PermissionBanner />
-          </div>
-          <main className="mx-auto flex min-h-[calc(100vh-180px)] max-w-7xl flex-col gap-8 px-4 pb-20 sm:px-6 lg:px-8">
-            {children}
-          </main>
-          <CelebrationToast />
-        </HarvestLinkProvider>
+        <AuthProvider>
+          <HarvestLinkProvider>
+            <SiteHeader />
+            <div className="px-4 py-4 sm:px-6 lg:px-8">
+              <PermissionBanner />
+            </div>
+            <main className="mx-auto flex min-h-[calc(100vh-180px)] max-w-7xl flex-col gap-8 px-4 pb-20 sm:px-6 lg:px-8">
+              {children}
+            </main>
+            <CelebrationToast />
+          </HarvestLinkProvider>
+        </AuthProvider>
       </body>
     </html>
   );
