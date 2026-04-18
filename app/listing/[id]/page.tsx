@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { ContributorBadge } from "@/components/contributions/contributor-badge";
 import { FreshnessWidget } from "@/components/contributions/freshness-widget";
+import { ReportButton } from "@/components/contributions/report-button";
 import { RevisionHistory } from "@/components/contributions/revision-history";
 import { StaleBanner } from "@/components/contributions/stale-banner";
 import { ListingCard } from "@/components/listings/listing-card";
@@ -75,6 +76,7 @@ export default async function ListingPage({ params }: { params: { id: string } }
               />
             ) : null}
             <RevisionHistory scope={{ listingId: listing.id }} />
+            <ReportButton targetType="listing" targetId={listing.id} />
           </div>
           <div className="space-y-2">
             <h1 className="font-display text-5xl text-[var(--ink)]">{listing.title}</h1>

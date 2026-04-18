@@ -8,6 +8,7 @@ import type { ProfileCreatePayload } from "@/lib/types/contributions";
 import { cn } from "@/lib/utils/cn";
 
 import { Modal } from "./modal";
+import { PrivacyGuard } from "./privacy-guard";
 
 type AddNeighbourFormProps = {
   trustTier?: "new" | "trusted" | "verified";
@@ -157,6 +158,7 @@ export function AddNeighbourForm({
                 placeholder="Backyard eggs, sourdough on Saturdays, more zucchini than any one household should have…"
                 className={textareaClass}
               />
+              <PrivacyGuard value={form.bio} className="mt-1.5" />
             </Field>
 
             <Field label="Categories" hint="Pick any that fit.">
@@ -194,6 +196,7 @@ export function AddNeighbourForm({
                 placeholder="Westview, Powell River"
                 className={inputClass}
               />
+              <PrivacyGuard value={form.locationLabel} className="mt-1.5" />
             </Field>
 
             <Field label="Pickup details" htmlFor="neighbour-pickup">

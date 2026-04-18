@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 
 import {
+  contributionLimiter,
+  isDuplicateSpam,
+  rateLimitResponse
+} from "@/lib/middleware/rate-limit";
+import {
   applyContributionPayload,
   emitContributionEvent,
   getTrustTier,
@@ -85,6 +90,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const limit = contributionLimiter(user.id);
+  if (limit.limited) {
+    return rateLimitResponse(limit);
+  }
+
   const body = await request.json().catch(() => null);
   const payload = parsePayload(body);
   if (!payload) {
@@ -94,6 +104,16 @@ export async function POST(request: Request) {
   const validationError = validateContributionPayload(payload);
   if (validationError) {
     return NextResponse.json({ error: validationError }, { status: 422 });
+  }
+
+  if (isDuplicateSpam(user.id, payload)) {
+    return NextResponse.json(
+      {
+        error:
+          "Looks like we've already got this one from you. Give it a minute before trying again."
+      },
+      { status: 429 }
+    );
   }
 
   const trustTier = await getTrustTier(supabase, user.id);
