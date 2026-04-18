@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { BanditVariant } from "@/components/brand/bandit-illustration";
+import { CommunityStats } from "@/components/contributions/community-stats";
 import { HomeDiscovery } from "@/components/discovery/home-discovery";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -83,6 +84,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Community activity — server component, auto-hides on empty */}
+      <CommunityStats />
 
       {/* Discovery section */}
       <section className="space-y-3 sm:space-y-4">

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { emitEvent } from "@/lib/events/emit";
 import {
   applyContributionPayload,
-  emitContributionEvent,
   getContribution,
   getTrustTier,
   isClaimedOwner,
@@ -75,7 +75,7 @@ export async function POST(
 
   await promoteTrustTier(contribution.contributor_id);
 
-  await emitContributionEvent("contribution.approved", {
+  await emitEvent("contribution.approved", {
     metadata: {
       contributionId: contribution.id,
       type: contribution.type,

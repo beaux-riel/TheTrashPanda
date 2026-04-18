@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { emitEvent } from "@/lib/events/emit";
 import {
-  emitContributionEvent,
   getTrustTier,
   incrementStaleFlag,
   stampFreshnessConfirmed
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     }
   }
 
-  await emitContributionEvent("freshness.voted", {
+  await emitEvent("freshness.voted", {
     metadata: {
       listingId: vote.listing_id,
       voterId: user.id,
@@ -87,10 +87,10 @@ export async function POST(request: Request) {
   });
 
   if (markedGone) {
-    await emitContributionEvent("freshness.stale_flagged", {
+    await emitEvent("freshness.stale_flagged", {
       metadata: { listingId: vote.listing_id, staleFlagCount }
     });
-    await emitContributionEvent("listing.gone", {
+    await emitEvent("listing.gone", {
       metadata: { listingId: vote.listing_id, reason: "stale_threshold", staleFlagCount }
     });
   }

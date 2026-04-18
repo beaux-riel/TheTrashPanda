@@ -9,7 +9,8 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { logEvent } from "./queries";
+import { emitEvent } from "@/lib/events/emit";
+
 import { createServiceSupabaseClient } from "./server";
 import type {
   ContributionRow,
@@ -372,11 +373,12 @@ export async function promoteTrustTier(userId: string): Promise<void> {
 // event emission — thin wrapper so callers don't have to import queries.ts
 // ---------------------------------------------------------------------------
 
+/** @deprecated prefer `emitEvent` from `@/lib/events/emit`. */
 export async function emitContributionEvent(
   type: EventType,
   input: { category?: string | null; metadata?: Json } = {}
 ): Promise<void> {
-  await logEvent(type, {
+  await emitEvent(type, {
     category: input.category ?? null,
     metadata: input.metadata ?? {}
   });

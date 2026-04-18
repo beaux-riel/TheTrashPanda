@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { emitEvent } from "@/lib/events/emit";
 import {
-  emitContributionEvent,
   getContribution,
   getTrustTier,
   isClaimedOwner,
@@ -77,7 +77,7 @@ export async function POST(
     );
   }
 
-  await emitContributionEvent("contribution.reverted", {
+  await emitEvent("contribution.reverted", {
     metadata: {
       contributionId: contribution.id,
       type: contribution.type,

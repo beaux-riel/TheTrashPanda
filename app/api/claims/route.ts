@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { emitContributionEvent } from "@/lib/supabase/contribution-queries";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import type { ClaimVerificationMethod } from "@/lib/supabase/types";
+import { emitEvent } from "@/lib/events/emit";
+import { createServerSupabaseClient, createServiceSupabaseClient } from "@/lib/supabase/server";
+import type { ClaimVerificationMethod, ProfileRow } from "@/lib/supabase/types";
 import type { ClaimPayload } from "@/lib/types/contributions";
 
 const METHODS: ClaimVerificationMethod[] = ["email", "phone", "admin", "in_person"];
@@ -43,10 +43,51 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid claim payload." }, { status: 422 });
   }
 
-  // Phase 1 stub: email/phone verification codes land in Phase 6. For now any
-  // authenticated user can claim an unclaimed profile; the on_producer_claim
-  // trigger promotes them to 'verified' and clears is_community_maintained.
-  const { data, error } = await supabase
+  // 1. Verify the producer profile exists and is community-maintained.
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, display_name, is_producer, is_community_maintained")
+    .eq("id", claim.producer_id)
+    .maybeSingle();
+
+  if (profileError) {
+    return NextResponse.json({ error: profileError.message }, { status: 400 });
+  }
+  if (!profile) {
+    return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+  }
+  if (!profile.is_producer) {
+    return NextResponse.json(
+      { error: "Only producer profiles can be claimed." },
+      { status: 422 }
+    );
+  }
+  if (!profile.is_community_maintained) {
+    return NextResponse.json(
+      { error: "This profile is not community-maintained." },
+      { status: 409 }
+    );
+  }
+
+  // 2. Check not already claimed (pre-insert check for a clearer error; the
+  //    unique constraint on producer_id is the real guarantee).
+  const { data: existing } = await supabase
+    .from("producer_claims")
+    .select("id")
+    .eq("producer_id", claim.producer_id)
+    .maybeSingle();
+  if (existing) {
+    return NextResponse.json(
+      { error: "This profile has already been claimed." },
+      { status: 409 }
+    );
+  }
+
+  // 3. Insert the claim. The on_producer_claim_verified trigger promotes the
+  //    claimant to trust_tier='verified' and clears is_community_maintained on
+  //    the claimed profile. Phase 1 simplification: auto-verify immediately,
+  //    no code sending.
+  const { data: claimRow, error: claimError } = await supabase
     .from("producer_claims")
     .insert({
       producer_id: claim.producer_id,
@@ -56,9 +97,8 @@ export async function POST(request: Request) {
     .select("id, producer_id, verification_method, verified_at")
     .single();
 
-  if (error || !data) {
-    // Unique violation on producer_id → already claimed.
-    const pgCode = (error as { code?: string } | null)?.code;
+  if (claimError || !claimRow) {
+    const pgCode = (claimError as { code?: string } | null)?.code;
     if (pgCode === "23505") {
       return NextResponse.json(
         { error: "This profile has already been claimed." },
@@ -66,12 +106,28 @@ export async function POST(request: Request) {
       );
     }
     return NextResponse.json(
-      { error: error?.message ?? "Failed to record claim." },
+      { error: claimError?.message ?? "Failed to record claim." },
       { status: 400 }
     );
   }
 
-  await emitContributionEvent("profile.claimed", {
+  // 4. Defensively ensure is_community_maintained=false on the profile. The
+  //    trigger should handle this, but RLS on profiles might block cross-user
+  //    writes in edge cases — use the service client as a backstop.
+  let updatedProfile: ProfileRow | null = null;
+  const service = createServiceSupabaseClient();
+  if (service) {
+    const { data: updated } = await service
+      .from("profiles")
+      .update({ is_community_maintained: false })
+      .eq("id", claim.producer_id)
+      .select("*")
+      .maybeSingle();
+    updatedProfile = (updated as ProfileRow | null) ?? null;
+  }
+
+  // 5. Emit the profile.claimed event.
+  await emitEvent("profile.claimed", {
     metadata: {
       producerId: claim.producer_id,
       claimedBy: user.id,
@@ -79,5 +135,9 @@ export async function POST(request: Request) {
     }
   });
 
-  return NextResponse.json({ ok: true, claim: data });
+  return NextResponse.json({
+    ok: true,
+    claim: claimRow,
+    profile: updatedProfile
+  });
 }

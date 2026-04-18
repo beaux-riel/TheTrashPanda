@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { emitEvent } from "@/lib/events/emit";
 import {
   applyContributionPayload,
-  emitContributionEvent,
   getTrustTier,
   promoteTrustTier,
   validateContributionPayload
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
 
   await promoteTrustTier(user.id);
 
-  await emitContributionEvent("contribution.created", {
+  await emitEvent("contribution.created", {
     metadata: {
       contributionId: contribution.id,
       contributorId: user.id,
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
   });
 
   if (autoApprove && !applyError) {
-    await emitContributionEvent("contribution.approved", {
+    await emitEvent("contribution.approved", {
       metadata: {
         contributionId: contribution.id,
         type: contribution.type,
