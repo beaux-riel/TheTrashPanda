@@ -8,6 +8,26 @@ export type FollowType = "producer" | "category" | "area";
 export type NotificationFrequency = "immediate" | "daily" | "off";
 export type NotificationKind = "producer" | "category" | "area" | "system";
 
+export type TrustTier = "new" | "trusted" | "verified";
+
+export type ContributionType =
+  | "profile_create"
+  | "profile_edit"
+  | "listing_create"
+  | "listing_edit"
+  | "availability_update"
+  | "flag_stale"
+  | "confirm_fresh";
+
+export type ContributionStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "auto_approved"
+  | "reverted";
+
+export type ClaimVerificationMethod = "email" | "phone" | "admin" | "in_person";
+
 export type EventType =
   | "listing.created"
   | "listing.updated"
@@ -18,7 +38,14 @@ export type EventType =
   | "demand.view"
   | "demand.follow"
   | "follow.created"
-  | "follow.removed";
+  | "follow.removed"
+  | "contribution.created"
+  | "contribution.approved"
+  | "contribution.rejected"
+  | "contribution.reverted"
+  | "profile.claimed"
+  | "freshness.voted"
+  | "freshness.stale_flagged";
 
 export type Json =
   | string
@@ -54,6 +81,11 @@ export type Database = {
           categories: string[];
           pickup_details: string | null;
           schedule_summary: string | null;
+          trust_tier: TrustTier;
+          contribution_count: number;
+          first_contribution_at: string | null;
+          is_community_maintained: boolean;
+          contributed_by: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -68,6 +100,11 @@ export type Database = {
           categories?: string[];
           pickup_details?: string | null;
           schedule_summary?: string | null;
+          trust_tier?: TrustTier;
+          contribution_count?: number;
+          first_contribution_at?: string | null;
+          is_community_maintained?: boolean;
+          contributed_by?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -89,6 +126,9 @@ export type Database = {
           photos: string[];
           status: ListingStatus;
           available_until: string | null;
+          contributed_by: string | null;
+          freshness_confirmed_at: string | null;
+          stale_flag_count: number;
           created_at: string;
           updated_at: string;
         };
@@ -105,6 +145,9 @@ export type Database = {
           photos?: string[];
           status?: ListingStatus;
           available_until?: string | null;
+          contributed_by?: string | null;
+          freshness_confirmed_at?: string | null;
+          stale_flag_count?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -233,6 +276,79 @@ export type Database = {
         Update: Record<string, never>;
         Relationships: [];
       };
+
+      contributions: {
+        Row: {
+          id: string;
+          contributor_id: string;
+          producer_id: string | null;
+          listing_id: string | null;
+          type: ContributionType;
+          status: ContributionStatus;
+          payload: Json;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          reverted_by: string | null;
+          reverted_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          contributor_id: string;
+          producer_id?: string | null;
+          listing_id?: string | null;
+          type: ContributionType;
+          status?: ContributionStatus;
+          payload: Json;
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          reverted_by?: string | null;
+          reverted_at?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["contributions"]["Insert"]>;
+        Relationships: [];
+      };
+
+      producer_claims: {
+        Row: {
+          id: string;
+          producer_id: string;
+          claimed_by: string;
+          verification_method: ClaimVerificationMethod;
+          verified_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          producer_id: string;
+          claimed_by: string;
+          verification_method: ClaimVerificationMethod;
+          verified_at?: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["producer_claims"]["Insert"]>;
+        Relationships: [];
+      };
+
+      freshness_votes: {
+        Row: {
+          id: string;
+          listing_id: string;
+          voter_id: string;
+          is_fresh: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          listing_id: string;
+          voter_id: string;
+          is_fresh: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["freshness_votes"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -256,3 +372,9 @@ export type NotificationRow = Database["public"]["Tables"]["notifications"]["Row
 export type EventInsert = Database["public"]["Tables"]["events"]["Insert"];
 export type ExternalSignalRow = Database["public"]["Tables"]["external_signals"]["Row"];
 export type ExternalSignalInsert = Database["public"]["Tables"]["external_signals"]["Insert"];
+export type ContributionRow = Database["public"]["Tables"]["contributions"]["Row"];
+export type ContributionInsert = Database["public"]["Tables"]["contributions"]["Insert"];
+export type ProducerClaimRow = Database["public"]["Tables"]["producer_claims"]["Row"];
+export type ProducerClaimInsert = Database["public"]["Tables"]["producer_claims"]["Insert"];
+export type FreshnessVoteRow = Database["public"]["Tables"]["freshness_votes"]["Row"];
+export type FreshnessVoteInsert = Database["public"]["Tables"]["freshness_votes"]["Insert"];
