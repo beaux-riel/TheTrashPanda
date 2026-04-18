@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { AddListingForm } from "@/components/contributions/add-listing-form";
 import { ClaimSection } from "@/components/contributions/claim-section";
+import { ReportButton } from "@/components/contributions/report-button";
 import { RevisionHistory } from "@/components/contributions/revision-history";
 import { CategoryFollowButton } from "@/components/notifications/category-follow-button";
 import { FollowButton } from "@/components/notifications/follow-button";
@@ -47,6 +48,7 @@ export default async function ProducerPage({ params }: { params: { id: string } 
               <CategoryFollowButton key={category} category={category} />
             ))}
             <RevisionHistory scope={{ producerId: producer.id }} />
+            <ReportButton targetType="profile" targetId={producer.id} />
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <Info title="Pickup details" body={producer.pickupDetails} />

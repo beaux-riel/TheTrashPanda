@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { emitEvent } from "@/lib/events/emit";
+import { freshnessLimiter, rateLimitResponse } from "@/lib/middleware/rate-limit";
 import {
   getTrustTier,
   incrementStaleFlag,
@@ -29,6 +30,11 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const limit = freshnessLimiter(user.id);
+  if (limit.limited) {
+    return rateLimitResponse(limit);
   }
 
   const body = await request.json().catch(() => null);

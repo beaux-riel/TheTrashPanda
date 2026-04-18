@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { emitEvent } from "@/lib/events/emit";
+import { claimLimiter, rateLimitResponse } from "@/lib/middleware/rate-limit";
 import { createServerSupabaseClient, createServiceSupabaseClient } from "@/lib/supabase/server";
 import type { ClaimVerificationMethod, ProfileRow } from "@/lib/supabase/types";
 import type { ClaimPayload } from "@/lib/types/contributions";
@@ -35,6 +36,11 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const limit = claimLimiter(user.id);
+  if (limit.limited) {
+    return rateLimitResponse(limit);
   }
 
   const body = await request.json().catch(() => null);
