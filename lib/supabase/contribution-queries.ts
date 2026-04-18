@@ -414,12 +414,21 @@ export async function incrementStaleFlag(
   return { staleFlagCount: nextCount, markedGone: shouldMarkGone };
 }
 
-export async function stampFreshnessConfirmed(listingId: string): Promise<void> {
+export async function stampFreshnessConfirmed(
+  listingId: string,
+  options: { resetStaleCount?: boolean } = {}
+): Promise<void> {
   const service = createServiceSupabaseClient();
   if (!service) return;
+  const update: Record<string, unknown> = {
+    freshness_confirmed_at: new Date().toISOString()
+  };
+  if (options.resetStaleCount) {
+    update.stale_flag_count = 0;
+  }
   await service
     .from("listings")
-    .update({ freshness_confirmed_at: new Date().toISOString() } as never)
+    .update(update as never)
     .eq("id", listingId);
 }
 
