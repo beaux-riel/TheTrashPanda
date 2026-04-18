@@ -184,16 +184,24 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const statusFilter = (searchParams.get("status") ?? "pending") as ContributionStatus;
+  const statusParam = searchParams.get("status");
+  const statusFilter = (statusParam ?? "pending") as ContributionStatus;
   const producerIdFilter = searchParams.get("producer_id");
+  const listingIdFilter = searchParams.get("listing_id");
+  const typeParam = searchParams.get("type");
+  const typeFilter = typeParam && CONTRIBUTION_TYPES.includes(typeParam as ContributionType)
+    ? (typeParam as ContributionType)
+    : null;
 
   const trustTier = await getTrustTier(supabase, user.id);
   const isReviewer = trustTier === "trusted" || trustTier === "verified";
 
-  // Producers querying their own claimed-profile's queue don't need Trusted
-  // tier — they just need a verified claim on that producer_id. Everyone else
-  // needs Trusted+ to see pending contributions.
-  if (!isReviewer) {
+  // Pending contributions are restricted. Anyone can read approved / reverted
+  // history for a specific producer or listing — that's public revision log.
+  const isPendingQuery = statusFilter === "pending";
+  const scoped = Boolean(producerIdFilter || listingIdFilter);
+
+  if (isPendingQuery && !isReviewer) {
     if (!producerIdFilter) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -208,15 +216,33 @@ export async function GET(request: Request) {
     }
   }
 
+  // Non-pending reads without a scope still require reviewer trust — prevents
+  // sweeping the audit log.
+  if (!isPendingQuery && !scoped && !isReviewer) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   let query = supabase
     .from("contributions")
     .select("*")
-    .eq("status", statusFilter)
     .order("created_at", { ascending: false })
     .limit(50);
 
+  if (statusParam) {
+    query = query.eq("status", statusFilter);
+  } else if (!scoped) {
+    // Default to pending when no scope is provided (review queue usage).
+    query = query.eq("status", "pending");
+  }
+
   if (producerIdFilter) {
     query = query.eq("producer_id", producerIdFilter);
+  }
+  if (listingIdFilter) {
+    query = query.eq("listing_id", listingIdFilter);
+  }
+  if (typeFilter) {
+    query = query.eq("type", typeFilter);
   }
 
   const { data, error } = await query;

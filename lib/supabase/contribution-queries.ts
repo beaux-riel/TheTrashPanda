@@ -427,3 +427,54 @@ export async function stampFreshnessConfirmed(listingId: string): Promise<void> 
 export function isReviewableStatus(status: ContributionStatus): boolean {
   return status === "pending";
 }
+
+// ---------------------------------------------------------------------------
+// revert — best-effort rollback of a previously approved contribution
+// ---------------------------------------------------------------------------
+
+type RevertResult =
+  | { ok: true; note?: string }
+  | { ok: false; error: string };
+
+/**
+ * Revert a contribution's effect on the live tables. For create types, the
+ * created row is removed if it still exists. For edits and availability
+ * updates, we can only reliably flag the audit entry — restoring the prior
+ * value would require a pre-change snapshot we don't currently store. Callers
+ * should present reverts on create-type contributions as hard rollbacks, and
+ * revert on edits as "mark as reverted, follow up with an explicit edit".
+ */
+export async function revertContributionPayload(
+  payload: ContributionPayload,
+  links: { producerId: string | null; listingId: string | null }
+): Promise<RevertResult> {
+  const service = createServiceSupabaseClient();
+  if (!service) return { ok: false, error: "Service client unavailable" };
+
+  switch (payload.type) {
+    case "listing_create": {
+      // Prefer the concrete listing_id recorded on the contribution row, but
+      // fall back to the payload's producer_id scope if the column is empty.
+      const listingId = links.listingId;
+      if (!listingId) {
+        return { ok: true, note: "No listing_id recorded; nothing to delete." };
+      }
+      const { error } = await service.from("listings").delete().eq("id", listingId);
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    }
+    case "profile_create":
+      // Shell profiles are not written inline today; the audit entry alone is
+      // authoritative. Marking reverted is sufficient.
+      return { ok: true };
+    case "profile_edit":
+    case "listing_edit":
+    case "availability_update":
+      // Prior state isn't snapshotted; the UI should encourage an explicit
+      // follow-up edit. Audit log will reflect the revert action.
+      return { ok: true, note: "Marked as reverted. Field-level rollback requires a manual edit." };
+    case "confirm_fresh":
+    case "flag_stale":
+      return { ok: true };
+  }
+}

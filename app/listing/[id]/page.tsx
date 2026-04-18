@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { ContributorBadge } from "@/components/contributions/contributor-badge";
 import { FreshnessWidget } from "@/components/contributions/freshness-widget";
+import { RevisionHistory } from "@/components/contributions/revision-history";
 import { ListingCard } from "@/components/listings/listing-card";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -68,6 +69,7 @@ export default async function ListingPage({ params }: { params: { id: string } }
             {listing.contributorName ? (
               <ContributorBadge displayName={listing.contributorName} />
             ) : null}
+            <RevisionHistory scope={{ listingId: listing.id }} />
           </div>
           <div className="space-y-2">
             <h1 className="font-display text-5xl text-[var(--ink)]">{listing.title}</h1>
