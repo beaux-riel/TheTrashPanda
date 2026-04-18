@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ContributorBadge } from "@/components/contributions/contributor-badge";
+import { FreshnessWidget } from "@/components/contributions/freshness-widget";
 import { ListingCard } from "@/components/listings/listing-card";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -61,7 +63,12 @@ export default async function ListingPage({ params }: { params: { id: string } }
       {/* Hero: listing details + illustration */}
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <Card className="space-y-4">
-          <Badge tone="accent">{listing.category}</Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone="accent">{listing.category}</Badge>
+            {listing.contributorName ? (
+              <ContributorBadge displayName={listing.contributorName} />
+            ) : null}
+          </div>
           <div className="space-y-2">
             <h1 className="font-display text-5xl text-[var(--ink)]">{listing.title}</h1>
             <p className="text-lg leading-8 text-[var(--ink-soft)]">{listing.description}</p>
@@ -74,6 +81,7 @@ export default async function ListingPage({ params }: { params: { id: string } }
             <Detail label="Quantity" value={listing.quantity.replace("_", " ")} />
             <Detail label="Pickup" value={listing.locationLabel} />
           </div>
+          <FreshnessWidget listingId={listing.id} variant="full" />
         </Card>
         <Card className="relative overflow-hidden p-0">
           <Image
