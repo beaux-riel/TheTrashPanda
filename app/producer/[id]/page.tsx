@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 
+import { AddListingForm } from "@/components/contributions/add-listing-form";
+import { ClaimSection } from "@/components/contributions/claim-section";
 import { CategoryFollowButton } from "@/components/notifications/category-follow-button";
 import { FollowButton } from "@/components/notifications/follow-button";
 import { ListingCard } from "@/components/listings/listing-card";
@@ -22,11 +24,24 @@ export default async function ProducerPage({ params }: { params: { id: string } 
     <div className="space-y-6 py-4">
       <Card className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-4">
-          <Badge tone="forest">{producer.locationLabel}</Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone="forest">{producer.locationLabel}</Badge>
+            {producer.isCommunityMaintained ? (
+              <ClaimSection producerId={producer.id} producerName={producer.name} />
+            ) : null}
+          </div>
           <h1 className="font-display text-5xl text-[var(--ink)]">{producer.name}</h1>
           <p className="max-w-2xl text-lg leading-8 text-[var(--ink-soft)]">{producer.bio}</p>
           <div className="flex flex-wrap gap-3">
             <FollowButton producerId={producer.id} producerName={producer.name} />
+            {producer.isCommunityMaintained ? (
+              <AddListingForm
+                producerId={producer.id}
+                producerName={producer.name}
+                defaultCategory={producer.categories[0]}
+                triggerClassName="bg-[var(--forest)] hover:bg-[var(--forest)]/90"
+              />
+            ) : null}
             {producer.categories.map((category) => (
               <CategoryFollowButton key={category} category={category} />
             ))}

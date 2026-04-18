@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { BanditIllustration } from "@/components/brand/bandit-illustration";
+import { ContributorBadge } from "@/components/contributions/contributor-badge";
+import { FreshnessWidget } from "@/components/contributions/freshness-widget";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { categoryPalette, type Listing, type Producer } from "@/lib/data/mock";
@@ -119,7 +121,13 @@ export function ListingFeed({
                     <Badge tone="forest">{getListingDistanceLabel(listing, userLocation)}</Badge>
                     <Badge tone="gold">{getListingTimeAgo(listing)}</Badge>
                   </div>
-                  <p className="text-xs text-[var(--ink-soft)]">{listing.locationLabel}</p>
+                  {listing.contributorName ? (
+                    <ContributorBadge displayName={listing.contributorName} />
+                  ) : null}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-xs text-[var(--ink-soft)]">{listing.locationLabel}</p>
+                    <FreshnessWidget listingId={listing.id} variant="compact" />
+                  </div>
                 </div>
               </Card>
             </Link>
