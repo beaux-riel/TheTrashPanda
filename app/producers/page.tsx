@@ -81,7 +81,7 @@ export default async function ProducersPage() {
         <div className="mx-auto max-w-lg space-y-4 text-center sm:text-center">
           <h2 className="font-display text-4xl text-[var(--ink)]">Know a local producer?</h2>
           <p className="text-base leading-7 text-[var(--ink-soft)]">
-            If there's a neighbour growing, baking, or raising something worth sharing, help them join the food loop. It only takes a minute.
+            If there&apos;s a neighbour growing, baking, or raising something worth sharing, help them join the food loop. It only takes a minute.
           </p>
           <div>
             <Link className={buttonStyles("secondary") + " inline-block"} href="/onboarding">
