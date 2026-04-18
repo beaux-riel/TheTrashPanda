@@ -68,12 +68,12 @@ export default function BanditPage() {
           <div className="grid gap-6 lg:grid-cols-[1fr_auto]">
             <div className="space-y-4 text-lg leading-8 text-[var(--ink-soft)]">
               <p>
-                Bandit grew up in the alleys behind the grocery stores of Powell River, 
+                Bandit grew up in the alley behind 32 Lakes in Powell River, 
                 BC. Small town. Population 13,000. Accessible by ferry — when it runs.
               </p>
               <p>
                 He watched the trucks come in. Every week, 27 of them, hauling food 
-                from 1,400 kilometres away. Tomatoes from Mexico. Apples from Washington. 
+                from thousands of kilometres away. Strawberries from Mexico. Apples from Washington. 
                 Bread from a factory in Surrey.
               </p>
               <p>
