@@ -16,7 +16,23 @@ type LocalState = {
   fresh: number;
   stale: number;
   viewerVote: boolean | null;
+  lastConfirmedAt: string | null;
 };
+
+function relativeTime(iso: string | null): string {
+  if (!iso) return "";
+  const ms = Date.now() - new Date(iso).getTime();
+  if (ms < 0) return "just now";
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} day${days === 1 ? "" : "s"} ago`;
+  const months = Math.floor(days / 30);
+  return `${months} month${months === 1 ? "" : "s"} ago`;
+}
 
 export function FreshnessWidget({
   listingId,
@@ -27,10 +43,13 @@ export function FreshnessWidget({
   const [state, setState] = useState<LocalState>(() => ({
     fresh: initialSummary?.fresh_count ?? 0,
     stale: initialSummary?.stale_count ?? 0,
-    viewerVote: initialSummary?.viewer_vote ?? null
+    viewerVote: initialSummary?.viewer_vote ?? null,
+    lastConfirmedAt: initialSummary?.last_confirmed_at ?? null
   }));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pulseKey, setPulseKey] = useState<number>(0);
+  const [pulseKind, setPulseKind] = useState<"fresh" | "stale" | null>(null);
 
   const loadSummary = useCallback(async () => {
     try {
@@ -41,7 +60,8 @@ export function FreshnessWidget({
         setState({
           fresh: body.summary.fresh_count,
           stale: body.summary.stale_count,
-          viewerVote: body.summary.viewer_vote
+          viewerVote: body.summary.viewer_vote,
+          lastConfirmedAt: body.summary.last_confirmed_at
         });
       }
     } catch {
@@ -60,14 +80,20 @@ export function FreshnessWidget({
     setBusy(true);
     setError(null);
 
+    setPulseKind(isFresh ? "fresh" : "stale");
+    setPulseKey((k) => k + 1);
+
     // Optimistic update
     setState((prev) => {
       const next = { ...prev };
-      // Undo the previous vote's count.
       if (prev.viewerVote === true) next.fresh = Math.max(0, prev.fresh - 1);
       if (prev.viewerVote === false) next.stale = Math.max(0, prev.stale - 1);
-      if (isFresh) next.fresh += 1;
-      else next.stale += 1;
+      if (isFresh) {
+        next.fresh += 1;
+        next.lastConfirmedAt = new Date().toISOString();
+      } else {
+        next.stale += 1;
+      }
       next.viewerVote = isFresh;
       return next;
     });
@@ -82,11 +108,9 @@ export function FreshnessWidget({
         const body = (await response.json().catch(() => null)) as { error?: string } | null;
         throw new Error(body?.error ?? "Vote didn't stick.");
       }
-      // Re-sync from the server to keep counts honest.
       void loadSummary();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Vote didn't stick.");
-      // Roll back by re-loading.
       void loadSummary();
     } finally {
       setBusy(false);
@@ -108,6 +132,8 @@ export function FreshnessWidget({
           active={votedFresh}
           disabled={busy}
           compact
+          pulseKey={pulseKind === "fresh" ? pulseKey : 0}
+          pulseKind="fresh"
           label={`Still good ✓ (${state.fresh})`}
           tone="fresh"
         />
@@ -120,12 +146,24 @@ export function FreshnessWidget({
           active={votedStale}
           disabled={busy}
           compact
+          pulseKey={pulseKind === "stale" ? pulseKey : 0}
+          pulseKind="stale"
           label={`Maybe stale ? (${state.stale})`}
           tone="stale"
         />
       </div>
     );
   }
+
+  const timestampText = state.lastConfirmedAt
+    ? `Confirmed fresh ${relativeTime(state.lastConfirmedAt)}`
+    : state.fresh + state.stale === 0
+      ? "No reports yet"
+      : state.stale > 0
+        ? `Last flagged ${state.stale} time${state.stale === 1 ? "" : "s"}`
+        : "No reports yet";
+
+  const showStaleWarning = state.stale >= 3;
 
   return (
     <div
@@ -134,17 +172,33 @@ export function FreshnessWidget({
         className
       )}
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-soft)]">
-        Still accurate?
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-soft)]">
+          Still accurate?
+        </p>
+        <p className="text-xs text-[var(--ink-soft)]">{timestampText}</p>
+      </div>
       <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
         Quick tap so the next neighbour knows what they&apos;re getting into.
       </p>
+
+      {showStaleWarning ? (
+        <div
+          className="mt-3 rounded-[18px] border border-[rgba(218,165,32,0.35)] bg-[rgba(218,165,32,0.14)] px-3 py-2 text-xs font-medium text-[var(--ink)]"
+          role="status"
+        >
+          <span aria-hidden="true" className="mr-1.5">⚠️</span>
+          Heads up — a few neighbours flagged this as possibly outdated.
+        </div>
+      ) : null}
+
       <div className="mt-3 flex flex-wrap gap-2">
         <VoteButton
           onClick={() => void vote(true)}
           active={votedFresh}
           disabled={busy}
+          pulseKey={pulseKind === "fresh" ? pulseKey : 0}
+          pulseKind="fresh"
           label={`Still good ✓ (${state.fresh})`}
           tone="fresh"
         />
@@ -152,6 +206,8 @@ export function FreshnessWidget({
           onClick={() => void vote(false)}
           active={votedStale}
           disabled={busy}
+          pulseKey={pulseKind === "stale" ? pulseKey : 0}
+          pulseKind="stale"
           label={`Maybe stale ? (${state.stale})`}
           tone="stale"
         />
@@ -159,6 +215,19 @@ export function FreshnessWidget({
       {error ? (
         <p className="mt-2 text-xs text-[color:rgba(217,79,48,0.95)]">{error}</p>
       ) : null}
+      <style jsx>{`
+        @keyframes freshness-pop {
+          0% { transform: scale(1); }
+          40% { transform: scale(1.12); }
+          100% { transform: scale(1); }
+        }
+        @keyframes freshness-shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-3px); }
+          50% { transform: translateX(3px); }
+          75% { transform: translateX(-2px); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -169,7 +238,9 @@ function VoteButton({
   disabled,
   label,
   tone,
-  compact = false
+  compact = false,
+  pulseKey = 0,
+  pulseKind
 }: {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   active: boolean;
@@ -177,9 +248,15 @@ function VoteButton({
   label: string;
   tone: "fresh" | "stale";
   compact?: boolean;
+  pulseKey?: number;
+  pulseKind?: "fresh" | "stale";
 }) {
+  const shouldAnimate = pulseKey > 0 && pulseKind === tone;
+  const animationName = tone === "fresh" ? "freshness-pop" : "freshness-shake";
+
   return (
     <button
+      key={`${tone}-${pulseKey}`}
       type="button"
       onClick={onClick}
       disabled={disabled}
@@ -191,6 +268,11 @@ function VoteButton({
         active && tone === "stale" && "border-transparent bg-[var(--accent)] text-[var(--accent-ink)]",
         !active && "border-[color:var(--border)] bg-[var(--surface)] text-[var(--ink)] hover:bg-[var(--surface-strong)]"
       )}
+      style={
+        shouldAnimate
+          ? { animation: `${animationName} 0.35s ease-out` }
+          : undefined
+      }
     >
       {label}
     </button>

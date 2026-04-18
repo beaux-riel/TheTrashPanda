@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import {
   emitContributionEvent,
+  getTrustTier,
   incrementStaleFlag,
   stampFreshnessConfirmed
 } from "@/lib/supabase/contribution-queries";
@@ -56,13 +57,17 @@ export async function POST(request: Request) {
     );
   }
 
-  // Fresh confirmation stamps the listing. Stale confirmation increments the
-  // per-listing flag counter; once it crosses 3 we mark status='gone' to hide
-  // the listing from the feed until someone fresh-confirms it again.
+  // Trusted+ voters get elevated effects: a fresh vote resets the stale flag
+  // count (clearing a misflagged listing), a stale vote from any user still
+  // increments the count but Trusted+ reviewers pushing the count across 3
+  // also trigger the listing.gone event.
+  const trustTier = await getTrustTier(supabase, user.id);
+  const isTrusted = trustTier === "trusted" || trustTier === "verified";
+
   let markedGone = false;
   let staleFlagCount: number | null = null;
   if (vote.is_fresh) {
-    await stampFreshnessConfirmed(vote.listing_id);
+    await stampFreshnessConfirmed(vote.listing_id, { resetStaleCount: isTrusted });
   } else {
     const result = await incrementStaleFlag(vote.listing_id);
     if (result) {
@@ -76,7 +81,8 @@ export async function POST(request: Request) {
       listingId: vote.listing_id,
       voterId: user.id,
       isFresh: vote.is_fresh,
-      staleFlagCount
+      staleFlagCount,
+      trustTier
     }
   });
 
@@ -84,12 +90,16 @@ export async function POST(request: Request) {
     await emitContributionEvent("freshness.stale_flagged", {
       metadata: { listingId: vote.listing_id, staleFlagCount }
     });
+    await emitContributionEvent("listing.gone", {
+      metadata: { listingId: vote.listing_id, reason: "stale_threshold", staleFlagCount }
+    });
   }
 
   return NextResponse.json({
     ok: true,
     vote: data,
     markedGone,
-    staleFlagCount
+    staleFlagCount,
+    trustTier
   });
 }

@@ -17,6 +17,7 @@ const navItems = [
   { href: "/onboarding", label: "Get Started", icon: "👋" },
   { href: "/notifications", label: "Notifications", icon: "🔔", showBadge: true },
   { href: "/dashboard", label: "Dashboard", icon: "📋" },
+  { href: "/dashboard/reviews", label: "Reviews", icon: "✅" },
 ];
 
 export function SiteHeader() {

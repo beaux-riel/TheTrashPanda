@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import { ContributorBadge } from "@/components/contributions/contributor-badge";
 import { FreshnessWidget } from "@/components/contributions/freshness-widget";
+import { RevisionHistory } from "@/components/contributions/revision-history";
+import { StaleBanner } from "@/components/contributions/stale-banner";
 import { ListingCard } from "@/components/listings/listing-card";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -60,14 +62,19 @@ export default async function ListingPage({ params }: { params: { id: string } }
 
   return (
     <div className="space-y-6 py-4">
+      <StaleBanner listingId={listing.id} />
       {/* Hero: listing details + illustration */}
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <Card className="space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone="accent">{listing.category}</Badge>
             {listing.contributorName ? (
-              <ContributorBadge displayName={listing.contributorName} />
+              <ContributorBadge
+                displayName={listing.contributorName}
+                href={listing.contributedBy ? `/profile/${listing.contributedBy}` : undefined}
+              />
             ) : null}
+            <RevisionHistory scope={{ listingId: listing.id }} />
           </div>
           <div className="space-y-2">
             <h1 className="font-display text-5xl text-[var(--ink)]">{listing.title}</h1>
