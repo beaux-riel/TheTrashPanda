@@ -69,5 +69,5 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-*Built with ♜ and 🦝 in Powell River, BC*
+*Built with ♜ and 🦝 in Powell River, BC 🇨🇦*
 *thetrashpanda.ca*
