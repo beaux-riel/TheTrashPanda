@@ -17,6 +17,9 @@ export type Producer = {
   scheduleSummary: string;
   followerCount: number;
   activeListingIds: string[];
+  isCommunityMaintained?: boolean;
+  contributedBy?: string | null;
+  contributorName?: string | null;
 };
 
 export type Listing = {
@@ -36,6 +39,8 @@ export type Listing = {
   status: "active" | "gone" | "expired";
   description: string;
   availableUntil: string;
+  contributedBy?: string | null;
+  contributorName?: string | null;
 };
 
 export type Follow = {
@@ -238,7 +243,9 @@ export const producers: Producer[] = [
     pickupDetails: "Self-serve farm store — open daily, honour system.",
     scheduleSummary: "Daily · Self-serve",
     followerCount: 38,
-    activeListingIds: ["listing-green-onions", "listing-salad-greens", "listing-rhubarb"]
+    activeListingIds: ["listing-green-onions", "listing-salad-greens", "listing-rhubarb"],
+    isCommunityMaintained: true,
+    contributorName: "Maya"
   }
 ];
 
@@ -665,7 +672,8 @@ export const listings: Listing[] = [
     views: 42,
     status: "active",
     description: "The ones that started it all. You'll come for the green onions and leave wondering why you don't shop here every day.",
-    availableUntil: "While supplies last"
+    availableUntil: "While supplies last",
+    contributorName: "Maya"
   },
   {
     id: "listing-salad-greens",

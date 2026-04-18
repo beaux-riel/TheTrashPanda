@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { AddNeighbourForm } from "@/components/contributions/add-neighbour-form";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { buttonStyles } from "@/components/ui/button";
@@ -30,14 +31,17 @@ export default async function ProducersPage() {
 
   return (
     <div className="space-y-6 py-2 sm:py-4">
-      <div>
-        <h1 className="font-display text-3xl text-[var(--ink)] sm:text-4xl">
-          Your Neighbours
-        </h1>
-        <p className="mt-1 text-sm text-[var(--ink-soft)] sm:text-base">
-          {producers.length} people sharing food in Powell River — backyard gardeners,
-          home bakers, hobby farmers, and folks with more plums than friends.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl text-[var(--ink)] sm:text-4xl">
+            Your Neighbours
+          </h1>
+          <p className="mt-1 text-sm text-[var(--ink-soft)] sm:text-base">
+            {producers.length} people sharing food in Powell River — backyard gardeners,
+            home bakers, hobby farmers, and folks with more plums than friends.
+          </p>
+        </div>
+        <AddNeighbourForm />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
