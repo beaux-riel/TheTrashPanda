@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+import {
+  emitContributionEvent,
+  getContribution,
+  getTrustTier,
+  isClaimedOwner
+} from "@/lib/supabase/contribution-queries";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function POST(
@@ -18,13 +24,21 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data: reviewer } = await supabase
-    .from("profiles")
-    .select("trust_tier")
-    .eq("id", user.id)
-    .maybeSingle();
+  const contribution = await getContribution(supabase, params.id);
+  if (!contribution) {
+    return NextResponse.json({ error: "Contribution not found." }, { status: 404 });
+  }
+  if (contribution.status !== "pending") {
+    return NextResponse.json(
+      { error: `Contribution is ${contribution.status}, not pending.` },
+      { status: 422 }
+    );
+  }
 
-  if (!reviewer || (reviewer.trust_tier !== "trusted" && reviewer.trust_tier !== "verified")) {
+  const trustTier = await getTrustTier(supabase, user.id);
+  const isReviewer = trustTier === "trusted" || trustTier === "verified";
+  const isOwner = await isClaimedOwner(supabase, user.id, contribution.producer_id);
+  if (!isReviewer && !isOwner) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -44,8 +58,19 @@ export async function POST(
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
   if (!data) {
-    return NextResponse.json({ error: "Contribution not found or not pending." }, { status: 404 });
+    return NextResponse.json(
+      { error: "Contribution no longer pending (race)." },
+      { status: 409 }
+    );
   }
+
+  await emitContributionEvent("contribution.rejected", {
+    metadata: {
+      contributionId: contribution.id,
+      type: contribution.type,
+      reviewerId: user.id
+    }
+  });
 
   return NextResponse.json({ ok: true, contribution: data });
 }

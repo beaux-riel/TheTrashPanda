@@ -21,11 +21,15 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
-  const { data: listing } = await supabase
+  const { data: listing, error: listingError } = await supabase
     .from("listings")
     .select("freshness_confirmed_at")
     .eq("id", params.listingId)
     .maybeSingle();
+
+  if (listingError) {
+    return NextResponse.json({ error: listingError.message }, { status: 400 });
+  }
 
   const {
     data: { user }
@@ -34,7 +38,9 @@ export async function GET(
   const rows = votes ?? [];
   const freshCount = rows.filter((v) => v.is_fresh).length;
   const staleCount = rows.filter((v) => !v.is_fresh).length;
-  const viewerVote = user ? rows.find((v) => v.voter_id === user.id)?.is_fresh ?? null : null;
+  const viewerVote = user
+    ? rows.find((v) => v.voter_id === user.id)?.is_fresh ?? null
+    : null;
 
   const summary: FreshnessSummary = {
     listing_id: params.listingId,

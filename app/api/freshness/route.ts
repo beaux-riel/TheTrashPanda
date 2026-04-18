@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 
+import {
+  emitContributionEvent,
+  incrementStaleFlag,
+  stampFreshnessConfirmed
+} from "@/lib/supabase/contribution-queries";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { FreshnessVotePayload } from "@/lib/types/contributions";
 
@@ -28,7 +33,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const vote = parseVote(body);
   if (!vote) {
-    return NextResponse.json({ error: "Invalid vote payload." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid vote payload." }, { status: 422 });
   }
 
   const { data, error } = await supabase
@@ -51,5 +56,40 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, vote: data });
+  // Fresh confirmation stamps the listing. Stale confirmation increments the
+  // per-listing flag counter; once it crosses 3 we mark status='gone' to hide
+  // the listing from the feed until someone fresh-confirms it again.
+  let markedGone = false;
+  let staleFlagCount: number | null = null;
+  if (vote.is_fresh) {
+    await stampFreshnessConfirmed(vote.listing_id);
+  } else {
+    const result = await incrementStaleFlag(vote.listing_id);
+    if (result) {
+      staleFlagCount = result.staleFlagCount;
+      markedGone = result.markedGone;
+    }
+  }
+
+  await emitContributionEvent("freshness.voted", {
+    metadata: {
+      listingId: vote.listing_id,
+      voterId: user.id,
+      isFresh: vote.is_fresh,
+      staleFlagCount
+    }
+  });
+
+  if (markedGone) {
+    await emitContributionEvent("freshness.stale_flagged", {
+      metadata: { listingId: vote.listing_id, staleFlagCount }
+    });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    vote: data,
+    markedGone,
+    staleFlagCount
+  });
 }

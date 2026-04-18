@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { emitContributionEvent } from "@/lib/supabase/contribution-queries";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { ClaimVerificationMethod } from "@/lib/supabase/types";
 import type { ClaimPayload } from "@/lib/types/contributions";
@@ -39,11 +40,12 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const claim = parseClaim(body);
   if (!claim) {
-    return NextResponse.json({ error: "Invalid claim payload." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid claim payload." }, { status: 422 });
   }
 
-  // Phase 1 stub: record the claim immediately. Real verification flow
-  // (email/phone codes) is wired up in Phase 6.
+  // Phase 1 stub: email/phone verification codes land in Phase 6. For now any
+  // authenticated user can claim an unclaimed profile; the on_producer_claim
+  // trigger promotes them to 'verified' and clears is_community_maintained.
   const { data, error } = await supabase
     .from("producer_claims")
     .insert({
@@ -55,11 +57,27 @@ export async function POST(request: Request) {
     .single();
 
   if (error || !data) {
+    // Unique violation on producer_id → already claimed.
+    const pgCode = (error as { code?: string } | null)?.code;
+    if (pgCode === "23505") {
+      return NextResponse.json(
+        { error: "This profile has already been claimed." },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       { error: error?.message ?? "Failed to record claim." },
       { status: 400 }
     );
   }
+
+  await emitContributionEvent("profile.claimed", {
+    metadata: {
+      producerId: claim.producer_id,
+      claimedBy: user.id,
+      verificationMethod: claim.verification_method
+    }
+  });
 
   return NextResponse.json({ ok: true, claim: data });
 }
