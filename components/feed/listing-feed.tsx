@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 
 import { BanditIllustration } from "@/components/brand/bandit-illustration";
 import { ContributorBadge } from "@/components/contributions/contributor-badge";
+import { FreshnessDot } from "@/components/contributions/freshness-dot";
 import { FreshnessWidget } from "@/components/contributions/freshness-widget";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -111,7 +112,10 @@ export function ListingFeed({
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-[var(--forest)]">{producer?.name ?? "A neighbour"}</p>
-                      <h3 className="font-display text-3xl text-[var(--ink)]">{listing.title}</h3>
+                      <h3 className="flex items-center gap-2 font-display text-3xl text-[var(--ink)]">
+                        <FreshnessDot listingId={listing.id} />
+                        {listing.title}
+                      </h3>
                     </div>
                     <Badge tone={listing.quantity === "last_few" ? "accent" : "gold"}>{quantityLabels[listing.quantity]}</Badge>
                   </div>
@@ -122,7 +126,10 @@ export function ListingFeed({
                     <Badge tone="gold">{getListingTimeAgo(listing)}</Badge>
                   </div>
                   {listing.contributorName ? (
-                    <ContributorBadge displayName={listing.contributorName} />
+                    <ContributorBadge
+                      displayName={listing.contributorName}
+                      href={listing.contributedBy ? `/profile/${listing.contributedBy}` : undefined}
+                    />
                   ) : null}
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-xs text-[var(--ink-soft)]">{listing.locationLabel}</p>
