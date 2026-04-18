@@ -77,23 +77,26 @@ export default async function ProducersPage() {
         })}
       </div>
 
-      <div className="flex flex-col items-center gap-4 text-center">
-        <div className="relative h-24 w-24 overflow-hidden rounded-xl">
-          <Image
-            src="/images/bandit/bandit-flower-crown-wave.webp"
-            alt="Bandit waving"
-            fill
-            className="object-cover"
-            sizes="96px"
-          />
+      <Card className="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
+        <div className="mx-auto max-w-lg space-y-4 text-center sm:text-center">
+          <h2 className="font-display text-4xl text-[var(--ink)]">Know a local producer?</h2>
+          <p className="text-base leading-7 text-[var(--ink-soft)]">
+            If there's a neighbour growing, baking, or raising something worth sharing, help them join the food loop. It only takes a minute.
+          </p>
+          <div>
+            <Link className={buttonStyles("secondary") + " inline-block"} href="/onboarding">
+              Add a producer
+            </Link>
+          </div>
         </div>
-        <p className="text-sm text-[var(--ink-soft)]">
-          Know a local producer who should be here?
-        </p>
-        <Link className={buttonStyles("secondary") + " inline-block"} href="/onboarding">
-          Add a producer
-        </Link>
-      </div>
+        <Image
+          src="/images/bandit/bandit-flower-crown-wave.webp"
+          alt="Bandit waving"
+          width={320}
+          height={320}
+          className="mx-auto rounded-2xl"
+        />
+      </Card>
     </div>
   );
 }

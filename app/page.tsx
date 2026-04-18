@@ -1,6 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
 
-import { BanditIllustration } from "@/components/brand/bandit-illustration";
 import type { BanditVariant } from "@/components/brand/bandit-illustration";
 import { HomeDiscovery } from "@/components/discovery/home-discovery";
 import { Badge } from "@/components/ui/badge";
@@ -43,11 +43,11 @@ export default async function HomePage() {
             </span>
           </div>
           <h1 className="font-display text-3xl leading-tight text-[var(--ink)] sm:text-4xl lg:text-5xl">
-            Local food without the startup costume.
+            Skip the supermarket. Buy from your neighbours.
           </h1>
           <p className="max-w-2xl text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
-            See what your neighbours are growing, making, and selling right now.
-            No subscriptions, no middlemen — just the local food loop.
+            Real food from real people, not warehouse shelves.
+            No markup, no middlemen — just the local food loop.
           </p>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             <Link className={buttonStyles()} href="/onboarding">
@@ -64,16 +64,21 @@ export default async function HomePage() {
           </dl>
         </div>
 
-        {/* Bandit card — image large, subtext beneath */}
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-[color:var(--border)] bg-[color:rgba(255,255,255,0.7)] p-4 shadow-card sm:rounded-[36px] sm:p-6">
-          <BanditIllustration
-            variant={banditVariant}
+        {/* Bandit card — full-bleed image with overlaid subtext */}
+        <div className="relative min-h-[280px] overflow-hidden rounded-2xl border border-[color:var(--border)] shadow-card sm:min-h-[360px] sm:rounded-[36px]">
+          <Image
+            src={`/images/bandit/${banditVariant}.webp`}
+            alt="Bandit the trash panda"
+            fill
             priority
-            className="w-48 sm:w-56 lg:max-w-[320px] lg:w-auto"
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 40vw"
           />
-          <p className="text-center text-sm font-medium italic text-[var(--ink-soft)]">
-            {greeting}
-          </p>
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-5 pb-5 pt-12 sm:px-6 sm:pb-6">
+            <p className="text-center text-sm font-medium italic text-white/90 drop-shadow-sm">
+              {greeting}
+            </p>
+          </div>
         </div>
       </section>
 

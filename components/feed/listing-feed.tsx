@@ -83,7 +83,7 @@ export function ListingFeed({
         {refreshing ? "Bandit is shaking the tree for fresh posts..." : pullDistance > 72 ? "Release to refresh" : "Pull for fresh finds"}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {listings.map((listing) => {
           const producer = producerMap[listing.producerId];
 
