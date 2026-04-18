@@ -1,0 +1,4 @@
+kind: change
+name: community-contributions-v1
+specs:
+  - community-contributions
