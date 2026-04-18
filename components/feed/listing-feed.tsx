@@ -108,7 +108,7 @@ export function ListingFeed({
                 <div className="flex flex-col gap-4 p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-semibold text-[var(--forest)]">{producer?.name ?? "Neighbour producer"}</p>
+                      <p className="text-sm font-semibold text-[var(--forest)]">{producer?.name ?? "A neighbour"}</p>
                       <h3 className="font-display text-3xl text-[var(--ink)]">{listing.title}</h3>
                     </div>
                     <Badge tone={listing.quantity === "last_few" ? "accent" : "gold"}>{quantityLabels[listing.quantity]}</Badge>

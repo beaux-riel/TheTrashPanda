@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 
   const producer = await getProducerData(listing.producerId);
   const title = `${listing.title} in Powell River`;
-  const description = `${producer?.name ?? "Neighbour"} listed ${listing.title}. ${listing.distanceLabel}. ${listing.priceLabel}.`;
+  const description = `${producer?.name ?? "A neighbour"} is sharing ${listing.title}. ${listing.distanceLabel}. ${listing.priceLabel}.`;
 
   return {
     title,
@@ -89,7 +89,7 @@ export default async function ListingPage({ params }: { params: { id: string } }
       {/* About the producer */}
       <Card className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-soft)]">About the producer</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-soft)]">About your neighbour</p>
           <Link href={`/producer/${producer.slug ?? producer.id}`} className="block font-display text-3xl text-[var(--ink)] hover:underline">
             {producer.name}
           </Link>
@@ -117,6 +117,9 @@ export default async function ListingPage({ params }: { params: { id: string } }
             </Link>
           </div>
         </div>
+        <p className="col-span-full text-center text-xs italic text-[var(--ink-soft)]">
+          Every dollar spent on a neighbour&apos;s food stays in town. That&apos;s the whole idea.
+        </p>
       </Card>
 
       {/* More from this producer */}
@@ -124,7 +127,7 @@ export default async function ListingPage({ params }: { params: { id: string } }
         <section className="space-y-4">
           <div>
             <h2 className="font-display text-3xl text-[var(--ink)]">More from {producer.name}</h2>
-            <p className="text-sm text-[var(--ink-soft)]">Other listings from this producer that are available now.</p>
+            <p className="text-sm text-[var(--ink-soft)]">Other things they&apos;ve got available right now.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {moreFromProducer.map((l) => (
@@ -139,7 +142,7 @@ export default async function ListingPage({ params }: { params: { id: string } }
         <section className="space-y-4">
           <div>
             <h2 className="font-display text-3xl text-[var(--ink)]">Similar {listing.category.toLowerCase()}</h2>
-            <p className="text-sm text-[var(--ink-soft)]">Other {listing.category.toLowerCase()} available from nearby producers.</p>
+            <p className="text-sm text-[var(--ink-soft)]">Other {listing.category.toLowerCase()} available from neighbours nearby.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {similarListings.map((l) => (

@@ -7,8 +7,8 @@ import { buttonStyles } from "@/components/ui/button";
 import { getProducersData, getListingsData } from "@/lib/data/bridge";
 
 export const metadata = {
-  title: "Producers",
-  description: "Browse local food producers in Powell River, BC.",
+  title: "Your Neighbours",
+  description: "People sharing food in Powell River, BC — backyard gardeners, hobby farmers, home bakers, and anyone with more than they need.",
 };
 
 export default async function ProducersPage() {
@@ -32,10 +32,11 @@ export default async function ProducersPage() {
     <div className="space-y-6 py-2 sm:py-4">
       <div>
         <h1 className="font-display text-3xl text-[var(--ink)] sm:text-4xl">
-          Local Producers
+          Your Neighbours
         </h1>
         <p className="mt-1 text-sm text-[var(--ink-soft)] sm:text-base">
-          {producers.length} producers in the Powell River food loop.
+          {producers.length} people sharing food in Powell River — backyard gardeners,
+          home bakers, hobby farmers, and folks with more plums than friends.
         </p>
       </div>
 
@@ -79,13 +80,13 @@ export default async function ProducersPage() {
 
       <Card className="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
         <div className="mx-auto max-w-lg space-y-4 text-center sm:text-center">
-          <h2 className="font-display text-4xl text-[var(--ink)]">Know a local producer?</h2>
+          <h2 className="font-display text-4xl text-[var(--ink)]">Know someone with more than they need?</h2>
           <p className="text-base leading-7 text-[var(--ink-soft)]">
-            If there&apos;s a neighbour growing, baking, or raising something worth sharing, help them join the food loop. It only takes a minute.
+            A garden, a fruit tree, a baking habit that got out of hand — if someone you know has food worth sharing, help them join the loop. It only takes a minute.
           </p>
           <div>
             <Link className={buttonStyles("secondary") + " inline-block"} href="/onboarding">
-              Add a producer
+              Join the loop
             </Link>
           </div>
         </div>

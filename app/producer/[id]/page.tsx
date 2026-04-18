@@ -39,7 +39,7 @@ export default async function ProducerPage({ params }: { params: { id: string } 
         <Card className="space-y-3 bg-[var(--surface-strong)]">
           <h2 className="font-display text-3xl text-[var(--ink)]">{producer.followerCount} followers</h2>
           <p className="text-sm leading-6 text-[var(--ink-soft)]">
-            People follow this producer for quick updates, neighbourhood staples, and the occasional “last few” panic sprint.
+            People follow this neighbour for quick updates, seasonal favourites, and the occasional &ldquo;last few&rdquo; panic sprint.
           </p>
           <div className="flex flex-wrap gap-2">
             {producer.categories.map((category) => (
@@ -55,7 +55,7 @@ export default async function ProducerPage({ params }: { params: { id: string } 
       <section className="space-y-4">
         <div>
           <h2 className="font-display text-3xl text-[var(--ink)]">Active listings</h2>
-          <p className="text-sm text-[var(--ink-soft)]">What this producer has up right now, server-rendered so links share nicely.</p>
+          <p className="text-sm text-[var(--ink-soft)]">What they&apos;ve got available right now.</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {producerListings.map((listing) => (

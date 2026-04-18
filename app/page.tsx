@@ -46,8 +46,10 @@ export default async function HomePage() {
             Skip the supermarket. Buy from your neighbours.
           </h1>
           <p className="max-w-2xl text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
-            Real food from real people, not warehouse shelves.
-            No markup, no middlemen — just the local food loop.
+            Your neighbour&apos;s plum tree doesn&apos;t have a marketing budget.
+            But it&apos;s got 200 pounds of plums and a porch cooler. See what
+            people are growing, making, and sharing right now — no subscriptions,
+            no middlemen, just the local food loop.
           </p>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             <Link className={buttonStyles()} href="/onboarding">
@@ -59,7 +61,7 @@ export default async function HomePage() {
           </div>
           <dl className="grid grid-cols-3 gap-3 pt-2 sm:gap-4 sm:pt-4">
             <Stat label="Listings" value={activeCount.toString()} />
-            <Stat label="Producers" value={producers.length.toString()} />
+            <Stat label="Neighbours" value={producers.length.toString()} />
             <Stat label="Weather" value={`${weather.temp}°C`} />
           </dl>
         </div>
@@ -89,7 +91,7 @@ export default async function HomePage() {
             What&apos;s available now
           </h2>
           <p className="text-sm text-[var(--ink-soft)]">
-            Browse listings from local producers in Powell River.
+            Plum trees, garden beds, chest freezers, and bake sales — see what your neighbours have right now.
           </p>
         </div>
         <HomeDiscovery />

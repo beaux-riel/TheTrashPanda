@@ -217,13 +217,13 @@ export default function OnboardingPage() {
               <h2 className="font-display text-3xl text-[var(--ink)]">
                 {step === 1 && "What brings you to The Trash Panda?"}
                 {step === 2 && "Tell us roughly where you are"}
-                {step === 3 && "What do you grow, make, or sell?"}
+                {step === 3 && "What kind of stuff do you end up with too much of?"}
                 {step === 4 && "You&apos;re in!"}
               </h2>
               <p className="text-sm leading-6 text-[var(--ink-soft)]">
-                {step === 1 && "If you want local food, have local food, or contain multitudes, there&apos;s a button for that."}
+                {step === 1 && "Whether you&apos;ve got a garden, a fruit tree, a bread habit, or just an appetite — there&apos;s a spot for you."}
                 {step === 2 && "Location keeps the map useful. We only need enough precision to stop sending you across town for one loaf."}
-                {step === 3 && "Pick the stuff you tend, bake, bottle, or otherwise convince into being edible."}
+                {step === 3 && "No wrong answers. A single apple tree counts. So does a whole market garden."}
                 {step === 4 && "Bandit already peeked around your patch. Here&apos;s what&apos;s nearby."}
               </p>
             </div>
@@ -235,19 +235,19 @@ export default function OnboardingPage() {
                 <IntentButton
                   active={intent === "consumer"}
                   title="I want to find local food"
-                  body="Keep it simple: browse nearby eggs, bread, honey, and whatever your neighbours just remembered to post."
+                  body="Browse what your neighbours have — eggs from down the road, bread from around the corner, honey from that guy with all the boxes in his yard."
                   onClick={() => setIntent("consumer")}
                 />
                 <IntentButton
                   active={intent === "producer"}
-                  title="I have food to share"
-                  body="Perfect. Post what you&apos;ve got before your tomatoes start judging you from the counter."
+                  title="I&apos;ve got more than I need"
+                  body="Retirees with plum trees, families drowning in zucchini, anyone with a chest freezer full of salmon and not enough friends. If you&apos;ve got more than you need, you&apos;re already one of us."
                   onClick={() => setIntent("producer")}
                 />
                 <IntentButton
                   active={intent === "both"}
                   title="Both!"
-                  body="Excellent. Double agent energy. You can buy a loaf and list seedlings in the same afternoon."
+                  body="Buy a neighbour&apos;s sourdough on Tuesday, list your extra garlic on Wednesday. The food loop works best when everyone&apos;s in it."
                   onClick={() => setIntent("both")}
                 />
               </div>
@@ -340,7 +340,7 @@ export default function OnboardingPage() {
                     value={bio}
                     onChange={(event) => setBio(event.target.value)}
                     rows={5}
-                    placeholder="A few warm details. What you grow, what you bake, what your pickup setup looks like, whether the dog is friendly..."
+                    placeholder="Tell people what you've got going on — a backyard garden, a few fruit trees, a sourdough situation that got out of hand. Mention how pickup works (porch cooler? text first?) and whether the dog is friendly..."
                     className="w-full rounded-[24px] border border-[color:var(--border)] bg-[var(--surface)] px-4 py-3 text-base text-[var(--ink)] outline-none placeholder:text-[var(--ink-soft)]"
                   />
                 </div>
