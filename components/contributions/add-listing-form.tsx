@@ -9,6 +9,7 @@ import type { ListingCreatePayload } from "@/lib/types/contributions";
 import { cn } from "@/lib/utils/cn";
 
 import { Modal } from "./modal";
+import { PrivacyGuard } from "./privacy-guard";
 
 type AddListingFormProps = {
   producerId: string;
@@ -165,6 +166,7 @@ export function AddListingForm({
                 placeholder="Picked this morning, still warm from the oven, the kind of thing that makes Tuesdays worth it…"
                 className={textareaClass}
               />
+              <PrivacyGuard value={form.description} className="mt-1.5" />
             </Field>
 
             <Field label="Category">

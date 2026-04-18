@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { emitEvent } from "@/lib/events/emit";
+import { freshnessLimiter, rateLimitResponse } from "@/lib/middleware/rate-limit";
 import {
-  emitContributionEvent,
   getTrustTier,
   incrementStaleFlag,
   stampFreshnessConfirmed
@@ -29,6 +30,11 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const limit = freshnessLimiter(user.id);
+  if (limit.limited) {
+    return rateLimitResponse(limit);
   }
 
   const body = await request.json().catch(() => null);
@@ -76,7 +82,7 @@ export async function POST(request: Request) {
     }
   }
 
-  await emitContributionEvent("freshness.voted", {
+  await emitEvent("freshness.voted", {
     metadata: {
       listingId: vote.listing_id,
       voterId: user.id,
@@ -87,10 +93,10 @@ export async function POST(request: Request) {
   });
 
   if (markedGone) {
-    await emitContributionEvent("freshness.stale_flagged", {
+    await emitEvent("freshness.stale_flagged", {
       metadata: { listingId: vote.listing_id, staleFlagCount }
     });
-    await emitContributionEvent("listing.gone", {
+    await emitEvent("listing.gone", {
       metadata: { listingId: vote.listing_id, reason: "stale_threshold", staleFlagCount }
     });
   }

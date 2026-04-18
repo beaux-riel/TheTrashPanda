@@ -1,12 +1,21 @@
+import Link from "next/link";
+
 import { cn } from "@/lib/utils/cn";
 
 type CommunityBadgeProps = {
+  /** Legacy click-to-open-modal trigger. Prefer `claimHref` for the new page-based flow. */
   onClaim?: () => void;
+  claimHref?: string;
   showClaimLink?: boolean;
   className?: string;
 };
 
-export function CommunityBadge({ onClaim, showClaimLink = true, className }: CommunityBadgeProps) {
+export function CommunityBadge({
+  onClaim,
+  claimHref,
+  showClaimLink = true,
+  className
+}: CommunityBadgeProps) {
   return (
     <div
       className={cn(
@@ -19,13 +28,22 @@ export function CommunityBadge({ onClaim, showClaimLink = true, className }: Com
         Community-maintained
       </span>
       {showClaimLink ? (
-        <button
-          type="button"
-          onClick={onClaim}
-          className="text-[var(--forest)] underline-offset-2 transition hover:underline"
-        >
-          This is you? Claim it →
-        </button>
+        claimHref ? (
+          <Link
+            href={claimHref}
+            className="text-[var(--forest)] underline-offset-2 transition hover:underline"
+          >
+            This is you? Claim it →
+          </Link>
+        ) : onClaim ? (
+          <button
+            type="button"
+            onClick={onClaim}
+            className="text-[var(--forest)] underline-offset-2 transition hover:underline"
+          >
+            This is you? Claim it →
+          </button>
+        ) : null
       ) : null}
     </div>
   );

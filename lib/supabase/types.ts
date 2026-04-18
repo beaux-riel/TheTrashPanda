@@ -28,6 +28,9 @@ export type ContributionStatus =
 
 export type ClaimVerificationMethod = "email" | "phone" | "admin" | "in_person";
 
+export type ReportTargetType = "profile" | "listing" | "contribution";
+export type ReportStatus = "open" | "resolved" | "dismissed";
+
 export type EventType =
   | "listing.created"
   | "listing.updated"
@@ -349,6 +352,29 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["freshness_votes"]["Insert"]>;
         Relationships: [];
       };
+
+      reports: {
+        Row: {
+          id: string;
+          reporter_id: string;
+          target_type: ReportTargetType;
+          target_id: string;
+          reason: string;
+          status: ReportStatus;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          reporter_id: string;
+          target_type: ReportTargetType;
+          target_id: string;
+          reason: string;
+          status?: ReportStatus;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["reports"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -378,3 +404,5 @@ export type ProducerClaimRow = Database["public"]["Tables"]["producer_claims"]["
 export type ProducerClaimInsert = Database["public"]["Tables"]["producer_claims"]["Insert"];
 export type FreshnessVoteRow = Database["public"]["Tables"]["freshness_votes"]["Row"];
 export type FreshnessVoteInsert = Database["public"]["Tables"]["freshness_votes"]["Insert"];
+export type ReportRow = Database["public"]["Tables"]["reports"]["Row"];
+export type ReportInsert = Database["public"]["Tables"]["reports"]["Insert"];
