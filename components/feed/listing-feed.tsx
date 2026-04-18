@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -14,6 +15,7 @@ import {
   quantityLabels,
   type UserLocation
 } from "@/lib/discovery";
+import { getListingImage } from "@/lib/listing-images";
 
 export function ListingFeed({
   listings,
@@ -89,11 +91,17 @@ export function ListingFeed({
             <Link key={listing.id} href={`/listing/${listing.id}`}>
               <Card className="grid gap-4 overflow-hidden p-0 transition hover:-translate-y-0.5 sm:grid-cols-[160px_1fr]">
                 <div
-                  className="relative min-h-[150px] bg-[linear-gradient(140deg,color-mix(in_srgb,var(--forest)_26%,white),transparent),linear-gradient(135deg,var(--honey),var(--accent),var(--forest))]"
-                  style={{ backgroundColor: categoryPalette[listing.category] ?? "var(--surface-strong)" }}
+                  className="relative min-h-[150px]"
+                  style={{ backgroundColor: categoryPalette[listing.category] ? `${categoryPalette[listing.category]}18` : "var(--surface)" }}
                 >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.28),transparent_48%)]" />
-                  <div className="absolute bottom-4 left-4 rounded-full bg-[rgba(255,255,255,0.82)] px-3 py-1 text-xs font-semibold text-[var(--ink)]">
+                  <Image
+                    src={getListingImage(listing.title, listing.category)}
+                    alt={listing.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 160px"
+                  />
+                  <div className="absolute bottom-3 left-3 rounded-full bg-[rgba(255,255,255,0.88)] px-3 py-1 text-xs font-semibold text-[var(--ink)] shadow-sm">
                     {listing.category}
                   </div>
                 </div>

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getListingData, getProducerData } from "@/lib/data/bridge";
+import { getListingImage } from "@/lib/listing-images";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const listing = await getListingData(params.id);
@@ -63,20 +64,25 @@ export default async function ListingPage({ params }: { params: { id: string } }
         </div>
       </Card>
       <Card className="space-y-4">
-        <div className="relative mx-auto h-32 w-32">
+        <div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-2xl">
           <Image
-            src="/images/bandit/hero-tomato.webp"
-            alt="Bandit approves this listing"
+            src={getListingImage(listing.title, listing.category)}
+            alt={listing.title}
             fill
-            className="object-contain"
-            sizes="128px"
+            className="object-cover"
+            sizes="280px"
           />
         </div>
-        <h2 className="font-display text-3xl text-[var(--ink)]">Neighbour note</h2>
-        <p className="text-sm leading-6 text-[var(--ink-soft)]">
-          This page is server-rendered so search engines and shared links get the actual listing details, not a blank shrug. That covers the SEO requirement without pretending the rest of discovery is finished yet.
-        </p>
-        <p className="text-xs italic text-[var(--ink-soft)]">
+        <div className="relative mx-auto h-16 w-16 overflow-hidden rounded-xl">
+          <Image
+            src="/images/bandit/bandit-flower-crown-basket.webp"
+            alt="Bandit approves"
+            fill
+            className="object-cover"
+            sizes="64px"
+          />
+        </div>
+        <p className="text-center text-xs italic text-[var(--ink-soft)]">
           Bandit says: support your neighbours. Every dollar spent local stays local.
         </p>
       </Card>

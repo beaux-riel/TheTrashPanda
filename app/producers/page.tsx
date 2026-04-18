@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -76,11 +77,20 @@ export default async function ProducersPage() {
         })}
       </div>
 
-      <div className="text-center">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <div className="relative h-24 w-24 overflow-hidden rounded-xl">
+          <Image
+            src="/images/bandit/bandit-flower-crown-wave.webp"
+            alt="Bandit waving"
+            fill
+            className="object-cover"
+            sizes="96px"
+          />
+        </div>
         <p className="text-sm text-[var(--ink-soft)]">
           Know a local producer who should be here?
         </p>
-        <Link className={buttonStyles("secondary") + " mt-2 inline-block"} href="/onboarding">
+        <Link className={buttonStyles("secondary") + " inline-block"} href="/onboarding">
           Add a producer
         </Link>
       </div>

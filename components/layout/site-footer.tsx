@@ -8,12 +8,12 @@ export function SiteFooter() {
     <footer className="border-t border-[color:var(--border)] bg-[color:rgba(245,240,232,0.6)]">
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-10 sm:px-6 lg:flex-row lg:justify-between lg:px-8">
         <div className="flex items-center gap-4">
-          <div className="relative h-16 w-16 flex-shrink-0">
+          <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl">
             <Image
-              src="/images/bandit/street.webp"
-              alt="Bandit the River City Trash Panda"
+              src="/images/bandit/bandit-flower-crown-basket.webp"
+              alt="Bandit wearing a flower crown"
               fill
-              className="object-contain"
+              className="object-cover"
               sizes="64px"
             />
           </div>
