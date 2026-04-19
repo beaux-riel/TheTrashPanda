@@ -12,7 +12,6 @@
  * never propagate to the caller.
  */
 
-import { getDripCtl } from "@/lib/dripctl/client";
 import { mapToDripCtlEvent } from "@/lib/dripctl/event-map";
 import { createServiceSupabaseClient } from "@/lib/supabase/server";
 import type { EventInsert, EventType, Json } from "@/lib/supabase/types";
@@ -48,9 +47,13 @@ export async function emitEvent(
     }
   }
 
+  // Push to DripCtl via direct fetch (SDK v0.2.1 events resource doesn't
+  // inject tenantId as query param, causing 400s). Fire-and-forget.
   try {
-    const dripctl = getDripCtl();
-    if (!dripctl) return;
+    const apiKey = process.env.DRIPCTL_API_KEY;
+    const tenantId = process.env.DRIPCTL_TENANT_ID;
+    if (!apiKey || !tenantId) return;
+
     const mapped = mapToDripCtlEvent(type, {
       userId: input.userId,
       areaHash: input.areaHash,
@@ -58,7 +61,19 @@ export async function emitEvent(
       metadata: input.metadata
     });
     if (!mapped) return;
-    await dripctl.events.create(mapped);
+
+    await fetch(
+      `https://api.dripctl.dev/api/v1/events?tenantId=${encodeURIComponent(tenantId)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify(mapped),
+        signal: AbortSignal.timeout(5000)
+      }
+    );
   } catch (err) {
     if (process.env.NODE_ENV === "development") {
       console.warn("[events] dripctl push failed", type, err);

@@ -7,6 +7,43 @@ type DeployResult =
   | { name: string; ok: true; id: string }
   | { name: string; ok: false; error: string };
 
+/**
+ * Normalize SDK builder step shapes to match the DripCtl API contract.
+ *
+ * The SDK v0.2.1 builders produce:
+ *   send → { type, name, options: { template, subject } }
+ *   wait → { type, duration }
+ *
+ * But the API expects:
+ *   send → { type, name, template, subject }
+ *   wait → { type, delay }
+ *
+ * This shim bridges the gap until the SDK is patched.
+ */
+/* eslint-disable */
+function normalizeStep(step: any): any {
+  if (step.type === "send" && step.options) {
+    const { options, ...rest } = step;
+    return { ...rest, ...options };
+  }
+  if (step.type === "wait" && step.duration && !step.delay) {
+    const { duration, ...rest } = step;
+    const delay = (duration as string).replace(/^(\d+)d$/, "$1 days");
+    return { ...rest, delay };
+  }
+  if (step.type === "condition" && step.branches) {
+    const yes = Array.isArray(step.branches.yes)
+      ? step.branches.yes.map(normalizeStep)
+      : normalizeStep(step.branches.yes);
+    const no = Array.isArray(step.branches.no)
+      ? step.branches.no.map(normalizeStep)
+      : normalizeStep(step.branches.no);
+    return { ...step, branches: { yes, no } };
+  }
+  return step;
+}
+/* eslint-enable */
+
 export async function POST(request: Request) {
   const adminSecret = process.env.DRIPCTL_ADMIN_SECRET;
   if (!adminSecret) {
@@ -32,10 +69,11 @@ export async function POST(request: Request) {
   const results: DeployResult[] = [];
   for (const definition of sequences) {
     try {
+      const normalizedSteps = definition.steps.map(normalizeStep);
       const created = await dripctl.sequences.create({
         name: definition.name,
         trigger: definition.trigger,
-        definition: { steps: definition.steps },
+        definition: { steps: normalizedSteps },
         optimize: definition.optimize
       });
       results.push({ name: definition.name, ok: true, id: created.id });
