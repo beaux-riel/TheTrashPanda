@@ -15,7 +15,8 @@ type NavItem = { href: string; label: string; icon: string; showBadge?: boolean 
 const publicNav: NavItem[] = [
   { href: "/", label: "Explore", icon: "🗺️" },
   { href: "/producers", label: "Neighbours", icon: "🌱" },
-  { href: "/about/bandit", label: "Meet Bandit", icon: "🦝" }
+  { href: "/the-squeeze", label: "The Squeeze", icon: "💰" },
+  { href: "/about/bandit", label: "Meet Bandit 🦝", icon: "🦝" }
 ];
 
 const authenticatedNav: NavItem[] = [
