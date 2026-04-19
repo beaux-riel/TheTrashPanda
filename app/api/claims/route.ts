@@ -134,6 +134,7 @@ export async function POST(request: Request) {
 
   // 5. Emit the profile.claimed event.
   await emitEvent("profile.claimed", {
+    userId: user.id,
     metadata: {
       producerId: claim.producer_id,
       claimedBy: user.id,
