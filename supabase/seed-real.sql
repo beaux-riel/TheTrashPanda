@@ -48,6 +48,57 @@ DELETE FROM auth.users WHERE id IN (
 );
 
 -- =====================================================
+-- STEP 0: Bandit — the mascot system profile
+-- Every piece of seeded content is attributed to Bandit.
+-- =====================================================
+INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at, aud, role)
+VALUES
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '00000000-0000-0000-0000-000000000000',
+   'bandit@thetrashpanda.local', crypt('banditseedpass', gen_salt('bf')), now(),
+   '{"display_name": "Bandit"}'::jsonb, now(), now(), 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO auth.identities (id, provider_id, user_id, identity_data, provider, created_at, updated_at)
+VALUES
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+   '{"sub": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", "email": "bandit@thetrashpanda.local"}'::jsonb, 'email', now(), now())
+ON CONFLICT DO NOTHING;
+
+UPDATE public.profiles SET
+  display_name = 'Bandit',
+  bio = 'The Trash Panda mascot. First to spot everything. 🦝',
+  is_producer = false,
+  trust_tier = 'verified',
+  is_community_maintained = false,
+  avatar_url = '/images/bandit/bandit-default.webp'
+WHERE id = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+
+-- =====================================================
+-- STEP 0b: Beaux (admin)
+-- Magic-link auth can't be faked in SQL, so the real user must sign up via the
+-- app. This seed row lets local dev reference the same id. In live, call:
+--   select * from promote_to_admin('hello@heybeaux.dev');
+-- =====================================================
+INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at, aud, role)
+VALUES
+  ('a0000000-0000-0000-0000-00000000ad01', '00000000-0000-0000-0000-000000000000',
+   'hello@heybeaux.dev', crypt('seedadminpass', gen_salt('bf')), now(),
+   '{"display_name": "Beaux"}'::jsonb, now(), now(), 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO auth.identities (id, provider_id, user_id, identity_data, provider, created_at, updated_at)
+VALUES
+  ('a0000000-0000-0000-0000-00000000ad01', 'a0000000-0000-0000-0000-00000000ad01', 'a0000000-0000-0000-0000-00000000ad01',
+   '{"sub": "a0000000-0000-0000-0000-00000000ad01", "email": "hello@heybeaux.dev"}'::jsonb, 'email', now(), now())
+ON CONFLICT DO NOTHING;
+
+UPDATE public.profiles SET
+  display_name = 'Beaux',
+  is_producer = false,
+  trust_tier = 'verified'
+WHERE id = 'a0000000-0000-0000-0000-00000000ad01';
+
+-- =====================================================
 -- STEP 1: Auth users (triggers auto-create profiles)
 -- =====================================================
 -- UUIDs: b1 = Terra Nostra, b2 = Farmers Market, b3 = Andtbaka,
@@ -483,7 +534,23 @@ VALUES
 
 
 -- =====================================================
+-- STEP 4: Attribute everything to Bandit
+-- Every seeded producer is community-maintained, spotted by Bandit.
+-- =====================================================
+UPDATE public.profiles SET
+  contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+  is_community_maintained = true
+WHERE is_producer = true
+  AND id <> 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+
+UPDATE public.listings SET
+  contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+WHERE contributed_by IS NULL;
+
+-- =====================================================
 -- Verify
 -- =====================================================
 SELECT 'Producers: ' || count(*) FROM public.profiles WHERE is_producer = true;
 SELECT 'Listings: ' || count(*) FROM public.listings WHERE status = 'active';
+SELECT 'Bandit-attributed producers: ' || count(*) FROM public.profiles WHERE contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb' AND is_producer = true;
+SELECT 'Bandit-attributed listings: ' || count(*) FROM public.listings WHERE contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';

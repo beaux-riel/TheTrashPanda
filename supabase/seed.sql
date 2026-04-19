@@ -1,8 +1,47 @@
--- HarvestLink seed data — Powell River producers + listings
+-- The Trash Panda — legacy seed (kept for historical parity; see seed-real.sql for the live set)
 -- Run via: psql "postgresql://postgres:...@db.xxx.supabase.co:5432/postgres" -f supabase/seed.sql
 
 -- Use fixed UUIDs so we can reference them across tables
 -- These go into auth.users (which triggers handle_new_user → auto-creates profile)
+
+-- Step 0: Bandit — the mascot system profile
+INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at, aud, role)
+VALUES
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '00000000-0000-0000-0000-000000000000', 'bandit@thetrashpanda.local', crypt('banditseedpass', gen_salt('bf')), now(), '{"display_name": "Bandit"}'::jsonb, now(), now(), 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO auth.identities (id, provider_id, user_id, identity_data, provider, created_at, updated_at)
+VALUES
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '{"sub": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", "email": "bandit@thetrashpanda.local"}'::jsonb, 'email', now(), now())
+ON CONFLICT DO NOTHING;
+
+UPDATE public.profiles SET
+  display_name = 'Bandit',
+  bio = 'The Trash Panda mascot. First to spot everything. 🦝',
+  is_producer = false,
+  trust_tier = 'verified',
+  is_community_maintained = false,
+  avatar_url = '/images/bandit/bandit-default.webp'
+WHERE id = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+
+-- Beaux (admin) — magic-link auth can't be faked in SQL, so the real user must
+-- sign up via the app. This seed row lets local dev reference the same id.
+-- In live, call: select * from promote_to_admin('hello@heybeaux.dev');
+INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at, aud, role)
+VALUES
+  ('a0000000-0000-0000-0000-00000000ad01', '00000000-0000-0000-0000-000000000000', 'hello@heybeaux.dev', crypt('seedadminpass', gen_salt('bf')), now(), '{"display_name": "Beaux"}'::jsonb, now(), now(), 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO auth.identities (id, provider_id, user_id, identity_data, provider, created_at, updated_at)
+VALUES
+  ('a0000000-0000-0000-0000-00000000ad01', 'a0000000-0000-0000-0000-00000000ad01', 'a0000000-0000-0000-0000-00000000ad01', '{"sub": "a0000000-0000-0000-0000-00000000ad01", "email": "hello@heybeaux.dev"}'::jsonb, 'email', now(), now())
+ON CONFLICT DO NOTHING;
+
+UPDATE public.profiles SET
+  display_name = 'Beaux',
+  is_producer = false,
+  trust_tier = 'verified'
+WHERE id = 'a0000000-0000-0000-0000-00000000ad01';
 
 -- Step 1: Create auth users (the trigger creates profiles automatically)
 INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at, aud, role)
@@ -183,6 +222,19 @@ VALUES
    now() + interval '3 days',
    now() - interval '4 hours');
 
+-- Attribute every seeded producer + listing to Bandit
+UPDATE public.profiles SET
+  contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+  is_community_maintained = true
+WHERE is_producer = true
+  AND id <> 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+
+UPDATE public.listings SET
+  contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+WHERE contributed_by IS NULL;
+
 -- Verify
 SELECT 'Profiles: ' || count(*) FROM public.profiles WHERE is_producer = true;
 SELECT 'Listings: ' || count(*) FROM public.listings WHERE status = 'active';
+SELECT 'Bandit-attributed producers: ' || count(*) FROM public.profiles WHERE contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb' AND is_producer = true;
+SELECT 'Bandit-attributed listings: ' || count(*) FROM public.listings WHERE contributed_by = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
