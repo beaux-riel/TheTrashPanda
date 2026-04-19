@@ -49,6 +49,17 @@ export default async function ProducerPage({ params }: { params: { id: string } 
           </div>
           <h1 className="font-display text-5xl text-[var(--ink)]">{producer.name}</h1>
           <p className="max-w-2xl text-lg leading-8 text-[var(--ink-soft)]">{producer.bio}</p>
+          {producer.websiteUrl && (
+            <a
+              href={producer.websiteUrl.startsWith("http") ? producer.websiteUrl : `https://${producer.websiteUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] transition hover:opacity-80"
+            >
+              🌐 {producer.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-60"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+            </a>
+          )}
           <div className="flex flex-wrap gap-3">
             <FollowButton producerId={producer.id} producerName={producer.name} />
             {producer.isCommunityMaintained ? (

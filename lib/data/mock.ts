@@ -20,6 +20,7 @@ export type Producer = {
   isCommunityMaintained?: boolean;
   contributedBy?: string | null;
   contributorName?: string | null;
+  websiteUrl?: string | null;
 };
 
 export type Listing = {
@@ -117,7 +118,8 @@ export const producers: Producer[] = [
     pickupDetails: "Farm store pickup Tue 12-5pm & Thu 12-6pm at 3244 Byron Road, or free delivery Tue/Thu afternoons.",
     scheduleSummary: "CSA Season: mid-June to mid-October · Farm Store: Tue & Thu",
     followerCount: 0,
-    activeListingIds: ["listing-csa-harvest", "listing-csa-garden", "listing-eggs-tn"]
+    activeListingIds: ["listing-csa-harvest", "listing-csa-garden", "listing-eggs-tn"],
+    websiteUrl: "https://terranostrafarm.com"
   },
   {
     id: "b2222222-2222-2222-2222-222222222222",
@@ -131,7 +133,8 @@ export const producers: Producer[] = [
     pickupDetails: "4365 McLeod Road. Past the airport, stay right, follow the signs. Tons of parking.",
     scheduleSummary: "Summer: Sat 10:30am-12:30pm + Sun 12:30-2:30pm · Winter: Sun 12:30-2:30pm",
     followerCount: 0,
-    activeListingIds: ["listing-winter-market", "listing-summer-market"]
+    activeListingIds: ["listing-winter-market", "listing-summer-market"],
+    websiteUrl: "https://powellriverfarmersmarket.blogspot.com"
   },
   {
     id: "b3333333-3333-3333-3333-333333333333",

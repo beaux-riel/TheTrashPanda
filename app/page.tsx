@@ -100,6 +100,34 @@ export default async function HomePage() {
         </div>
         <HomeDiscovery />
       </section>
+
+      {/* Multi-community CTA */}
+      <section className="rounded-2xl border border-[color:var(--border)] bg-[color:rgba(58,90,64,0.06)] p-5 sm:rounded-[36px] sm:p-8">
+        <div className="mx-auto max-w-2xl space-y-4 text-center">
+          <h2 className="font-display text-2xl text-[var(--ink)] sm:text-3xl">
+            Every town has a food loop. Most just don&apos;t know it yet.
+          </h2>
+          <p className="text-base leading-7 text-[var(--ink-soft)]">
+            The Trash Panda started in Powell River, BC — population 13,000, one ferry,
+            and more backyard food than anyone realized. If your community has gardens,
+            fruit trees, farmers&apos; markets, or neighbours who bake too much bread,
+            you&apos;ve already got a food loop. We just help make it visible.
+          </p>
+          <p className="text-sm font-semibold text-[var(--forest)]">
+            🇨🇦 Open source. Free to run. Built for Canadian communities.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <Link
+              className={buttonStyles("secondary")}
+              href="https://github.com/beaux-riel/TheTrashPanda"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Start one in your town →
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

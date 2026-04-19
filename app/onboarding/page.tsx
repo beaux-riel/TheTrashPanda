@@ -259,7 +259,7 @@ export default function OnboardingPage() {
                   <div className="space-y-2">
                     <h3 className="font-display text-2xl text-[var(--ink)]">Location</h3>
                     <p className="text-sm leading-6 text-[var(--ink-soft)]">
-                      Let The Trash Panda start around your actual corner of Powell River. No creepy precision. Just enough to keep the route sensible.
+                      Let The Trash Panda start around your actual corner of town. No creepy precision. Just enough to keep the route sensible.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
@@ -276,7 +276,7 @@ export default function OnboardingPage() {
                     id="manual-location"
                     value={manualLocation}
                     onChange={(event) => setManualLocation(event.target.value)}
-                    placeholder="Search Powell River area..."
+                    placeholder="Search your area..."
                     className="w-full rounded-[22px] border border-[color:var(--border)] bg-[var(--surface)] px-4 py-3 text-base text-[var(--ink)] outline-none placeholder:text-[var(--ink-soft)]"
                   />
                   <div className="flex flex-wrap gap-2">

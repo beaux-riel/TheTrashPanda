@@ -49,7 +49,7 @@ export function SiteHeader() {
               The Trash Panda
             </span>
             <p className="hidden text-xs text-[var(--ink-soft)] sm:block">
-              Powell River&apos;s food loop
+              Community food loops across Canada
             </p>
           </div>
         </Link>

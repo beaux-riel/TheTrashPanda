@@ -187,7 +187,8 @@ UPDATE public.profiles SET
   location = ST_SetSRID(ST_MakePoint(-124.490, 49.855), 4326)::geography,
   location_label = 'Byron Road, Powell River',
   pickup_details = 'Farm store pickup Tue 12-5pm & Thu 12-6pm at 3244 Byron Road, or free delivery Tue/Thu afternoons.',
-  schedule_summary = 'CSA Season: mid-June to mid-October · Farm Store: Tue & Thu'
+  schedule_summary = 'CSA Season: mid-June to mid-October · Farm Store: Tue & Thu',
+  website_url = 'https://terranostrafarm.com'
 WHERE id = 'b1111111-1111-1111-1111-111111111111';
 
 -- Powell River Farmers' Market — 4365 McLeod Road (Paradise Exhibition Grounds)
@@ -198,7 +199,8 @@ UPDATE public.profiles SET
   location = ST_SetSRID(ST_MakePoint(-124.530, 49.836), 4326)::geography,
   location_label = 'Paradise Exhibition Grounds, McLeod Road',
   pickup_details = '4365 McLeod Road. Past the airport, stay right, follow the signs. Tons of parking.',
-  schedule_summary = 'Summer: Sat 10:30am-12:30pm + Sun 12:30-2:30pm · Winter: Sun 12:30-2:30pm (Quonset hut)'
+  schedule_summary = 'Summer: Sat 10:30am-12:30pm + Sun 12:30-2:30pm · Winter: Sun 12:30-2:30pm (Quonset hut)',
+  website_url = 'https://powellriverfarmersmarket.blogspot.com'
 WHERE id = 'b2222222-2222-2222-2222-222222222222';
 
 -- Andtbaka Farm
