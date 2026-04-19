@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -9,21 +8,36 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
 import { seasonLabels } from "@/lib/utils/season";
 import { useHarvestLink } from "@/hooks/use-harvestlink";
+import { useAuth } from "@/lib/auth/auth-provider";
 
-const navItems = [
+type NavItem = { href: string; label: string; icon: string; showBadge?: boolean };
+
+const publicNav: NavItem[] = [
   { href: "/", label: "Explore", icon: "🗺️" },
   { href: "/producers", label: "Neighbours", icon: "🌱" },
-  { href: "/about/bandit", label: "Meet Bandit", icon: "" },
-  { href: "/onboarding", label: "Get Started", icon: "👋" },
-  { href: "/notifications", label: "Notifications", icon: "🔔", showBadge: true },
+  { href: "/the-squeeze", label: "The Squeeze", icon: "💰" },
+  { href: "/about/bandit", label: "Meet Bandit 🦝", icon: "🦝" }
+];
+
+const authenticatedNav: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: "📋" },
   { href: "/dashboard/reviews", label: "Reviews", icon: "✅" },
+  { href: "/notifications", label: "Notifications", icon: "🔔", showBadge: true }
 ];
 
 export function SiteHeader() {
   const pathname = usePathname();
   const { season, unreadCount } = useHarvestLink();
+  const { user, profile, signOut, isConfigured } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const loggedIn = Boolean(user);
+  const navItems = loggedIn ? [...publicNav, ...authenticatedNav] : publicNav;
+  const displayName =
+    profile?.display_name?.trim() ||
+    user?.user_metadata?.display_name ||
+    user?.email ||
+    "";
 
   return (
     <header className="sticky top-0 z-30 border-b border-[color:var(--border)] bg-[color:rgba(245,240,232,0.92)] backdrop-blur">
@@ -35,7 +49,7 @@ export function SiteHeader() {
               The Trash Panda
             </span>
             <p className="hidden text-xs text-[var(--ink-soft)] sm:block">
-              Powell River&apos;s food loop
+              Community food loops across Canada
             </p>
           </div>
         </Link>
@@ -64,6 +78,39 @@ export function SiteHeader() {
               </Link>
             );
           })}
+
+          {loggedIn ? (
+            <div className="ml-2 flex items-center gap-2">
+              <span className="max-w-[160px] truncate text-sm font-semibold text-[var(--ink)]">
+                {displayName}
+              </span>
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                className="rounded-full px-3 py-1.5 text-sm font-semibold text-[var(--ink-soft)] transition hover:bg-[var(--surface-strong)]"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <div className="ml-2 flex items-center gap-2">
+              <Link
+                href="/onboarding"
+                className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--accent-ink)] transition hover:opacity-90"
+              >
+                Get Started
+              </Link>
+              {isConfigured && (
+                <Link
+                  href="/auth/login"
+                  className="rounded-full px-3.5 py-2 text-sm font-semibold text-[var(--ink-soft)] transition hover:bg-[var(--surface-strong)]"
+                >
+                  Sign in
+                </Link>
+              )}
+            </div>
+          )}
+
           <Badge tone="gold" className="ml-2">{seasonLabels[season]}</Badge>
         </nav>
 
@@ -120,8 +167,50 @@ export function SiteHeader() {
               );
             })}
           </div>
-          <div className="mt-3 flex gap-2 px-4">
-            <Badge tone="gold">{seasonLabels[season]}</Badge>
+
+          <div className="mt-3 flex flex-col gap-2 border-t border-[color:var(--border)] pt-3">
+            {loggedIn ? (
+              <>
+                <span className="px-2 text-xs uppercase tracking-wide text-[var(--ink-soft)]">
+                  Signed in as
+                </span>
+                <span className="truncate px-2 text-sm font-semibold text-[var(--ink)]">
+                  {displayName}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    void signOut();
+                  }}
+                  className="rounded-2xl bg-[var(--surface-strong)] px-4 py-3 text-left text-base font-semibold text-[var(--ink)] transition hover:opacity-90"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/onboarding"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-2xl bg-[var(--accent)] px-4 py-3 text-base font-semibold text-[var(--accent-ink)]"
+                >
+                  Get Started
+                </Link>
+                {isConfigured && (
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="rounded-2xl bg-[var(--surface-strong)] px-4 py-3 text-base font-semibold text-[var(--ink)]"
+                  >
+                    Sign in
+                  </Link>
+                )}
+              </>
+            )}
+            <div className="px-2 pt-1">
+              <Badge tone="gold">{seasonLabels[season]}</Badge>
+            </div>
           </div>
         </nav>
       )}

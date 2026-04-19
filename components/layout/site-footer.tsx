@@ -28,7 +28,7 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--ink-soft)]">
-          <Link href="https://github.com/beaux-riel/HarvestLink" className="hover:text-[var(--accent)] transition">
+          <Link href="https://github.com/beaux-riel/TheTrashPanda" className="hover:text-[var(--accent)] transition">
             GitHub
           </Link>
           <span>·</span>
@@ -37,12 +37,12 @@ export function SiteFooter() {
           </Link>
           <span>·</span>
           <Link href="/about/bandit" className="hover:text-[var(--accent)] transition">
-            Meet Bandit
+            Meet Bandit 🦝
           </Link>
           <span>·</span>
           <span>© {year} The Trash Panda</span>
           <span>·</span>
-          <span className="italic">Powell River, BC 🇨🇦</span>
+          <span className="italic">Born in Powell River, BC 🇨🇦</span>
         </div>
       </div>
     </footer>

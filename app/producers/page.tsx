@@ -9,7 +9,7 @@ import { getProducersData, getListingsData } from "@/lib/data/bridge";
 
 export const metadata = {
   title: "Your Neighbours",
-  description: "People sharing food in Powell River, BC — backyard gardeners, hobby farmers, home bakers, and anyone with more than they need.",
+  description: "People sharing food in your community — backyard gardeners, hobby farmers, home bakers, and anyone with more than they need.",
 };
 
 export default async function ProducersPage() {
@@ -37,7 +37,7 @@ export default async function ProducersPage() {
             Your Neighbours
           </h1>
           <p className="mt-1 text-sm text-[var(--ink-soft)] sm:text-base">
-            {producers.length} people sharing food in Powell River — backyard gardeners,
+            {producers.length} neighbours sharing food — backyard gardeners,
             home bakers, hobby farmers, and folks with more plums than friends.
           </p>
         </div>
@@ -76,6 +76,11 @@ export default async function ProducersPage() {
                 <p className="text-xs text-[var(--ink-soft)]">
                   📍 {producer.locationLabel}
                 </p>
+                {producer.websiteUrl && (
+                  <p className="text-xs text-[var(--accent)]">
+                    🌐 {producer.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </p>
+                )}
               </Card>
             </Link>
           );

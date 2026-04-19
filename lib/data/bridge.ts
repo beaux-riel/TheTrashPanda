@@ -151,7 +151,10 @@ export async function getProducerData(
           pickupDetails: row.pickup_details ?? "",
           scheduleSummary: row.schedule_summary ?? "",
           followerCount: 0,
-          activeListingIds: []
+          activeListingIds: [],
+          isCommunityMaintained: (row as any).is_community_maintained ?? false,
+          contributedBy: (row as any).contributed_by ?? null,
+          websiteUrl: (row as any).website_url ?? null,
         };
       }
       return null;
@@ -187,7 +190,10 @@ export async function getProducersData(): Promise<Producer[]> {
             pickupDetails: row.pickup_details ?? "",
             scheduleSummary: row.schedule_summary ?? "",
             followerCount: 0,
-            activeListingIds: []
+            activeListingIds: [],
+            isCommunityMaintained: (row as any).is_community_maintained ?? false,
+            contributedBy: (row as any).contributed_by ?? null,
+            websiteUrl: (row as any).website_url ?? null,
           };
         });
       }

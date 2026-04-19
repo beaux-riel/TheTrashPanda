@@ -20,6 +20,7 @@ export type Producer = {
   isCommunityMaintained?: boolean;
   contributedBy?: string | null;
   contributorName?: string | null;
+  websiteUrl?: string | null;
 };
 
 export type Listing = {
@@ -116,8 +117,9 @@ export const producers: Producer[] = [
     lng: -124.490,
     pickupDetails: "Farm store pickup Tue 12-5pm & Thu 12-6pm at 3244 Byron Road, or free delivery Tue/Thu afternoons.",
     scheduleSummary: "CSA Season: mid-June to mid-October · Farm Store: Tue & Thu",
-    followerCount: 42,
-    activeListingIds: ["listing-csa-harvest", "listing-csa-garden", "listing-eggs-tn"]
+    followerCount: 0,
+    activeListingIds: ["listing-csa-harvest", "listing-csa-garden", "listing-eggs-tn"],
+    websiteUrl: "https://terranostrafarm.com"
   },
   {
     id: "b2222222-2222-2222-2222-222222222222",
@@ -130,8 +132,9 @@ export const producers: Producer[] = [
     lng: -124.530,
     pickupDetails: "4365 McLeod Road. Past the airport, stay right, follow the signs. Tons of parking.",
     scheduleSummary: "Summer: Sat 10:30am-12:30pm + Sun 12:30-2:30pm · Winter: Sun 12:30-2:30pm",
-    followerCount: 156,
-    activeListingIds: ["listing-winter-market", "listing-summer-market"]
+    followerCount: 0,
+    activeListingIds: ["listing-winter-market", "listing-summer-market"],
+    websiteUrl: "https://powellriverfarmersmarket.blogspot.com"
   },
   {
     id: "b3333333-3333-3333-3333-333333333333",
@@ -144,7 +147,7 @@ export const producers: Producer[] = [
     lng: -124.520,
     pickupDetails: "Find us at the Powell River Farmers' Market most Sundays.",
     scheduleSummary: "Sundays at the Farmers' Market",
-    followerCount: 28,
+    followerCount: 0,
     activeListingIds: ["listing-spring-greens", "listing-eggs-af", "listing-potatoes"]
   },
   {
@@ -158,7 +161,7 @@ export const producers: Producer[] = [
     lng: -124.540,
     pickupDetails: "Farmers' Market on Sundays, or message us for farm pickup.",
     scheduleSummary: "Sundays at the Farmers' Market · Farm pickup by arrangement",
-    followerCount: 35,
+    followerCount: 0,
     activeListingIds: ["listing-honey-mph", "listing-chicken", "listing-soap"]
   },
   {
@@ -172,7 +175,7 @@ export const producers: Producer[] = [
     lng: -124.525,
     pickupDetails: "Farmers' Market on Sundays, or reach out for midweek orders.",
     scheduleSummary: "Year-round · Sundays at the Farmers' Market",
-    followerCount: 19,
+    followerCount: 0,
     activeListingIds: ["listing-sprouts", "listing-microgreens", "listing-wheatgrass"]
   },
   {
@@ -186,7 +189,7 @@ export const producers: Producer[] = [
     lng: -124.515,
     pickupDetails: "Available at the Farmers' Market year-round.",
     scheduleSummary: "Year-round · Saturdays & Sundays at the Farmers' Market",
-    followerCount: 22,
+    followerCount: 0,
     activeListingIds: ["listing-blueberries", "listing-strawberries"]
   },
   {
@@ -200,7 +203,7 @@ export const producers: Producer[] = [
     lng: -124.530,
     pickupDetails: "Farmers' Market or message for bulk orders.",
     scheduleSummary: "Sundays at the Farmers' Market",
-    followerCount: 17,
+    followerCount: 0,
     activeListingIds: ["listing-ground-beef", "listing-liver-caps"]
   },
   {
@@ -214,7 +217,7 @@ export const producers: Producer[] = [
     lng: -124.510,
     pickupDetails: "Farmers' Market through the fall and winter season.",
     scheduleSummary: "Fall & Winter · Sundays at the Farmers' Market",
-    followerCount: 14,
+    followerCount: 0,
     activeListingIds: ["listing-kale-sts", "listing-lettuce-starts"]
   },
   {
@@ -228,7 +231,7 @@ export const producers: Producer[] = [
     lng: -124.550,
     pickupDetails: "Farmers' Market on Sundays.",
     scheduleSummary: "Fall & Winter · Sundays at the Farmers' Market",
-    followerCount: 11,
+    followerCount: 0,
     activeListingIds: ["listing-raw-honey", "listing-creamed-honey"]
   },
   {
@@ -242,7 +245,7 @@ export const producers: Producer[] = [
     lng: -124.525,
     pickupDetails: "Self-serve farm store — open daily, honour system.",
     scheduleSummary: "Daily · Self-serve",
-    followerCount: 38,
+    followerCount: 0,
     activeListingIds: ["listing-green-onions", "listing-salad-greens", "listing-rhubarb"],
     isCommunityMaintained: true,
     contributorName: "Maya"
@@ -779,20 +782,7 @@ export const initialNotifications: NotificationItem[] = [
   }
 ];
 
-export const followerPreview: FollowerPreview[] = [
-  { id: "f-1", name: "Maya", note: "Immediate pings for eggs, always." },
-  { id: "f-2", name: "Rob", note: "Daily digest. Lives down by the mill." },
-  { id: "f-3", name: "Jen", note: "Follows produce and porch pickup posts." },
-  { id: "f-4", name: "Sam", note: "Muted for now, still checking your feed." },
-  { id: "f-5", name: "Ivy", note: "Shows up every Saturday with exact change." },
-  { id: "f-6", name: "Derek", note: "Mostly here for seedlings and neighbour gossip." },
-  { id: "f-7", name: "Keira", note: "Shares your profile with ferry-line friends." },
-  { id: "f-8", name: "Noah", note: "Clicks fast when you post 'last few'." },
-  { id: "f-9", name: "Talia", note: "Watches Cranberry listings after school pickup." },
-  { id: "f-10", name: "Bryn", note: "Buys eggs, forgets cartons, apologizes every time." },
-  { id: "f-11", name: "Levi", note: "Favourite listing type: greens that survive soup." },
-  { id: "f-12", name: "Ana", note: "Daily digest and absolutely zero chill for honey." }
-];
+export const followerPreview: FollowerPreview[] = [];
 
 export const initialSchedule: ScheduleSlot[] = [
   { day: "Tue", label: "8am to noon", open: true },
