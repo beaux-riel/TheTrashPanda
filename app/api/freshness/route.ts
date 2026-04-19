@@ -83,6 +83,7 @@ export async function POST(request: Request) {
   }
 
   await emitEvent("freshness.voted", {
+    userId: user.id,
     metadata: {
       listingId: vote.listing_id,
       voterId: user.id,
@@ -94,9 +95,11 @@ export async function POST(request: Request) {
 
   if (markedGone) {
     await emitEvent("freshness.stale_flagged", {
+      userId: user.id,
       metadata: { listingId: vote.listing_id, staleFlagCount }
     });
     await emitEvent("listing.gone", {
+      userId: user.id,
       metadata: { listingId: vote.listing_id, reason: "stale_threshold", staleFlagCount }
     });
   }

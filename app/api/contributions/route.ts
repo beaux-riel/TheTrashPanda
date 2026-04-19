@@ -158,6 +158,7 @@ export async function POST(request: Request) {
   await promoteTrustTier(user.id);
 
   await emitEvent("contribution.created", {
+    userId: user.id,
     metadata: {
       contributionId: contribution.id,
       contributorId: user.id,
@@ -170,6 +171,7 @@ export async function POST(request: Request) {
 
   if (autoApprove && !applyError) {
     await emitEvent("contribution.approved", {
+      userId: user.id,
       metadata: {
         contributionId: contribution.id,
         type: contribution.type,
